@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.music.mapper.MmsMovieMapper">
+
+    <resultMap type="MmsMovie" id="MmsMovieResult">
+        <result property="id" column="id"/>
+        <result property="movieId" column="movie_id"/>
+        <result property="movieName" column="movie_name"/>
+        <result property="movieUpType" column="movie_up_type"/>
+        <result property="movieUpId" column="movie_up_id"/>
+        <result property="movieImageUrl" column="movie_image_url"/>
+        <result property="movieUrl" column="movie_url"/>
+        <result property="movieStatus" column="movie_status"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="editBy" column="edit_by"/>
+        <result property="editTime" column="edit_time"/>
+        <result property="revision" column="revision"/>
+        <result property="isDel" column="is_del"/>
+        <association property="userName" select="com.ruoyi.music.mapper.MmsUserMapper.selectUserNameByUserId"
+                     column="movie_up_id"/>
+        <association property="singerName" select="com.ruoyi.music.mapper.MmsSingerMapper.selectSingerNameBySingerId"
+                     column="movie_up_id"/>
+    </resultMap>
+    <resultMap id="SimpleMovieVoResult" type="SimpleMovieVo">
+        <result property="movieId" column="movie_id"/>
+        <result property="movieName" column="movie_name"/>
+    </resultMap>
+
+    <sql id="selectMmsMovieVo">
+        select id,
+               movie_id,
+               movie_name,
+               movie_up_type,
+               movie_up_id,
+               movie_image_url,
+               movie_status,
+               movie_url,
+               create_by,
+               create_time,
+               edit_by,
+               edit_time,
+               revision,
+               is_del
+        from mms_movie
+    </sql>
+
+    <select id="selectMmsMovieList" parameterType="MmsMovie" resultMap="MmsMovieResult">
+        <include refid="selectMmsMovieVo"/>
+        <where>
+            is_del = 0
+            <if test="movieId != null ">and movie_id = #{movieId}</if>
+            <if test="movieName != null  and movieName != ''">and movie_name like concat('%', #{movieName}, '%')</if>
+            <if test="movieUpType != null ">and movie_up_type = #{movieUpType}</if>
+            <if test="movieUpId != null ">and movie_up_id = #{movieUpId}</if>
+            <if test="movieImageUrl != null  and movieImageUrl != ''">and movie_image_url = #{movieImageUrl}</if>
+            <if test="movieUrl != null  and movieUrl != ''">and movie_url = #{movieUrl}</if>
+            <if test="movieStatus != null  and movieStatus != ''">and movie_status = #{movieStatus}</if>
+            <if test="editBy != null  and editBy != ''">and edit_by = #{editBy}</if>
+            <if test="editTime != null ">and edit_time = #{editTime}</if>
+            <if test="revision != null ">and revision = #{revision}</if>
+        </where>
+    </select>
+
+    <select id="selectMmsMovieById" parameterType="Long" resultMap="MmsMovieResult">
+        <include refid="selectMmsMovieVo"/>
+        where id = #{id} and is_del =0
+    </select>
+    <select id="selectMovieNameByMovieId" resultType="java.lang.String">
+        select movie_name
+        from mms_movie
+        where movie_id = #{movieId}
+          and is_del = 0
+    </select>
+    <select id="listSimpleMovie" resultMap="SimpleMovieVoResult">
+        select movie_id, movie_name
+        from mms_movie
+        where is_del = 0
+    </select>
+
+    <insert id="insertMmsMovie" parameterType="MmsMovie" useGeneratedKeys="true" keyProperty="id">
+        insert into mms_movie
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="movieId != null">movie_id,</if>
+            <if test="movieName != null and movieName != ''">movie_name,</if>
+            <if test="movieUpType != null">movie_up_type,</if>
+            <if test="movieUpId != null">movie_up_id,</if>
+            <if test="movieImageUrl != null and movieImageUrl != ''">movie_image_url,</if>
+            <if test="movieUrl != null and movieUrl != ''">movie_url,</if>
+            <if test="movieStatus != null and movieStatus != ''">movie_status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="editBy != null">edit_by,</if>
+            <if test="editTime != null">edit_time,</if>
+            <if test="revision != null">revision,</if>
+            <if test="isDel != null">is_del,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="movieId != null">#{movieId},</if>
+            <if test="movieName != null and movieName != ''">#{movieName},</if>
+            <if test="movieUpType != null">#{movieUpType},</if>
+            <if test="movieUpId != null">#{movieUpId},</if>
+            <if test="movieImageUrl != null and movieImageUrl != ''">#{movieImageUrl},</if>
+            <if test="movieUrl != null and movieUrl != ''">#{movieUrl},</if>
+            <if test="movieStatus != null and movieStatus != ''">#{movieStatus},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="editBy != null">#{editBy},</if>
+            <if test="editTime != null">#{editTime},</if>
+            <if test="revision != null">#{revision},</if>
+            <if test="isDel != null">#{isDel},</if>
+        </trim>
+    </insert>
+
+    <update id="updateMmsMovie" parameterType="MmsMovie">
+        update mms_movie
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="movieId != null">movie_id = #{movieId},</if>
+            <if test="movieName != null and movieName != ''">movie_name = #{movieName},</if>
+            <if test="movieUpType != null">movie_up_type = #{movieUpType},</if>
+            <if test="movieUpId != null">movie_up_id = #{movieUpId},</if>
+            <if test="movieImageUrl != null and movieImageUrl != ''">movie_image_url = #{movieImageUrl},</if>
+            <if test="movieUrl != null and movieUrl != ''">movie_url = #{movieUrl},</if>
+            <if test="movieStatus != null and movieStatus != ''">movie_status = #{movieStatus},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="editBy != null">edit_by = #{editBy},</if>
+            <if test="editTime != null">edit_time = #{editTime},</if>
+            <if test="revision != null">revision = #{revision},</if>
+            <if test="isDel != null">is_del = #{isDel},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMmsMovieById" parameterType="Long">
+        update mms_movie
+        set is_del = 1
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteMmsMovieByIds" parameterType="String">
+        update mms_movie set is_del = 1 where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

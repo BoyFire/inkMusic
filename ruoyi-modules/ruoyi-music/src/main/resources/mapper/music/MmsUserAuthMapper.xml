@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.music.mapper.MmsUserAuthMapper">
+
+    <resultMap type="MmsUserAuth" id="MmsUserAuthResult">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="userAuthType" column="user_auth_type"/>
+        <result property="userAuthLogin" column="user_auth_login"/>
+        <result property="userAuthPassword" column="user_auth_password"/>
+        <result property="userAuthStatus" column="user_auth_status"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="editBy" column="edit_by"/>
+        <result property="editTime" column="edit_time"/>
+        <result property="revision" column="revision"/>
+        <result property="isDel" column="is_del"/>
+    </resultMap>
+
+    <sql id="selectMmsUserAuthVo">
+        select id,
+               user_id,
+               user_auth_type,
+               user_auth_login,
+               user_auth_password,
+               user_auth_status,
+               create_by,
+               create_time,
+               edit_by,
+               edit_time,
+               revision,
+               is_del
+        from mms_user_auth
+    </sql>
+
+    <select id="selectMmsUserAuthList" parameterType="MmsUserAuth" resultMap="MmsUserAuthResult">
+        <include refid="selectMmsUserAuthVo"/>
+        <where>
+            <if test="userId != null ">and user_id = #{userId}</if>
+            <if test="userAuthType != null ">and user_auth_type = #{userAuthType}</if>
+            <if test="userAuthLogin != null  and userAuthLogin != ''">and user_auth_login = #{userAuthLogin}</if>
+            <if test="userAuthPassword != null  and userAuthPassword != ''">and user_auth_password =
+                #{userAuthPassword}
+            </if>
+            <if test="userAuthStatus != null ">and user_auth_status = #{userAuthStatus}</if>
+            <if test="editBy != null  and editBy != ''">and edit_by = #{editBy}</if>
+            <if test="editTime != null ">and edit_time = #{editTime}</if>
+            <if test="revision != null ">and revision = #{revision}</if>
+            <if test="isDel != null ">and is_del = #{isDel}</if>
+        </where>
+    </select>
+
+    <select id="selectMmsUserAuthById" parameterType="Long" resultMap="MmsUserAuthResult">
+        <include refid="selectMmsUserAuthVo"/>
+        where id = #{id}
+        Group by user_id
+    </select>
+
+    <select id="selectMmsUserByUserIdAndUserAuthType" resultMap="MmsUserAuthResult">
+        <include refid="selectMmsUserAuthVo"/>
+        where user_id= #{userId} and user_auth_type = #{userAuthType} and is_del =0
+    </select>
+
+    <select id="selectMmsUserAuthTypesById" resultType="java.lang.Integer">
+        select user_auth_type
+        from mms_user_auth
+        where user_id = #{userId}
+    </select>
+
+    <insert id="insertMmsUserAuth" parameterType="MmsUserAuth" useGeneratedKeys="true" keyProperty="id">
+        insert into mms_user_auth
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="userAuthType != null">user_auth_type,</if>
+            <if test="userAuthLogin != null and userAuthLogin != ''">user_auth_login,</if>
+            <if test="userAuthPassword != null and userAuthPassword != ''">user_auth_password,</if>
+            <if test="userAuthStatus != null">user_auth_status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="editBy != null">edit_by,</if>
+            <if test="editTime != null">edit_time,</if>
+            <if test="revision != null">revision,</if>
+            <if test="isDel != null">is_del,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="userAuthType != null">#{userAuthType},</if>
+            <if test="userAuthLogin != null and userAuthLogin != ''">#{userAuthLogin},</if>
+            <if test="userAuthPassword != null and userAuthPassword != ''">#{userAuthPassword},</if>
+            <if test="userAuthStatus != null">#{userAuthStatus},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="editBy != null">#{editBy},</if>
+            <if test="editTime != null">#{editTime},</if>
+            <if test="revision != null">#{revision},</if>
+            <if test="isDel != null">#{isDel},</if>
+        </trim>
+    </insert>
+
+    <update id="updateMmsUserAuth" parameterType="MmsUserAuth">
+        update mms_user_auth
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="userAuthType != null">user_auth_type = #{userAuthType},</if>
+            <if test="userAuthLogin != null and userAuthLogin != ''">user_auth_login = #{userAuthLogin},</if>
+            <if test="userAuthPassword != null and userAuthPassword != ''">user_auth_password = #{userAuthPassword},
+            </if>
+            <if test="userAuthStatus != null">user_auth_status = #{userAuthStatus},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="editBy != null">edit_by = #{editBy},</if>
+            <if test="editTime != null">edit_time = #{editTime},</if>
+            <if test="revision != null">revision = #{revision},</if>
+            <if test="isDel != null">is_del = #{isDel},</if>
+        </trim>
+        where user_id = #{userId} and user_auth_type = #{userAuthType}
+    </update>
+
+    <delete id="deleteMmsUserAuthById" parameterType="Long">
+        delete
+        from mms_user_auth
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteMmsUserAuthByIds" parameterType="String">
+        delete from mms_user_auth where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

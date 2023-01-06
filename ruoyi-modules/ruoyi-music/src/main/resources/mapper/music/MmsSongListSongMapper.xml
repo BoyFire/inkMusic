@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.music.mapper.MmsSongListSongMapper">
+    
+    <resultMap type="MmsSongListSong" id="MmsSongListSongResult">
+        <result property="id"    column="id"    />
+        <result property="songId"    column="song_id"    />
+        <result property="songListId"    column="song_list_id"    />
+    </resultMap>
+
+    <sql id="selectMmsSongListSongVo">
+        select id, song_id, song_list_id from mms_song_list_song
+    </sql>
+
+    <select id="selectMmsSongListSongList" parameterType="MmsSongListSong" resultMap="MmsSongListSongResult">
+        <include refid="selectMmsSongListSongVo"/>
+        <where>  
+            <if test="songId != null "> and song_id = #{songId}</if>
+            <if test="songListId != null "> and song_list_id = #{songListId}</if>
+        </where>
+    </select>
+    
+    <select id="selectMmsSongListSongById" parameterType="Long" resultMap="MmsSongListSongResult">
+        <include refid="selectMmsSongListSongVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertMmsSongListSong" parameterType="MmsSongListSong" useGeneratedKeys="true" keyProperty="id">
+        insert into mms_song_list_song
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="songId != null">song_id,</if>
+            <if test="songListId != null">song_list_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="songId != null">#{songId},</if>
+            <if test="songListId != null">#{songListId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMmsSongListSong" parameterType="MmsSongListSong">
+        update mms_song_list_song
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="songId != null">song_id = #{songId},</if>
+            <if test="songListId != null">song_list_id = #{songListId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMmsSongListSongById" parameterType="Long">
+        delete from mms_song_list_song where id = #{id}
+    </delete>
+
+    <delete id="deleteMmsSongListSongByIds" parameterType="String">
+        delete from mms_song_list_song where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.music.mapper.MmsSongListMapper">
+
+    <resultMap type="MmsSongList" id="MmsSongListResult">
+        <result property="id" column="id"/>
+        <result property="songListId" column="song_list_id"/>
+        <result property="songListTitle" column="song_list_title"/>
+        <result property="songListImgUrl" column="song_list_img_url"/>
+        <result property="songListCreatorId" column="song_list_creator_id"/>
+        <result property="songListStatus" column="song_list_status"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="editBy" column="edit_by"/>
+        <result property="editTime" column="edit_time"/>
+        <result property="revision" column="revision"/>
+        <result property="isDel" column="is_del"/>
+        <result property="isFine" column="is_fine"/>
+        <result property="songListCreatorName" column="user_nickname"/>
+    </resultMap>
+    <resultMap id="SimpleSongListVoResult" type="SimpleSongListVo">
+        <result property="songListId" column="song_list_id"/>
+        <result property="songListName" column="song_list_title"/>
+    </resultMap>
+
+    <sql id="selectMmsSongListVo">
+        select msl.id,
+               msl.song_list_id,
+               msl.song_list_title,
+               msl.song_list_img_url,
+               msl.song_list_creator_id,
+               msl.song_list_status,
+               msl.create_by,
+               msl.create_time,
+               msl.edit_by,
+               msl.edit_time,
+               msl.revision,
+               msl.is_del,
+               msl.is_fine,
+               mu.user_nickname
+        from mms_song_list msl
+                 left join mms_user mu on mu.user_id = msl.song_list_creator_id
+    </sql>
+
+    <select id="selectMmsSongListList" parameterType="MmsSongList" resultMap="MmsSongListResult">
+        <include refid="selectMmsSongListVo"/>
+        <where>
+            msl.is_del = 0
+            <if test="songListId != null ">and msl.ong_list_id = #{songListId}</if>
+            <if test="songListTitle != null  and songListTitle != ''">and msl.song_list_title = #{songListTitle}</if>
+            <if test="songListImgUrl != null  and songListImgUrl != ''">and msl.song_list_img_url = #{songListImgUrl}
+            </if>
+            <if test="songListCreatorId != null ">and msl.song_list_creator_id = #{songListCreatorId}</if>
+            <if test="songListStatus != null ">and msl.song_list_status = #{songListStatus}</if>
+            <if test="editBy != null  and editBy != ''">and msl.edit_by = #{editBy}</if>
+            <if test="editTime != null ">and msl.edit_time = #{editTime}</if>
+            <if test="revision != null ">and msl.revision = #{revision}</if>
+            <if test="isFine != null ">and msl.is_fine = #{isFine}</if>
+        </where>
+    </select>
+
+    <select id="selectMmsSongListById" parameterType="Long" resultMap="MmsSongListResult">
+        <include refid="selectMmsSongListVo"/>
+        where msl.id = #{id} and msl.is_del=0
+    </select>
+    <select id="selectSongListNameBySongListId" resultType="java.lang.String">
+        select song_list_title
+        from mms_song_list
+        where song_list_id = #{songListId}
+          and is_del = 0
+    </select>
+    <select id="listSimpleSongList" resultMap="SimpleSongListVoResult">
+        select song_list_title, song_list_id
+        from mms_song_list
+        where is_del = 0
+    </select>
+    <select id="selectMmsSongListBySongListId" resultMap="MmsSongListResult">
+        <include refid="selectMmsSongListVo"/>
+        where msl.song_list_id = #{songListId} and msl.is_del = 0
+    </select>
+
+    <insert id="insertMmsSongList" parameterType="MmsSongList" useGeneratedKeys="true" keyProperty="id">
+        insert into mms_song_list
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="songListId != null">song_list_id,</if>
+            <if test="songListTitle != null and songListTitle != ''">song_list_title,</if>
+            <if test="songListImgUrl != null">song_list_img_url,</if>
+            <if test="songListCreatorId != null">song_list_creator_id,</if>
+            <if test="songListStatus != null">song_list_status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="editBy != null">edit_by,</if>
+            <if test="editTime != null">edit_time,</if>
+            <if test="revision != null">revision,</if>
+            <if test="isDel != null">is_del,</if>
+            <if test="isFine != null">is_fine,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="songListId != null">#{songListId},</if>
+            <if test="songListTitle != null and songListTitle != ''">#{songListTitle},</if>
+            <if test="songListImgUrl != null">#{songListImgUrl},</if>
+            <if test="songListCreatorId != null">#{songListCreatorId},</if>
+            <if test="songListStatus != null">#{songListStatus},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="editBy != null">#{editBy},</if>
+            <if test="editTime != null">#{editTime},</if>
+            <if test="revision != null">#{revision},</if>
+            <if test="isDel != null">#{isDel},</if>
+            <if test="isFine != null">#{isFine},</if>
+        </trim>
+    </insert>
+
+    <update id="updateMmsSongList" parameterType="MmsSongList">
+        update mms_song_list
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="songListId != null">song_list_id = #{songListId},</if>
+            <if test="songListTitle != null and songListTitle != ''">song_list_title = #{songListTitle},</if>
+            <if test="songListImgUrl != null">song_list_img_url = #{songListImgUrl},</if>
+            <if test="songListCreatorId != null">song_list_creator_id = #{songListCreatorId},</if>
+            <if test="songListStatus != null">song_list_status = #{songListStatus},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="editBy != null">edit_by = #{editBy},</if>
+            <if test="editTime != null">edit_time = #{editTime},</if>
+            <if test="revision != null">revision = #{revision},</if>
+            <if test="isDel != null">is_del = #{isDel},</if>
+            <if test="isFine != null">is_fine = #{isFine},</if>
+        </trim>
+        where id = #{id} and is_del = 0
+    </update>
+
+    <delete id="deleteMmsSongListById" parameterType="Long">
+        update mms_song_list
+        set is_del = 1
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteMmsSongListByIds" parameterType="String">
+        update mms_song_list set is_del = 1 where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

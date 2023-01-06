@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.music.mapper.MmsCommentMapper">
+
+    <resultMap type="MmsComment" id="MmsCommentResult">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="commentId" column="comment_id"/>
+        <result property="commentType" column="comment_type"/>
+        <result property="commentDetail" column="comment_detail"/>
+        <result property="commentLike" column="comment_like"/>
+        <result property="commentStatus" column="comment_status"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="editBy" column="edit_by"/>
+        <result property="editTime" column="edit_time"/>
+        <result property="revision" column="revision"/>
+        <result property="isDel" column="is_del"/>
+        <result property="commentTargetId" column="comment_target_id"/>
+        <association property="userName" select="com.ruoyi.music.mapper.MmsUserMapper.selectUserNameByUserId" column="user_id"/>
+        <association property="albumName" select="com.ruoyi.music.mapper.MmsAlbumMapper.selectMmsAlbumNameByAlbumId" column="comment_target_id"/>
+        <association property="songListName" select="com.ruoyi.music.mapper.MmsSongListMapper.selectSongListNameBySongListId" column="comment_target_id"/>
+        <association property="songName" select="com.ruoyi.music.mapper.MmsSongMapper.selecSongNameBySongId" column="comment_target_id"/>
+        <association property="movieName" select="com.ruoyi.music.mapper.MmsMovieMapper.selectMovieNameByMovieId" column="comment_target_id"/>
+    </resultMap>
+
+    <sql id="selectMmsCommentVo">
+        select id,
+               user_id,
+               comment_id,
+               comment_type,
+               comment_target_id,
+               comment_detail,
+               comment_like,
+               comment_status,
+               create_by,
+               create_time,
+               edit_by,
+               edit_time,
+               revision,
+               is_del
+        from mms_comment
+    </sql>
+
+    <select id="selectMmsCommentList" parameterType="MmsComment" resultMap="MmsCommentResult">
+        <include refid="selectMmsCommentVo"/>
+        <where>
+            is_del = 0
+            <if test="userId != null  and userId != ''">and user_id = #{userId}</if>
+            <if test="commentId != null ">and comment_id = #{commentId}</if>
+            <if test="commentType != null  and commentType != ''">and comment_type = #{commentType}</if>
+            <if test="commentTargetId != null ">and comment_target_id = #{commentTargetId}</if>
+            <if test="commentDetail != null  and commentDetail != ''">and comment_detail like concat('%',  #{commentDetail}, '%')</if>
+            <if test="commentLike != null ">and comment_like = #{commentLike}</if>
+            <if test="commentStatus != null ">and comment_status = #{commentStatus}</if>
+            <if test="editBy != null  and editBy != ''">and edit_by = #{editBy}</if>
+            <if test="editTime != null ">and edit_time = #{editTime}</if>
+            <if test="revision != null ">and revision = #{revision}</if>
+        </where>
+    </select>
+
+    <select id="selectMmsCommentById" parameterType="Long" resultMap="MmsCommentResult">
+        <include refid="selectMmsCommentVo"/>
+        where id = #{id} and is_del =0
+    </select>
+
+    <select id="selectMmsCommentByCommentTypeAndTargetId" resultMap="MmsCommentResult">
+        <include refid="selectMmsCommentVo"/>
+        where  is_del = 0 and comment_type=#{commentType} and comment_id =#{commentTargetId}
+    </select>
+
+    <insert id="insertMmsComment" parameterType="MmsComment" useGeneratedKeys="true" keyProperty="id">
+        insert into mms_comment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null and userId != ''">user_id,</if>
+            <if test="commentId != null">comment_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="commentType != null">comment_type,</if>
+            <if test="commentTargetId != null">comment_target_id,</if>
+            <if test="commentDetail != null">comment_detail,</if>
+            <if test="commentLike != null">comment_like,</if>
+            <if test="commentStatus != null">comment_status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="editBy != null">edit_by,</if>
+            <if test="editTime != null">edit_time,</if>
+            <if test="revision != null">revision,</if>
+            <if test="isDel != null">is_del,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null and userId != ''">#{userId},</if>
+            <if test="commentId != null">#{commentId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="commentType != null ">#{commentType},</if>
+            <if test="commentTargetId != null">#{commentTargetId},</if>
+            <if test="commentDetail != null">#{commentDetail},</if>
+            <if test="commentLike != null">#{commentLike},</if>
+            <if test="commentStatus != null">#{commentStatus},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="editBy != null">#{editBy},</if>
+            <if test="editTime != null">#{editTime},</if>
+            <if test="revision != null">#{revision},</if>
+            <if test="isDel != null">#{isDel},</if>
+        </trim>
+    </insert>
+
+    <update id="updateMmsComment" parameterType="MmsComment">
+        update mms_comment
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null and userId != ''">user_id = #{userId},</if>
+            <if test="commentId != null">comment_id = #{commentId},</if>
+            <if test="commentType != null">comment_type = #{commentType},</if>
+            <if test="commentTargetId != null">comment_target_id = #{commcommentTargetIdentId},</if>
+            <if test="commentDetail != null">comment_detail = #{commentDetail},</if>
+            <if test="commentLike != null">comment_like = #{commentLike},</if>
+            <if test="commentStatus != null">comment_status = #{commentStatus},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="editBy != null">edit_by = #{editBy},</if>
+            <if test="editTime != null">edit_time = #{editTime},</if>
+            <if test="revision != null">revision = #{revision},</if>
+            <if test="isDel != null">is_del = #{isDel},</if>
+        </trim>
+        where id = #{id} and is_del =0
+    </update>
+
+    <delete id="deleteMmsCommentById" parameterType="Long">
+        update mms_comment set is_del = 1
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteMmsCommentByIds" parameterType="String">
+        update mms_comment set is_del = 1 where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

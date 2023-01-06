@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.music.mapper.MmsSingerMapper">
+
+    <resultMap type="MmsSinger" id="MmsSingerResult">
+        <result property="id" column="id"/>
+        <result property="singerId" column="singer_id"/>
+        <result property="singerName" column="singer_name"/>
+        <result property="singerImgUrl" column="singer_img_url"/>
+        <result property="singerDetail" column="singer_detail"/>
+        <result property="singerType" column="singer_type"/>
+        <result property="singerStatus" column="singer_status"/>
+        <result property="singerCountry" column="singer_country"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="editBy" column="edit_by"/>
+        <result property="editTime" column="edit_time"/>
+        <result property="revision" column="revision"/>
+        <result property="isDel" column="is_del"/>
+    </resultMap>
+
+    <resultMap id="simpleSingerResult" type="SimpleSinger">
+        <result property="singerId" column="singer_id"/>
+        <result property="singerName" column="singer_name"/>
+    </resultMap>
+
+
+    <sql id="selectMmsSingerVo">
+        select id,
+               singer_id,
+               singer_name,
+               singer_img_url,
+               singer_detail,
+               singer_type,
+               singer_status,
+               singer_country,
+               create_by,
+               create_time,
+               edit_by,
+               edit_time,
+               revision,
+               is_del
+        from mms_singer
+    </sql>
+
+    <select id="selectMmsSingerList" parameterType="MmsSinger" resultMap="MmsSingerResult">
+        <include refid="selectMmsSingerVo"/>
+        <where>
+            is_del = 0
+            <if test="singerId != null ">and singer_id = #{singerId}</if>
+            <if test="singerName != null  and singerName != ''">and singer_name like concat('%', #{singerName}, '%')
+            </if>
+            <if test="singerImgUrl != null  and singerImgUrl != ''">and singer_img_url = #{singerImgUrl}</if>
+            <if test="singerDetail != null  and singerDetail != ''">and singer_detail = #{singerDetail}</if>
+            <if test="singerType != null ">and singer_type = #{singerType}</if>
+            <if test="singerStatus != null ">and singer_status = #{singerStatus}</if>
+            <if test="singerCountry != null ">and singer_country = #{singerCountry}</if>
+            <if test="editBy != null  and editBy != ''">and edit_by = #{editBy}</if>
+            <if test="editTime != null ">and edit_time = #{editTime}</if>
+            <if test="revision != null ">and revision = #{revision}</if>
+        </where>
+    </select>
+
+    <select id="selectMmsSingerById" parameterType="Long" resultMap="MmsSingerResult">
+        <include refid="selectMmsSingerVo"/>
+        where id = #{id} and is_del=0
+    </select>
+
+    <select id="selectSingerNameBySingerId" resultType="java.lang.String">
+        select singer_name
+        from mms_singer
+        where singer_id = #{singerId}
+          and is_del = 0
+    </select>
+
+    <select id="selectSimpleSinger" resultMap="simpleSingerResult">
+        select singer_name, singer_id
+        from mms_singer
+        where is_del = 0
+    </select>
+
+
+    <insert id="insertMmsSinger" parameterType="MmsSinger" useGeneratedKeys="true" keyProperty="id">
+        insert into mms_singer
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="singerId != null">singer_id,</if>
+            <if test="singerName != null and singerName != ''">singer_name,</if>
+            <if test="singerImgUrl != null">singer_img_url,</if>
+            <if test="singerDetail != null">singer_detail,</if>
+            <if test="singerType != null">singer_type,</if>
+            <if test="singerStatus != null ">singer_status ,</if>
+            <if test="singerCountry != null">singer_country,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="editBy != null">edit_by,</if>
+            <if test="editTime != null">edit_time,</if>
+            <if test="revision != null">revision,</if>
+            <if test="isDel != null">is_del,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="singerId != null">#{singerId},</if>
+            <if test="singerName != null and singerName != ''">#{singerName},</if>
+            <if test="singerImgUrl != null">#{singerImgUrl},</if>
+            <if test="singerDetail != null">#{singerDetail},</if>
+            <if test="singerType != null">#{singerType},</if>
+            <if test="singerStatus != null ">#{singerStatus},</if>
+            <if test="singerCountry != null">#{singerCountry},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="editBy != null">#{editBy},</if>
+            <if test="editTime != null">#{editTime},</if>
+            <if test="revision != null">#{revision},</if>
+            <if test="isDel != null">0,</if>
+        </trim>
+    </insert>
+
+    <update id="updateMmsSinger" parameterType="MmsSinger">
+        update mms_singer
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="singerId != null">singer_id = #{singerId},</if>
+            <if test="singerName != null and singerName != ''">singer_name = #{singerName},</if>
+            <if test="singerImgUrl != null">singer_img_url = #{singerImgUrl},</if>
+            <if test="singerDetail != null">singer_detail = #{singerDetail},</if>
+            <if test="singerType != null">singer_type = #{singerType},</if>
+            <if test="singerStatus != null ">singer_status = #{singerStatus},</if>
+            <if test="singerCountry != null">singer_country = #{singerCountry},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="editBy != null">edit_by = #{editBy},</if>
+            <if test="editTime != null">edit_time = #{editTime},</if>
+            <if test="revision != null">revision = #{revision},</if>
+            <if test="isDel != null">is_del = #{isDel},</if>
+        </trim>
+        where id = #{id} and is_del=0
+    </update>
+
+    <delete id="deleteMmsSingerById" parameterType="Long">
+        update mms_singer
+        set is_del =1
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteMmsSingerByIds" parameterType="String">
+        update mms_singer
+        set is_del =1 where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

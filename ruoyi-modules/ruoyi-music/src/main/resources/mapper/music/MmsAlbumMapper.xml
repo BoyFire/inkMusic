@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.music.mapper.MmsAlbumMapper">
+
+    <resultMap type="MmsAlbum" id="MmsAlbumResult">
+        <result property="id" column="id"/>
+        <result property="albumId" column="album_id"/>
+        <result property="albumName" column="album_name"/>
+        <result property="singerId" column="singer_id"/>
+        <result property="albumImgUrl" column="album_img_URL"/>
+        <result property="albumStatus" column="album_status"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="editBy" column="edit_by"/>
+        <result property="editTime" column="edit_time"/>
+        <result property="revision" column="revision"/>
+        <result property="isDel" column="is_del"/>
+        <association property="singerName" select="com.ruoyi.music.mapper.MmsSingerMapper.selectSingerNameBySingerId"
+                     column="singer_id"/>
+    </resultMap>
+    <resultMap id="SimpleAlbumResult" type="SimpleAlbum">
+        <result property="albumId" column="album_id"/>
+        <result property="albumName" column="album_name"/>
+    </resultMap>
+
+    <sql id="selectMmsAlbumVo">
+        select ma.id,
+               ma.album_id,
+               ma.album_name,
+               ma.singer_id,
+               ma.album_img_URL,
+               ma.album_status,
+               ma.create_by,
+               ma.create_time,
+               ma.edit_by,
+               ma.edit_time,
+               ma.revision,
+               ma.is_del,
+               ms.singer_name
+        from mms_album ma
+                 left join mms_singer ms
+                           on ma.singer_id = ms.singer_id and ms.is_del = 0
+    </sql>
+
+    <select id="selectMmsAlbumList" parameterType="MmsAlbum" resultMap="MmsAlbumResult">
+        <include refid="selectMmsAlbumVo"/>
+        <where>
+            ma.is_del = 0
+            <if test="albumId != null  and albumId != ''">and ma.album_id = #{albumId}</if>
+            <if test="albumName != null  and albumName != ''">and ma.album_name like concat('%', #{albumName}, '%')</if>
+            <if test="singerId != null ">and ma.singer_id = #{singerId}</if>
+            <if test="albumImgUrl != null  and albumImgUrl != ''">and ma.album_img_URL = #{albumImgUrl}</if>
+            <if test="albumStatus != null ">and ma.album_status = #{albumStatus}</if>
+            <if test="singerName != null  and singerName != ''">and singer_name like concat('%', #{singerName}, '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectMmsAlbumById" parameterType="Long" resultMap="MmsAlbumResult">
+        <include refid="selectMmsAlbumVo"/>
+        where ma.id = #{id}
+    </select>
+    <select id="selectMmsAlbumNameByAlbumId" resultType="java.lang.String">
+        select album_name
+        from mms_album
+        where album_id = #{albumId}
+          and is_del = 0
+    </select>
+
+    <select id="selectSimpleAlbumsBySingerId" resultMap="SimpleAlbumResult">
+        select album_name, album_id
+        from mms_album
+        where singer_id = #{singerId}
+          and is_del = 0
+    </select>
+    <select id="listSimpleAlbum" resultMap="SimpleAlbumResult">
+        select album_name,album_id
+        from mms_album
+        where is_del = 0
+    </select>
+
+    <insert id="insertMmsAlbum" parameterType="MmsAlbum" useGeneratedKeys="true" keyProperty="id">
+        insert into mms_album
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="albumId != null">album_id,</if>
+            <if test="albumName != null">album_name,</if>
+            <if test="singerId != null">singer_id,</if>
+            <if test="albumImgUrl != null">album_img_URL,</if>
+            <if test="albumStatus != null">album_status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="editBy != null">edit_by,</if>
+            <if test="editTime != null">edit_time,</if>
+            <if test="revision != null">revision,</if>
+            <if test="isDel != null">is_del,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="albumId != null">#{albumId},</if>
+            <if test="albumName != null">#{albumName},</if>
+            <if test="singerId != null">#{singerId},</if>
+            <if test="albumImgUrl != null">#{albumImgUrl},</if>
+            <if test="albumStatus != null">#{albumStatus},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="editBy != null">#{editBy},</if>
+            <if test="editTime != null">#{editTime},</if>
+            <if test="revision != null">#{revision},</if>
+            <if test="isDel != null">#{isDel},</if>
+        </trim>
+    </insert>
+
+    <update id="updateMmsAlbum" parameterType="MmsAlbum">
+        update mms_album
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="albumId != null">album_id = #{albumId},</if>
+            <if test="albumName != null">album_name = #{albumName},</if>
+            <if test="singerId != null">singer_id = #{singerId},</if>
+            <if test="albumImgUrl != null">album_img_URL = #{albumImgUrl},</if>
+            <if test="albumStatus != null">album_status = #{albumStatus},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="editBy != null">edit_by = #{editBy},</if>
+            <if test="editTime != null">edit_time = #{editTime},</if>
+            <if test="revision != null">revision = #{revision},</if>
+            <if test="isDel != null">is_del = #{isDel},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMmsAlbumById" parameterType="Long">
+        update mms_album
+        set is_del = 1
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteMmsAlbumByIds" parameterType="String">
+        update mms_album set is_del = 1 where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+</mapper>

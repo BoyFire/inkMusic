@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.music.mapper.MmsUserMapper">
+
+    <resultMap type="MmsUser" id="MmsUserResult">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="userNickname" column="user_nickname"/>
+        <result property="userImgUrl" column="user_img_url"/>
+        <result property="userGender" column="user_gender"/>
+        <result property="userStatus" column="user_status"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="editBy" column="edit_by"/>
+        <result property="editTime" column="edit_time"/>
+        <result property="revision" column="revision"/>
+        <result property="isDel" column="is_del"/>
+    </resultMap>
+    <resultMap id="SimpleUserResult" type="SimpleUserVo">
+        <result property="userId" column="user_id"/>
+        <result property="nickname" column="user_nickname"/>
+    </resultMap>
+
+    <sql id="selectMmsUserVo">
+        select id,
+               user_id,
+               user_nickname,
+               user_img_url,
+               user_gender,
+               user_status,
+               create_by,
+               create_time,
+               edit_by,
+               edit_time,
+               revision,
+               is_del
+        from mms_user
+    </sql>
+
+    <select id="selectMmsUserList" parameterType="MmsUser" resultMap="MmsUserResult">
+        <include refid="selectMmsUserVo"/>
+        <where>
+            is_del =0
+            <if test="userId != null  and userId != ''">and user_id = #{userId}</if>
+            <if test="userNickname != null  and userNickname != ''">and user_nickname like concat('%', #{userNickname},'%')
+            </if>
+            <if test="userImgUrl != null  and userImgUrl != ''">and user_img_url = #{userImgUrl}</if>
+            <if test="userGender != null ">and user_gender = #{userGender}</if>
+            <if test="userStatus != null ">and user_status = #{userStatus}</if>
+            <if test="editBy != null  and editBy != ''">and edit_by = #{editBy}</if>
+            <if test="editTime != null ">and edit_time = #{editTime}</if>
+            <if test="revision != null ">and revision = #{revision}</if>
+        </where>
+    </select>
+
+    <select id="selectMmsUserById" parameterType="Long" resultMap="MmsUserResult">
+        <include refid="selectMmsUserVo"/>
+        where id = #{id} and is_del = 0
+    </select>
+    <select id="selectMmsUserIdList" resultType="java.lang.Long">
+        select user_id
+        from mms_user
+        where is_del = 0
+    </select>
+    <select id="selectSimpleUsers" resultMap="SimpleUserResult">
+        select user_id, user_nickname
+        from mms_user
+        where mms_user.is_del = 0
+    </select>
+    <select id="selectUserNameByUserId" resultType="String">
+        select  user_nickname
+        from mms_user
+        where is_del = 0 and user_id=#{userId}
+    </select>
+
+
+    <insert id="insertMmsUser" parameterType="MmsUser" useGeneratedKeys="true" keyProperty="id">
+        insert into mms_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="userNickname != null and userNickname != ''">user_nickname,</if>
+            <if test="userImgUrl != null">user_img_url,</if>
+            <if test="userGender != null">user_gender,</if>
+            <if test="userStatus != null">user_status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="editBy != null">edit_by,</if>
+            <if test="editTime != null">edit_time,</if>
+            <if test="revision != null">revision,</if>
+            <if test="isDel != null">is_del,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="userNickname != null and userNickname != ''">#{userNickname},</if>
+            <if test="userImgUrl != null">#{userImgUrl},</if>
+            <if test="userGender != null">#{userGender},</if>
+            <if test="userStatus != null">#{userStatus},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="editBy != null">#{editBy},</if>
+            <if test="editTime != null">#{editTime},</if>
+            <if test="revision != null">#{revision},</if>
+            <if test="isDel != null">#{isDel},</if>
+        </trim>
+    </insert>
+
+    <update id="updateMmsUser" parameterType="MmsUser">
+        update mms_user
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="userNickname != null and userNickname != ''">user_nickname = #{userNickname},</if>
+            <if test="userImgUrl != null">user_img_url = #{userImgUrl},</if>
+            <if test="userGender != null">user_gender = #{userGender},</if>
+            <if test="userStatus != null">user_status = #{userStatus},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="editBy != null">edit_by = #{editBy},</if>
+            <if test="editTime != null">edit_time = #{editTime},</if>
+            <if test="revision != null">revision = #{revision},</if>
+            <if test="isDel != null">is_del = #{isDel},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMmsUserById" parameterType="Long">
+        update mms_user
+        set is_del = 1
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteMmsUserByIds" parameterType="String">
+        update mms_user set is_del = 1 where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
