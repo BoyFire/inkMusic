@@ -2,8 +2,7 @@ package com.ruoyi.music.entity;
 
 import com.ruoyi.common.core.annotation.Excel;
 import com.ruoyi.common.core.web.domain.BaseEntity;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+import lombok.Data;
 
 /**
  * 歌单歌曲对象 mms_song_list_song
@@ -11,6 +10,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  * @author ruoyi
  * @date 2023-01-05
  */
+@Data
 public class MmsSongListSong extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
@@ -26,40 +26,11 @@ public class MmsSongListSong extends BaseEntity
     @Excel(name = "歌单id")
     private Long songListId;
 
-    public void setId(Long id) 
-    {
-        this.id = id;
-    }
+    /** 歌单名 */
+    private String songListName;
 
-    public Long getId() 
-    {
-        return id;
-    }
-    public void setSongId(Long songId) 
-    {
-        this.songId = songId;
-    }
+    private MmsSong mmsSong;
+    private MmsSongList mmsSongList;
 
-    public Long getSongId() 
-    {
-        return songId;
-    }
-    public void setSongListId(Long songListId) 
-    {
-        this.songListId = songListId;
-    }
 
-    public Long getSongListId() 
-    {
-        return songListId;
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("songId", getSongId())
-            .append("songListId", getSongListId())
-            .toString();
-    }
 }

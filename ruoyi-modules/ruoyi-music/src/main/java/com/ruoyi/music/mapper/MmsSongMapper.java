@@ -28,7 +28,7 @@ public interface MmsSongMapper
      * @param songId 歌曲id
      * @return 歌曲
      */
-    public String selecSongNameBySongId(@Param("songId") Long songId);
+    public String selectSongNameBySongId(@Param("songId") Long songId);
 
     /**
      * 查询歌曲列表
@@ -98,5 +98,5 @@ public interface MmsSongMapper
      * @param songId song_id
      * @return  结果
      */
-    MmsSong selecSongBySongId(@Param("songId") Long songId);
+    MmsSong selectSongBySongId(@Param("songId") Long songId);
 }

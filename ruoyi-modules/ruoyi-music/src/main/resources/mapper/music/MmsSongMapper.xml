@@ -76,7 +76,7 @@
         where ms.id = #{id} and ms.is_del =0
     </select>
 
-    <select id="selecSongNameBySongId" resultType="java.lang.String">
+    <select id="selectSongNameBySongId" resultType="java.lang.String">
         select song_name
         from mms_song
         where song_id = #{songId}
@@ -87,7 +87,7 @@
         from mms_song
         where is_del = 0
     </select>
-    <select id="selecSongBySongId" resultMap="MmsSongResult">
+    <select id="selectSongBySongId" resultMap="MmsSongResult">
         <include refid="selectMmsSongVo"/>
         where ms.song_id = #{songId} and ms.is_del =0
     </select>

@@ -8,6 +8,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="id"    column="id"    />
         <result property="songId"    column="song_id"    />
         <result property="songListId"    column="song_list_id"    />
+        <association property="mmsSong" column="song_id" select="com.ruoyi.music.mapper.MmsSongMapper.selectSongBySongId" />
+        <association property="mmsSongList" column="song_list_id" select="com.ruoyi.music.mapper.MmsSongListMapper.selectMmsSongListBySongListId" />
     </resultMap>
 
     <sql id="selectMmsSongListSongVo">

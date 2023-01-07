@@ -3,6 +3,7 @@ package com.ruoyi.music.controller;
 import com.ruoyi.common.core.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.web.controller.BaseController;
 import com.ruoyi.common.core.web.domain.AjaxResult;
+import com.ruoyi.common.core.web.page.TableDataInfo;
 import com.ruoyi.common.log.annotation.Log;
 import com.ruoyi.common.log.enums.BusinessType;
 import com.ruoyi.common.security.annotation.RequiresPermissions;
@@ -32,11 +33,13 @@ public class MmsSongListSongController extends BaseController
      */
     @RequiresPermissions("music:songListSong:list")
     @GetMapping("/list")
-    public AjaxResult list(MmsSongListSong mmsSongListSong)
+    public TableDataInfo list(MmsSongListSong mmsSongListSong)
     {
+        startPage();
         List<MmsSongListSong> list = mmsSongListSongService.selectMmsSongListSongList(mmsSongListSong);
-        return AjaxResult.success(list);
+        return getDataTable(list);
     }
+
 
     /**
      * 导出歌单歌曲列表

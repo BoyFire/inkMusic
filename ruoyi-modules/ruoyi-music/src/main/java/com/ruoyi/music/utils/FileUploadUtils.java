@@ -60,7 +60,6 @@ public class FileUploadUtils {
         if (fileName.length() > MAX_FILENAME_SIZE){
             fileName = String.valueOf(file.hashCode());
         }
-
         return StringUtils.format("{}/{}/{}_{}.{}", DateUtils.datePath(),prefix,
                 fileName, Seq.getId(Seq.uploadSeqType), FileTypeUtils.getExtension(file));
     }

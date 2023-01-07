@@ -1,5 +1,6 @@
 <template>
   <div class="app-container">
+
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
       <el-form-item label="歌单id" prop="songListId">
         <el-select 
@@ -134,7 +135,11 @@
     <el-table v-loading="loading" :data="songListList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="歌单id" align="center" prop="songListId" />
-      <el-table-column label="歌单名" align="center" prop="songListTitle" />
+      <el-table-column label="歌单名" align="center" prop="songListTitle" >
+        <template slot-scope="scope">
+          <el-link @click="querySongListSongBySongListSongId(scope.row.songListId)">{{scope.row.songListTitle}}</el-link>
+        </template>
+      </el-table-column>
       <el-table-column label="歌单封面" align="center" prop="songListImgUrl" >
           <template slot-scope="scope">
             <image-preview :src="scope.row.songListImgUrl" :width="50" :height="50"/>
@@ -442,6 +447,11 @@ export default {
       }).catch(function() {
         row.songListStatus = row.songListStatus === 0 ? 1 : 0;
       });
+    },
+    /** 测试页面跳转 */
+    querySongListSongBySongListSongId(songListId){
+      this.$router.push({ path: "/mms/songListSong", query: {     
+        songListId: songListId } })
     },
   }
 };

@@ -32,7 +32,7 @@ public class MmsFileController {
         SysFile sysFile = new SysFile();
         try {
             String type = map.get("fileType");
-            String url = mmsFileService.uploadFile(file, type + "/");
+            String url = mmsFileService.uploadFile(file, type );
             log.info(type + "地址为:" + url);
             sysFile.setName(file.getName());
             sysFile.setUrl(url);

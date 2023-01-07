@@ -119,7 +119,6 @@ public class MmsSongServiceImpl implements IMmsSongService
 
     @Override
     public MmsSong selectMmsSongBySongId(Long songId) {
-
-        return mmsSongMapper.selecSongBySongId(songId);
+        return mmsSongMapper.selectSongBySongId(songId);
     }
 }

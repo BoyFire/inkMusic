@@ -109,7 +109,7 @@
       <el-table-column label="歌手名" align="center" prop="singerName" />  
       <el-table-column label="专辑名" align="center" prop="albumName" />
 
-      <el-table-column label="试听" align = center prop = "songUrl">
+      <el-table-column label="试听" align = "center" prop = "songUrl">
         <template slot-scope="scope">
           <el-link v-bind:href="scope.row.songUrl" target="_blank">试听</el-link>
         </template>

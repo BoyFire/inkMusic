@@ -66,9 +66,8 @@ public class MmsSongListSongServiceImpl implements IMmsSongListSongService {
         MmsSong mmsSong = songService.selectMmsSongBySongId(mmsSongListSong.getSongId());
         MmsSongList mmsSongList = songListService.selectMmsSongListBySongListId(mmsSongListSong.getSongListId());
         if (mmsSong == null || mmsSongList == null) {
-            AjaxResult.error("当前所选的歌曲或者歌单不存在!请重新选择");
+            return AjaxResult.error("当前所选的歌曲或者歌单不存在!请重新选择");
         }
-        //TODO 歌单歌曲 显示
         return AjaxResult.success(mmsSongListSongMapper.insertMmsSongListSong(mmsSongListSong));
     }
 

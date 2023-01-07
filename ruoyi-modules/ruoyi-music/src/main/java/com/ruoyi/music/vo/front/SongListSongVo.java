@@ -18,9 +18,6 @@ public class SongListSongVo implements Serializable {
     /** 歌单id */
     private Long songListId;
 
-    /** 歌手id */
-    private Long singerId;
-
     /** 歌曲名 */
     private String songName;
 
@@ -32,13 +29,4 @@ public class SongListSongVo implements Serializable {
 
     /** 是否删除;0-未删除,1-删除 */
     private Integer isDel;
-
-    // 歌手名
-    private String singerName;
-
-    //专辑名
-    private String albumName;
-
-    //专辑id
-    private Long albumId;
 }

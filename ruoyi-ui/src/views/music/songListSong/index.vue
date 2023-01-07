@@ -69,11 +69,35 @@
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="songListSongList" @selection-change="handleSelectionChange">
+    <el-table 
+      v-loading="loading" 
+      border
+      :data="songListSongList" 
+      :span-method="SpanCellMerge"
+      @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="歌单id" align="center" prop="songListId" />
-      
+      <el-table-column label="歌单名" align="center" prop="songListTitle" >
+        <template slot-scope="scope">
+          <span>{{scope.row.mmsSongList.songListTitle}}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="歌曲id" align="center" prop="songId" />
+      <el-table-column label="歌曲名" align="center" prop="songName" >
+        <template slot-scope="scope">
+          <span>{{scope.row.mmsSong.songName}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="歌手名" align="center" prop="singerName" >
+        <template slot-scope="scope">
+          <span>{{scope.row.mmsSong.singerName}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="试听" align="center" prop="songUrl" >
+        <template slot-scope="scope">
+          <el-link v-bind:href="scope.row.mmsSong.songUrl" target="_blank">试听</el-link>
+        </template>
+      </el-table-column>
       
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -142,6 +166,10 @@ export default {
       total: 0,
       // 歌单歌曲表格数据
       songListSongList: [],
+      //存放需要合并的行
+      merge:[], 
+      //需要合并行下标
+      pos:'',
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -169,6 +197,14 @@ export default {
   created() {
     this.getList();
   },
+  watch:{
+    '$route.query.songListId':{
+      handler(val,oldval){
+        this.queryParams.songListId = val;
+        this.getList();
+      },
+    }
+  },
   methods: {
     /** 查询歌单歌曲列表 */
     getList() {
@@ -177,7 +213,25 @@ export default {
         this.songListSongList = response.rows;
         this.total = response.total;
         this.loading = false;
+        //合并相同歌单id的项
+        this.merge = [];
+        for (let i = 0; i < this.songListSongList.length; i++) {          
+          if (i === 0) {
+            this.merge.push(1);
+            this.pos = 0;            
+          }else{
+            if(this.songListSongList[i-1].songListId === this.songListSongList[i].songListId){
+              this.merge[this.pos] +=1;
+              this.merge.push(0);
+            }else{
+              this.merge.push(1);
+              this.pos = i;
+            }
+          }
+        }
+        
       });
+      
     },
     // 取消按钮
     cancel() {
@@ -260,7 +314,18 @@ export default {
       this.download('music/songListSong/export', {
         ...this.queryParams
       }, `songListSong_${new Date().getTime()}.xlsx`)
-    }
+    },
+    /** 合并单元框 */
+    SpanCellMerge({ row, column, rowIndex, columnIndex }){
+      if (columnIndex === 1 ||columnIndex === 2 ) {
+        const _row = this.merge[rowIndex];
+        const _col = _row > 0 ? 1 : 0;
+        return {
+          rowspan: _row,
+          colspan: _col
+        };
+      }
+    },
   }
-};
+}
 </script>
