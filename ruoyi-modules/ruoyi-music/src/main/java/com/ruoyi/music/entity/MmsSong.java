@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 歌曲对象 mms_song
@@ -72,5 +73,8 @@ public class MmsSong extends BaseEntity
 
     //专辑id
     private Long albumId;
+
+    //TODO 给音乐增加标签
+    private List<MmsTag> tags;
 
 }
