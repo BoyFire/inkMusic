@@ -58,6 +58,6 @@ public class MmsTag extends BaseEntity
     @Excel(name = "是否删除;0-未删除,1-删除")
     private Integer isDel;
 
-    /** 子菜单 */
+    // 子标签
     private List<MmsTag> children = new ArrayList<>();
 }

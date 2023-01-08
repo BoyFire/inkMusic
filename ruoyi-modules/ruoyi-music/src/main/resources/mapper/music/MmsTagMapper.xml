@@ -3,7 +3,7 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.music.mapper.MmsTagMapper">
-    
+
     <resultMap type="MmsTag" id="MmsTagResult">
         <result property="id"    column="id"    />
         <result property="tagId"    column="tag_id"    />
@@ -44,6 +44,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select count(1)
         from mms_tag
         where tag_parents_id = #{tagId} and is_del = 0
+    </select>
+    <select id="selectMmsTagByTagId" resultMap="MmsTagResult">
+        <include refid="selectMmsTagVo"/>
+        where tag_id=#{tagId} and is_del =0
     </select>
 
     <insert id="insertMmsTag" parameterType="MmsTag" useGeneratedKeys="true" keyProperty="id">

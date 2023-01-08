@@ -67,4 +67,11 @@ public interface MmsTagMapper
      * @return  结果
      */
     int hasChildByTagId(@Param("tagId") Long tagId);
+
+    /**
+     * 根据 tagId 查询 MmsTag
+     * @param tagId tagId
+     * @return 结果
+     */
+    MmsTag selectMmsTagByTagId(@Param("tagId") Long tagId);
 }

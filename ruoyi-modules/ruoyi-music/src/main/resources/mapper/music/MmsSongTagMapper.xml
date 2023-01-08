@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ruoyi.music.mapper.MmsSongTagMapper">
+
+    <resultMap id="mmsSongTagResult" type="MmsSongTag">
+        <result property="songId" column="song_id"/>
+        <result property="tagId" column="tag_id"/>
+        <association property="mmsSong" column="song_id"
+                     select="com.ruoyi.music.mapper.MmsSongMapper.selectSongBySongId"/>
+        <association property="mmsTag" column="tag_id"
+                     select="com.ruoyi.music.mapper.MmsTagMapper.selectMmsTagByTagId"/>
+    </resultMap>
+
+    <select id="selectMmsTagListBySongId" resultMap="mmsSongTagResult">
+        select id, song_id, tag_id
+        from mms_song_tag
+        where song_id = #{songId}
+    </select>
+    <select id="selectMmsTagListByTagId" resultMap="mmsSongTagResult">
+        select id, song_id, tag_id
+        from mms_song_tag
+        where tag_id = #{tagId}
+    </select>
+
+</mapper>
