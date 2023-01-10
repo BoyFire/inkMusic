@@ -1,4 +1,5 @@
 import com.ruoyi.music.RuoYiMusicApplication;
+import com.ruoyi.music.entity.MmsSong;
 import com.ruoyi.music.entity.MmsSongListSong;
 import com.ruoyi.music.mapper.MmsAlbumMapper;
 import com.ruoyi.music.mapper.MmsSongListSongMapper;
@@ -32,4 +33,17 @@ public class TestSql {
         List<MmsSongListSong> mmsSongListSongs = mmsSongListSongMapper.selectMmsSongListSongList(mmsSongListSong);
         System.out.println(mmsSongListSongs);
     }
+
+    @Test
+    public void testSelectMmsSong(){
+        MmsSong mmsSong = new MmsSong();
+        mmsSong.setSongId(1L);
+
+        List<MmsSong> mmsSongs = mmsSongMapper.selectMmsSongList(mmsSong);
+        
+        for (MmsSong song : mmsSongs) {
+            System.out.println("song = " + song);
+        }
+    }
+
 }

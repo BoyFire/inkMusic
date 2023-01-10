@@ -7,10 +7,13 @@ import com.ruoyi.common.log.annotation.Log;
 import com.ruoyi.common.log.enums.BusinessType;
 import com.ruoyi.common.security.annotation.RequiresPermissions;
 import com.ruoyi.music.entity.MmsTag;
+import com.ruoyi.music.service.IMmsSongTagService;
 import com.ruoyi.music.service.IMmsTagService;
+import com.ruoyi.music.vo.front.AddSongTagVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
@@ -25,6 +28,9 @@ import java.util.List;
 public class MmsTagController extends BaseController {
     @Autowired
     private IMmsTagService mmsTagService;
+
+    @Resource
+    private IMmsSongTagService mmsSongTagService;
 
     /**
      * 查询标签列表
@@ -98,5 +104,53 @@ public class MmsTagController extends BaseController {
             }
         }
         return toAjax(mmsTagService.deleteMmsTagByTagIds(tagIds));
+    }
+
+    /**
+     * 根据歌曲id 查询标签
+     */
+    @RequiresPermissions("music:tag:query")
+    @Log(title = "标签", businessType = BusinessType.DELETE)
+    @GetMapping("/getMmsTags/{songId}")
+    public AjaxResult getMmsTagsBySongId(@PathVariable("songId") Long songId) {
+        return AjaxResult.success(mmsTagService.selectMmsTagBySongId(songId));
+    }
+
+    /**
+     * 根据歌曲id 查询标签列表
+     */
+    @RequiresPermissions("music:tag:query")
+    @GetMapping("/getSimpleTags/{songId}")
+    public AjaxResult getSimpleTagsBySongId(@PathVariable("songId") Long songId) {
+        return AjaxResult.success(mmsTagService.selectSimpleTagsBySongId(songId));
+    }
+
+    /**
+     * 根据标签父类id 查询标签列表
+     */
+    @RequiresPermissions("music:tag:query")
+    @GetMapping("/getSimpleTagsByTagParentsId/{parentsId}")
+    public AjaxResult getSimpleTagsByTagParentsId(@PathVariable("parentsId") Long parentsId) {
+        return AjaxResult.success(mmsTagService.selectSimpleTagsByParentsId(parentsId));
+    }
+
+    /**
+     * 删除标签
+     */
+    @RequiresPermissions("music:tag:remove")
+    @Log(title = "标签", businessType = BusinessType.DELETE)
+    @DeleteMapping("/deleteSongTagByTagId/{tagId}")
+    public AjaxResult deleteSongTagByTagId(@PathVariable("tagId") Long tagId) {
+        return toAjax(mmsSongTagService.deleteSongTagByTagId(tagId));
+    }
+
+    /**
+     * 新增标签
+     */
+    @RequiresPermissions("music:tag:add")
+    @Log(title = "标签", businessType = BusinessType.INSERT)
+    @PostMapping("/addSongTags/{songId}")
+    public AjaxResult addSongTags(@RequestBody AddSongTagVo addSongTagVo, @PathVariable("songId")Long songId) {
+        return toAjax(mmsSongTagService.insertSongTags(addSongTagVo, songId));
     }
 }

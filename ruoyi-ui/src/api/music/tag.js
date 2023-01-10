@@ -51,3 +51,11 @@ export function delTag(id) {
     method: 'delete'
   })
 }
+
+// 根据父类id 查询标签
+export function getTagsByParentsId(parentsId) {
+  return request({
+    url: '/music/tag/getSimpleTagsByTagParentsId/' + parentsId,
+    method: 'get'
+  })
+}

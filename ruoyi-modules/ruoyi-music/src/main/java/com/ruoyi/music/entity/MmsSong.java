@@ -74,8 +74,8 @@ public class MmsSong extends BaseEntity
     //专辑id
     private Long albumId;
 
-    //TODO 给音乐增加标签
-    //标签
-    private List<MmsTag> tags;
+    // 标签列表
+    private List<String> tagNames;
+
 
 }

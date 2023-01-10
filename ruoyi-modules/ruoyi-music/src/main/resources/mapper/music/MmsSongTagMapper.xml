@@ -11,15 +11,58 @@
                      select="com.ruoyi.music.mapper.MmsTagMapper.selectMmsTagByTagId"/>
     </resultMap>
 
-    <select id="selectMmsTagListBySongId" resultMap="mmsSongTagResult">
-        select id, song_id, tag_id
+    <resultMap id="simpleTagResultVo" type="com.ruoyi.music.vo.front.SimpleTagVo">
+        <result property="parentId" column="tag_parents_id"/>
+        <result property="tagName" column="tag_name"/>
+        <result property="tagId" column="tag_id"/>
+    </resultMap>
+
+    <sql id="selectMmsSongTagResultVo">
+        select song_id, tag_id
         from mms_song_tag
-        where song_id = #{songId}
-    </select>
-    <select id="selectMmsTagListByTagId" resultMap="mmsSongTagResult">
-        select id, song_id, tag_id
+    </sql>
+    <insert id="insertSongTag">
+        insert into mms_song_tag(song_id, tag_id)
+        VALUES
+        <foreach collection="tagIds" separator="," item="item">
+            ( #{songId} , #{item} )
+        </foreach>
+
+    </insert>
+    <delete id="deleteSongTagByTagId">
+        delete
+        from mms_song_tag
+        where tag_id = #{tagId}
+    </delete>
+
+
+    <select id="selectSongIdsByTagId" resultType="java.lang.Long">
+        select song_id
         from mms_song_tag
         where tag_id = #{tagId}
     </select>
+
+    <select id="selectTagIdsBySongId" resultType="java.lang.Long">
+        select tag_id
+        from mms_song_tag
+        where song_id = #{songId}
+    </select>
+
+    <select id="selectSimpleTagsBySongId" resultMap="simpleTagResultVo">
+        select mt.tag_name, mt.tag_parents_id, mt.tag_id
+        from mms_song_tag mst
+                 left join mms_tag mt on mst.tag_id = mt.tag_id
+        where mst.song_id = #{songId}
+        ORDER BY mt.tag_parents_id DESC
+    </select>
+    <select id="selectTagNameBySongId" resultType="java.lang.String">
+        select mt.tag_name
+        from mms_song_tag mst
+                 left join mms_tag mt on mst.tag_id = mt.tag_id
+        where song_id = #{songId}
+          and mt.is_del = 0
+          and mt.tag_status = 1
+    </select>
+
 
 </mapper>

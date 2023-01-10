@@ -98,7 +98,7 @@
           <el-link v-bind:href="scope.row.mmsSong.songUrl" target="_blank">试听</el-link>
         </template>
       </el-table-column>
-      
+
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -117,6 +117,8 @@
           >删除</el-button>
         </template>
       </el-table-column>
+      
+
     </el-table>
     
     <pagination

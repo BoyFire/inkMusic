@@ -1,6 +1,7 @@
 package com.ruoyi.music.service;
 
 import com.ruoyi.music.entity.MmsTag;
+import com.ruoyi.music.vo.front.SimpleTagVo;
 
 import java.util.List;
 
@@ -74,4 +75,25 @@ public interface IMmsTagService
      * @return 结果
      */
     boolean hasChildByTagId(Long tagId);
+
+    /**
+     * 查询标签
+     * @param songId 歌曲id
+     * @return 结果
+     */
+    List<MmsTag> selectMmsTagBySongId(Long songId);
+
+    /**
+     * 通过歌曲id 查询标签
+     * @param songId 歌曲id
+     * @return 结果
+     */
+    List<SimpleTagVo> selectSimpleTagsBySongId(Long songId);
+
+    /**
+     * 根据 parentsId 查询标签
+     * @param parentsId 父类标签
+     * @return 结果
+     */
+    List<SimpleTagVo> selectSimpleTagsByParentsId(Long parentsId);
 }

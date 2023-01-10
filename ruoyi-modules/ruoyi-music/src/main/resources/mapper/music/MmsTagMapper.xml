@@ -1,41 +1,62 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.music.mapper.MmsTagMapper">
 
     <resultMap type="MmsTag" id="MmsTagResult">
-        <result property="id"    column="id"    />
-        <result property="tagId"    column="tag_id"    />
-        <result property="tagName"    column="tag_name"    />
-        <result property="tagParentsId"    column="tag_parents_id"    />
-        <result property="tagStatus"    column="tag_status"    />
-        <result property="createBy"    column="create_by"    />
-        <result property="createTime"    column="create_time"    />
-        <result property="editBy"    column="edit_by"    />
-        <result property="editTime"    column="edit_time"    />
-        <result property="revision"    column="revision"    />
-        <result property="isDel"    column="is_del"    />
+        <result property="id" column="id"/>
+        <result property="tagId" column="tag_id"/>
+        <result property="tagName" column="tag_name"/>
+        <result property="tagParentsId" column="tag_parents_id"/>
+        <result property="tagStatus" column="tag_status"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="editBy" column="edit_by"/>
+        <result property="editTime" column="edit_time"/>
+        <result property="revision" column="revision"/>
+        <result property="isDel" column="is_del"/>
     </resultMap>
 
+    <resultMap id="simpleTagResultVo" type="com.ruoyi.music.vo.front.SimpleTagVo">
+        <result property="parentId" column="tag_parents_id"/>
+        <result property="tagName" column="tag_name"/>
+        <result property="tagId" column="tag_id"/>
+    </resultMap>
+    <sql id="selectSimpleTagVo">
+        select tag_id, tag_name, tag_parents_id
+        from mms_tag
+    </sql>
+
     <sql id="selectMmsTagVo">
-        select id, tag_id, tag_name, tag_parents_id, tag_status, create_by, create_time, edit_by, edit_time, revision, is_del from mms_tag
+        select id,
+               tag_id,
+               tag_name,
+               tag_parents_id,
+               tag_status,
+               create_by,
+               create_time,
+               edit_by,
+               edit_time,
+               revision,
+               is_del
+        from mms_tag
     </sql>
 
     <select id="selectMmsTagList" parameterType="MmsTag" resultMap="MmsTagResult">
         <include refid="selectMmsTagVo"/>
         <where>
             is_del = 0
-            <if test="tagId != null "> and tag_id = #{tagId}</if>
-            <if test="tagName != null  and tagName != ''"> and tag_name like concat('%', #{tagName}, '%')</if>
-            <if test="tagParentsId != null "> and tag_parents_id = #{tagParentsId}</if>
-            <if test="tagStatus != null "> and tag_status = #{tagStatus}</if>
-            <if test="editBy != null  and editBy != ''"> and edit_by = #{editBy}</if>
-            <if test="editTime != null "> and edit_time = #{editTime}</if>
-            <if test="revision != null "> and revision = #{revision}</if>
+            <if test="tagId != null ">and tag_id = #{tagId}</if>
+            <if test="tagName != null  and tagName != ''">and tag_name like concat('%', #{tagName}, '%')</if>
+            <if test="tagParentsId != null ">and tag_parents_id = #{tagParentsId}</if>
+            <if test="tagStatus != null ">and tag_status = #{tagStatus}</if>
+            <if test="editBy != null  and editBy != ''">and edit_by = #{editBy}</if>
+            <if test="editTime != null ">and edit_time = #{editTime}</if>
+            <if test="revision != null ">and revision = #{revision}</if>
         </where>
     </select>
-    
+
     <select id="selectMmsTagById" parameterType="Long" resultMap="MmsTagResult">
         <include refid="selectMmsTagVo"/>
         where id = #{id} and is_del =0
@@ -43,11 +64,29 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="hasChildByTagId" resultType="java.lang.Integer">
         select count(1)
         from mms_tag
-        where tag_parents_id = #{tagId} and is_del = 0
+        where tag_parents_id = #{tagId}
+          and is_del = 0
     </select>
+
     <select id="selectMmsTagByTagId" resultMap="MmsTagResult">
         <include refid="selectMmsTagVo"/>
         where tag_id=#{tagId} and is_del =0
+    </select>
+
+    <select id="selectMmsTagsByTagIds" resultMap="MmsTagResult">
+        <include refid="selectMmsTagVo"/>
+        where tag_id in
+        <foreach collection="array" item="tagId" open="(" close=")" separator=",">
+            #{tagId}
+        </foreach>
+    </select>
+    <select id="selectSimpleTagsByParentsId" resultMap="simpleTagResultVo">
+        <include refid="selectSimpleTagVo"/>
+        where tag_parents_id = #{parentsId}
+            and is_del=0
+            and tag_status=1
+            order by tag_parents_id desc
+
     </select>
 
     <insert id="insertMmsTag" parameterType="MmsTag" useGeneratedKeys="true" keyProperty="id">
@@ -63,7 +102,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="editTime != null">edit_time,</if>
             <if test="revision != null">revision,</if>
             <if test="isDel != null">is_del,</if>
-         </trim>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="tagId != null">#{tagId},</if>
             <if test="tagName != null">#{tagName},</if>
@@ -75,7 +114,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="editTime != null">#{editTime},</if>
             <if test="revision != null">#{revision},</if>
             <if test="isDel != null">#{isDel},</if>
-         </trim>
+        </trim>
     </insert>
 
     <update id="updateMmsTag" parameterType="MmsTag">
@@ -96,7 +135,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
 
     <delete id="deleteMmsTagById" parameterType="Long">
-        update mms_tag set is_del = 1 where id = #{id}
+        update mms_tag
+        set is_del = 1
+        where id = #{id}
     </delete>
 
     <delete id="deleteMmsTagByTagIds" parameterType="String">

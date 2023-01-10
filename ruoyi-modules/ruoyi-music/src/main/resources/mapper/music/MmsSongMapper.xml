@@ -22,6 +22,8 @@
         <result property="albumName" column="album_name"/>
         <result property="albumId" column="album_id"/>
         <result property="singerName" column="singer_name"/>
+        <association property="tagNames" column="song_id"
+                     select="com.ruoyi.music.mapper.MmsSongTagMapper.selectTagNameBySongId"/>
     </resultMap>
 
     <resultMap id="SimpleSongVoResult" type="SimpleSongVo">
@@ -51,7 +53,6 @@
                  left join mms_song_album msa on ms.song_id = msa.song_id
                  left join mms_album ma on msa.album_id = ma.album_id
                  left join mms_singer m on ms.singer_id = m.singer_id
-
     </sql>
 
     <select id="selectMmsSongList" parameterType="MmsSong" resultMap="MmsSongResult">

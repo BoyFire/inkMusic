@@ -3,13 +3,16 @@ package com.ruoyi.music.service.impl;
 import com.ruoyi.common.core.utils.DateUtils;
 import com.ruoyi.common.security.utils.SecurityUtils;
 import com.ruoyi.music.entity.MmsTag;
+import com.ruoyi.music.mapper.MmsSongTagMapper;
 import com.ruoyi.music.mapper.MmsTagMapper;
 import com.ruoyi.music.service.IMmsTagService;
+import com.ruoyi.music.vo.front.SimpleTagVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.support.atomic.RedisAtomicLong;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -25,6 +28,8 @@ public class MmsTagServiceImpl implements IMmsTagService
 {
     @Autowired
     private MmsTagMapper mmsTagMapper;
+    @Resource
+    private MmsSongTagMapper mmsSongTagMapper;
     @Autowired
     private StringRedisTemplate redisTemplate;
 
@@ -142,6 +147,24 @@ public class MmsTagServiceImpl implements IMmsTagService
         int l = mmsTagMapper.hasChildByTagId(tagId);
         return l>0;
     }
+
+    @Override
+    public List<MmsTag> selectMmsTagBySongId(Long songId) {
+        Long[] tagIds = mmsSongTagMapper.selectTagIdsBySongId(songId);
+        List<MmsTag> mmsTags = mmsTagMapper.selectMmsTagsByTagIds(tagIds);
+        return mmsTags;
+    }
+
+    @Override
+    public List<SimpleTagVo> selectSimpleTagsBySongId(Long songId) {
+        return mmsSongTagMapper.selectSimpleTagsBySongId(songId);
+    }
+
+    @Override
+    public List<SimpleTagVo> selectSimpleTagsByParentsId(Long parentsId) {
+        return mmsTagMapper.selectSimpleTagsByParentsId(parentsId);
+    }
+
 
     /**
      * 递归 列表

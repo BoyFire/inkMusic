@@ -1,6 +1,7 @@
 package com.ruoyi.music.mapper;
 
 import com.ruoyi.music.entity.MmsTag;
+import com.ruoyi.music.vo.front.SimpleTagVo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -74,4 +75,19 @@ public interface MmsTagMapper
      * @return 结果
      */
     MmsTag selectMmsTagByTagId(@Param("tagId") Long tagId);
+
+    /**
+     * 根据 标签ids 获取 标签列表
+     * @param tagIds  标签ids
+     * @return  结果
+     */
+    List<MmsTag> selectMmsTagsByTagIds(Long[] tagIds);
+
+
+    /**
+     * 根据 父类id 查询标签
+     * @param parentsId 父类id
+     * @return 结果
+     */
+    List<SimpleTagVo> selectSimpleTagsByParentsId(@Param("parentsId") Long parentsId);
 }
