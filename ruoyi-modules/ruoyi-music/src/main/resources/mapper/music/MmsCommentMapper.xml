@@ -22,7 +22,7 @@
         <association property="userName" select="com.ruoyi.music.mapper.MmsUserMapper.selectUserNameByUserId" column="user_id"/>
         <association property="albumName" select="com.ruoyi.music.mapper.MmsAlbumMapper.selectMmsAlbumNameByAlbumId" column="comment_target_id"/>
         <association property="songListName" select="com.ruoyi.music.mapper.MmsSongListMapper.selectSongListNameBySongListId" column="comment_target_id"/>
-        <association property="songName" select="com.ruoyi.music.mapper.MmsSongMapper.selecSongNameBySongId" column="comment_target_id"/>
+        <association property="songName" select="com.ruoyi.music.mapper.MmsSongMapper.selectSongNameBySongId" column="comment_target_id"/>
         <association property="movieName" select="com.ruoyi.music.mapper.MmsMovieMapper.selectMovieNameByMovieId" column="comment_target_id"/>
     </resultMap>
 

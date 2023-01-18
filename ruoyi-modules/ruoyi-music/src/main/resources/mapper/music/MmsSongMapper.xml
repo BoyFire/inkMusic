@@ -83,11 +83,13 @@
         where song_id = #{songId}
           and is_del = 0
     </select>
+
     <select id="listSimpleSong" resultMap="SimpleSongVoResult">
         select song_id, song_name
         from mms_song
         where is_del = 0
     </select>
+
     <select id="selectSongBySongId" resultMap="MmsSongResult">
         <include refid="selectMmsSongVo"/>
         where ms.song_id = #{songId} and ms.is_del =0
