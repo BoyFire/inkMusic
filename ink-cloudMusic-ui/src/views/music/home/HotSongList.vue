@@ -1,0 +1,1040 @@
+<template>
+  <div class="hot-list">
+    <div class="h_title">
+      <h3>热门推荐</h3>
+
+      <span
+        :class="7 == playlist_index ? 'active' : ''"
+        @click="choosePlayListType(7)"
+        >为你推荐</span
+      >
+      <span
+        v-for="(item, index) in playlist_tags"
+        :key="item.id"
+        :class="index == playlist_index ? 'active' : ''"
+        @click="choosePlayListType(index)"
+        >{{ item.name }}</span
+      >
+    </div>
+
+    <div class="wrapper">
+      <SongListShow
+        :playList="playlist_list"
+        :loading="playlist_loading"
+        :num="playlist_count"></SongListShow>
+    </div>
+  </div>
+</template>
+
+<script lang="ts" setup>
+  import SongListShow from "@components/SongListShow.vue";
+  import { getCurrentInstance, onMounted, Ref, ref } from "vue";
+
+  const { proxy } = getCurrentInstance();
+
+  const playlist_tags: Ref<any[]> = ref([]);
+  const playlist_list: Ref<any[]> = ref([]);
+  const playlist_index: Ref<number> = ref(7);
+  const playlist_params: Ref<any> = ref({ limit: 6, offset: 0, cat: "" });
+  const playlist_count: Ref<number> = ref(6);
+  const playlist_loading: Ref<boolean> = ref(true);
+
+  // 获取热门推荐歌单标签
+  const getHotTags = async () => {
+    // 调用接口获取数据
+    const data = {
+      tags: [
+        {
+          playlistTag: {
+            id: 5001,
+            name: "华语",
+            category: 0,
+            usedCount: 8642668,
+            type: 0,
+            position: 1,
+            createTime: 1378707544870,
+            highQuality: 1,
+            highQualityPos: 1,
+            officialPos: 1,
+          },
+          activity: false,
+          hot: true,
+          usedCount: 8642668,
+          position: 1,
+          category: 0,
+          createTime: 1378707544870,
+          name: "华语",
+          id: 5001,
+          type: 1,
+        },
+        {
+          playlistTag: {
+            id: 1,
+            name: "流行",
+            category: 1,
+            usedCount: 8176405,
+            type: 0,
+            position: 2,
+            createTime: 1378707567870,
+            highQuality: 1,
+            highQualityPos: 18,
+            officialPos: 1,
+          },
+          activity: false,
+          hot: true,
+          usedCount: 8176405,
+          position: 2,
+          category: 1,
+          createTime: 1378707567870,
+          name: "流行",
+          id: 1,
+          type: 1,
+        },
+        {
+          playlistTag: {
+            id: 2,
+            name: "摇滚",
+            category: 1,
+            usedCount: 2862016,
+            type: 0,
+            position: 3,
+            createTime: 1378707568870,
+            highQuality: 1,
+            highQualityPos: 20,
+            officialPos: 2,
+          },
+          activity: false,
+          hot: true,
+          usedCount: 2862016,
+          position: 3,
+          category: 1,
+          createTime: 1378707568870,
+          name: "摇滚",
+          id: 2,
+          type: 1,
+        },
+        {
+          playlistTag: {
+            id: 1001,
+            name: "民谣",
+            category: 1,
+            usedCount: 2970834,
+            type: 0,
+            position: 4,
+            createTime: 1378707569870,
+            highQuality: 1,
+            highQualityPos: 24,
+            officialPos: 3,
+          },
+          activity: false,
+          hot: true,
+          usedCount: 2970834,
+          position: 4,
+          category: 1,
+          createTime: 1378707569870,
+          name: "民谣",
+          id: 1001,
+          type: 1,
+        },
+        {
+          playlistTag: {
+            id: 2004,
+            name: "电子",
+            category: 1,
+            usedCount: 4005308,
+            type: 0,
+            position: 5,
+            createTime: 1378707570870,
+            highQuality: 1,
+            highQualityPos: 38,
+            officialPos: 4,
+          },
+          activity: false,
+          hot: true,
+          usedCount: 4005308,
+          position: 5,
+          category: 1,
+          createTime: 1378707570870,
+          name: "电子",
+          id: 2004,
+          type: 1,
+        },
+        {
+          playlistTag: {
+            id: 10001,
+            name: "另类/独立",
+            category: 1,
+            usedCount: 1936270,
+            type: 0,
+            position: 6,
+            createTime: 1387441492331,
+            highQuality: 1,
+            highQualityPos: 6,
+            officialPos: 20,
+          },
+          activity: false,
+          hot: true,
+          usedCount: 1936270,
+          position: 6,
+          category: 1,
+          createTime: 1387441492331,
+          name: "另类/独立",
+          id: 10001,
+          type: 1,
+        },
+        {
+          playlistTag: {
+            id: 2008,
+            name: "轻音乐",
+            category: 1,
+            usedCount: 3622980,
+            type: 0,
+            position: 7,
+            createTime: 1378707572870,
+            highQuality: 1,
+            highQualityPos: 37,
+            officialPos: 7,
+          },
+          activity: false,
+          hot: true,
+          usedCount: 3622980,
+          position: 7,
+          category: 1,
+          createTime: 1378707572870,
+          name: "轻音乐",
+          id: 2008,
+          type: 1,
+        },
+        {
+          playlistTag: {
+            id: 4099180,
+            name: "综艺",
+            category: 4,
+            usedCount: 20653,
+            type: 0,
+            position: 8,
+            createTime: 1586400155889,
+            highQuality: 0,
+            highQualityPos: 0,
+            officialPos: 0,
+          },
+          activity: false,
+          hot: true,
+          usedCount: 20653,
+          position: 8,
+          category: 4,
+          createTime: 1586400155889,
+          name: "综艺",
+          id: 4099180,
+          type: 1,
+        },
+        {
+          playlistTag: {
+            id: 9001,
+            name: "影视原声",
+            category: 4,
+            usedCount: 2075002,
+            type: 0,
+            position: 9,
+            createTime: 1378707598870,
+            highQuality: 1,
+            highQualityPos: 17,
+            officialPos: 1,
+          },
+          activity: false,
+          hot: true,
+          usedCount: 2075002,
+          position: 9,
+          category: 4,
+          createTime: 1378707598870,
+          name: "影视原声",
+          id: 9001,
+          type: 1,
+        },
+        {
+          playlistTag: {
+            id: 11002,
+            name: "ACG",
+            category: 4,
+            usedCount: 2311531,
+            type: 0,
+            position: 10,
+            createTime: 1387779676260,
+            highQuality: 1,
+            highQualityPos: 15,
+            officialPos: 2,
+          },
+          activity: false,
+          hot: true,
+          usedCount: 2311531,
+          position: 10,
+          category: 4,
+          createTime: 1387779676260,
+          name: "ACG",
+          id: 11002,
+          type: 1,
+        },
+      ],
+      code: 200,
+    };
+    playlist_tags.value = data.tags.splice(0, 6);
+  };
+
+  // 获取分类歌单列表
+  const getPlayList = async (params) => {
+    const data = {
+      playlists: [
+        {
+          name: "“路还长，温柔的事一定会发生”",
+          id: 6619366754,
+          trackNumberUpdateTime: 1674403441055,
+          status: 0,
+          userId: 1418417346,
+          createTime: 1613481992131,
+          updateTime: 1674403460226,
+          subscribedCount: 14910,
+          trackCount: 169,
+          cloudTrackCount: 0,
+          coverImgUrl:
+            "http://p1.music.126.net/XpeD4lerkQUF5WC-K-f-RA==/109951165733262236.jpg",
+          coverImgId: 109951165733262240,
+          description:
+            "“伸手抓星星，即使是一无所获，也不至于满手泥土。” ​​​\n\n都是个人比较喜欢的风格\n加入歌单的是我精心挑选过的\n希望能治愈大家\n\n会持续更新\n建议随机播放哦\n\n谁不喜欢温柔的世界和人呢\n感谢你的喜欢",
+          tags: ["治愈", "学习", "轻音乐"],
+          playCount: 1247202,
+          trackUpdateTime: 1675823980838,
+          specialType: 300,
+          totalDuration: 0,
+          creator: {
+            defaultAvatar: false,
+            province: 330000,
+            authStatus: 0,
+            followed: false,
+            avatarUrl:
+              "http://p1.music.126.net/wQHXoyGgFJm-DUew-uFaIw==/109951167819903845.jpg",
+            accountStatus: 0,
+            gender: 2,
+            city: 330200,
+            birthday: 1090336623466,
+            userId: 1418417346,
+            userType: 0,
+            nickname: "Resurgam0720",
+            signature: "",
+            description: "",
+            detailDescription: "",
+            avatarImgId: 109951167819903840,
+            backgroundImgId: 109951163713477390,
+            backgroundUrl:
+              "http://p1.music.126.net/B4NbAMZ1W_YMF8bUb-A71w==/109951163713477386.jpg",
+            authority: 0,
+            mutual: false,
+            expertTags: null,
+            experts: null,
+            djStatus: 0,
+            vipType: 11,
+            remarkName: null,
+            authenticationTypes: 0,
+            avatarDetail: null,
+            avatarImgIdStr: "109951167819903845",
+            anchor: false,
+            backgroundImgIdStr: "109951163713477386",
+            avatarImgId_str: "109951167819903845",
+          },
+          tracks: null,
+          subscribers: [
+            {
+              defaultAvatar: false,
+              province: 510000,
+              authStatus: 0,
+              followed: false,
+              avatarUrl:
+                "http://p1.music.126.net/XwJbVJyuspGGUYvxsnYa2Q==/109951167656563745.jpg",
+              accountStatus: 0,
+              gender: 1,
+              city: 510100,
+              birthday: 1172650578000,
+              userId: 2003856510,
+              userType: 0,
+              nickname: "7款6款",
+              signature: "",
+              description: "",
+              detailDescription: "",
+              avatarImgId: 109951167656563740,
+              backgroundImgId: 109951162868126480,
+              backgroundUrl:
+                "http://p1.music.126.net/_f8R60U9mZ42sSNvdPn2sQ==/109951162868126486.jpg",
+              authority: 0,
+              mutual: false,
+              expertTags: null,
+              experts: null,
+              djStatus: 0,
+              vipType: 11,
+              remarkName: null,
+              authenticationTypes: 0,
+              avatarDetail: null,
+              avatarImgIdStr: "109951167656563745",
+              anchor: false,
+              backgroundImgIdStr: "109951162868126486",
+              avatarImgId_str: "109951167656563745",
+            },
+          ],
+          subscribed: false,
+          commentThreadId: "A_PL_0_6619366754",
+          newImported: false,
+          adType: 0,
+          highQuality: false,
+          privacy: 0,
+          ordered: true,
+          anonimous: false,
+          coverStatus: 3,
+          recommendInfo: null,
+          socialPlaylistCover: null,
+          recommendText: null,
+          shareCount: 280,
+          coverImgId_str: "109951165733262236",
+          alg: "alg_sq_nsearch",
+          commentCount: 113,
+        },
+        {
+          name: "【韩语】仲夏之夜，一抹小清新萦绕耳畔",
+          id: 777372588,
+          trackNumberUpdateTime: 1505587866980,
+          status: 0,
+          userId: 44674602,
+          createTime: 1498412161740,
+          updateTime: 1578591638135,
+          subscribedCount: 3665,
+          trackCount: 42,
+          cloudTrackCount: 0,
+          coverImgUrl:
+            "http://p1.music.126.net/82xJXm1V1lQYQLLYwZCsvg==/19064432114230328.jpg",
+          coverImgId: 19064432114230330,
+          description:
+            "夏日的夜晚躺在屋外的躺椅上，吹着微微凉风，仰望闪烁的星空，点点星光犹如一个个美丽的梦，静静地听着歌，享受这样一个宁静而又舒适的夏夜。\n\n夏日入夜，清风微拂，星光烂漫，蝉鸣清凉沁人心脾。\n树影绰绰，绿叶婆娑，皎皎月影，蛐鸣清爽伴你入眠。",
+          tags: ["韩语", "夜晚", "清新"],
+          playCount: 465467,
+          trackUpdateTime: 1670215374564,
+          specialType: 0,
+          totalDuration: 0,
+          creator: {
+            defaultAvatar: false,
+            province: 1000000,
+            authStatus: 0,
+            followed: false,
+            avatarUrl:
+              "http://p1.music.126.net/hGP6d2H7i6KE9-qzTODT3Q==/109951163748824592.jpg",
+            accountStatus: 0,
+            gender: 2,
+            city: 1002900,
+            birthday: 788284800000,
+            userId: 44674602,
+            userType: 200,
+            nickname: "HooNamore",
+            signature: "🎐",
+            description: "",
+            detailDescription: "",
+            avatarImgId: 109951163748824590,
+            backgroundImgId: 18659811837052230,
+            backgroundUrl:
+              "http://p1.music.126.net/aYQAJ87gXj_FVkjDbSvM-w==/18659811837052231.jpg",
+            authority: 0,
+            mutual: false,
+            expertTags: ["流行", "韩语"],
+            experts: null,
+            djStatus: 10,
+            vipType: 0,
+            remarkName: null,
+            authenticationTypes: 64,
+            avatarDetail: {
+              userType: 200,
+              identityLevel: 1,
+              identityIconUrl:
+                "https://p5.music.126.net/obj/wo3DlcOGw6DClTvDisK1/4761340149/f4bf/64a1/1ea2/31a08617d7dfddb21fffdb92390ce268.png",
+            },
+            avatarImgIdStr: "109951163748824592",
+            anchor: false,
+            backgroundImgIdStr: "18659811837052231",
+            avatarImgId_str: "109951163748824592",
+          },
+          tracks: null,
+          subscribers: [
+            {
+              defaultAvatar: false,
+              province: 360000,
+              authStatus: 0,
+              followed: false,
+              avatarUrl:
+                "http://p1.music.126.net/8HImZ2TdPPQos6lFS2qeyw==/109951168279467979.jpg",
+              accountStatus: 0,
+              gender: 0,
+              city: 360600,
+              birthday: 1173542400000,
+              userId: 8347857953,
+              userType: 0,
+              nickname: "伊-卡洛",
+              signature: "",
+              description: "",
+              detailDescription: "",
+              avatarImgId: 109951168279467980,
+              backgroundImgId: 109951162868126480,
+              backgroundUrl:
+                "http://p1.music.126.net/_f8R60U9mZ42sSNvdPn2sQ==/109951162868126486.jpg",
+              authority: 0,
+              mutual: false,
+              expertTags: null,
+              experts: null,
+              djStatus: 0,
+              vipType: 0,
+              remarkName: null,
+              authenticationTypes: 0,
+              avatarDetail: null,
+              avatarImgIdStr: "109951168279467979",
+              anchor: false,
+              backgroundImgIdStr: "109951162868126486",
+              avatarImgId_str: "109951168279467979",
+            },
+          ],
+          subscribed: false,
+          commentThreadId: "A_PL_0_777372588",
+          newImported: false,
+          adType: 0,
+          highQuality: false,
+          privacy: 0,
+          ordered: true,
+          anonimous: false,
+          coverStatus: 3,
+          recommendInfo: null,
+          socialPlaylistCover: null,
+          recommendText: null,
+          shareCount: 49,
+          coverImgId_str: "19064432114230328",
+          alg: "alg_sq_nsearch",
+          commentCount: 32,
+        },
+        {
+          name: "简单的喜欢最长远，懂你的人最温柔",
+          id: 6897922528,
+          trackNumberUpdateTime: 1646579729719,
+          status: 0,
+          userId: 1610414255,
+          createTime: 1627992162901,
+          updateTime: 1646579729719,
+          subscribedCount: 178,
+          trackCount: 37,
+          cloudTrackCount: 0,
+          coverImgUrl:
+            "http://p1.music.126.net/JiH2xvz-23ymP1Ibbmpd0g==/109951166244075884.jpg",
+          coverImgId: 109951166244075890,
+          description:
+            "“从头到尾，从生到死，从摇篮到坟墓，与你同行、形影相随的只有一个人，就是你自己。”\n人这一生，是从宽阔平原走进狭窄小路的过程。\n年轻时我们呼朋引伴，青年时沉迷于爱情，中年汲汲于生活守护家庭。\n然而人生这趟列车，总有人上来，也有人离开，最终的乘客只剩你自己。\n好友渐行渐远，你怅然若失；爱人终究缘尽，你伤心感怀；亲人离你而去，你悲痛欲绝。\n世间之事纷乱无常，只有你能拯救自己于人世苦海。春风得意时，你提醒自己虚名不过是过眼云烟，记得心怀谦卑。\n处于低谷时，你暗夜辗转，告诫自己一定要自己将自己拉出泥潭。\n即便孤独，也要在寂寞中收获宁静和安然。\n“世间好物不坚牢，彩云易散琉璃碎。”\n我们曾如此渴望情谊永存，最终却发现，\n人这一生最好的知己，一直都是自己。\n\n一一 陈果",
+          tags: ["华语", "流行"],
+          playCount: 60428,
+          trackUpdateTime: 1675929398708,
+          specialType: 0,
+          totalDuration: 0,
+          creator: {
+            defaultAvatar: false,
+            province: 1000000,
+            authStatus: 0,
+            followed: false,
+            avatarUrl:
+              "http://p1.music.126.net/p2kZ-Qt0LJS9Kg2UWg8JrA==/109951168247765169.jpg",
+            accountStatus: 0,
+            gender: 0,
+            city: 1002300,
+            birthday: 1020441600000,
+            userId: 1610414255,
+            userType: 207,
+            nickname: "独性恋",
+            signature: "。",
+            description: "",
+            detailDescription: "",
+            avatarImgId: 109951168247765170,
+            backgroundImgId: 109951164790428910,
+            backgroundUrl:
+              "http://p1.music.126.net/GSrXm3bEak-fOFhcEMYgPQ==/109951164790428915.jpg",
+            authority: 0,
+            mutual: false,
+            expertTags: ["华语", "流行", "民谣"],
+            experts: {
+              "1": "音乐视频达人",
+            },
+            djStatus: 10,
+            vipType: 11,
+            remarkName: null,
+            authenticationTypes: 524352,
+            avatarDetail: {
+              userType: 207,
+              identityLevel: 2,
+              identityIconUrl:
+                "https://p5.music.126.net/obj/wo3DlcOGw6DClTvDisK1/4761340159/e2c1/6fb5/f49b/353e6d1857f7c5f46426beb533427e53.png",
+            },
+            avatarImgIdStr: "109951168247765169",
+            anchor: false,
+            backgroundImgIdStr: "109951164790428915",
+            avatarImgId_str: "109951168247765169",
+          },
+          tracks: null,
+          subscribers: [
+            {
+              defaultAvatar: false,
+              province: 410000,
+              authStatus: 0,
+              followed: false,
+              avatarUrl:
+                "http://p1.music.126.net/Q5aL1CVe9rDv9mypPtjBFA==/109951167792093750.jpg",
+              accountStatus: 0,
+              gender: 1,
+              city: 410100,
+              birthday: -2209017600000,
+              userId: 2127894864,
+              userType: 0,
+              nickname: "懒洋吖",
+              signature: "",
+              description: "",
+              detailDescription: "",
+              avatarImgId: 109951167792093740,
+              backgroundImgId: 109951165129162620,
+              backgroundUrl:
+                "http://p1.music.126.net/n7JDWAGkoFLH4-KmWzkMbA==/109951165129162629.jpg",
+              authority: 0,
+              mutual: false,
+              expertTags: null,
+              experts: null,
+              djStatus: 0,
+              vipType: 0,
+              remarkName: null,
+              authenticationTypes: 0,
+              avatarDetail: null,
+              avatarImgIdStr: "109951167792093750",
+              anchor: false,
+              backgroundImgIdStr: "109951165129162629",
+              avatarImgId_str: "109951167792093750",
+            },
+          ],
+          subscribed: false,
+          commentThreadId: "A_PL_0_6897922528",
+          newImported: false,
+          adType: 0,
+          highQuality: false,
+          privacy: 0,
+          ordered: true,
+          anonimous: false,
+          coverStatus: 3,
+          recommendInfo: null,
+          socialPlaylistCover: null,
+          recommendText: null,
+          shareCount: 5,
+          coverImgId_str: "109951166244075884",
+          alg: "alg_sq_nsearch",
+          commentCount: 0,
+        },
+        {
+          name: "『纯音物语』治愈心灵※舒缓疲倦，放松解压",
+          id: 6717795791,
+          trackNumberUpdateTime: 1674976748381,
+          status: 0,
+          userId: 633281700,
+          createTime: 1618729477784,
+          updateTime: 1674976748381,
+          subscribedCount: 547,
+          trackCount: 125,
+          cloudTrackCount: 0,
+          coverImgUrl:
+            "http://p1.music.126.net/CHEy-KVaycdLSbF2BJBYew==/109951165901965005.jpg",
+          coverImgId: 109951165901965010,
+          description:
+            "亲爱的盆友，你也有过学习压力吗，我想说：\n\n心中有梦，希望便不在遥远。压力有尽头，生活乐无边。让压力化作天边的一朵彩云，被风吹的烟消云散。快乐是属于自己的，我的快乐我做主。\n\n生活就要不去看那风筝如何飞上天，不去回忆丑小鸭如何变成白天鹅。取而代之的是要思考乌云过后天空总会释放一片湛蓝，风雨过后会见彩虹。\n\n生活在现代快节奏里，要承受着很大的压力。假如你不懂得自我缓冲，那么，苦恼、忧愁、烦躁这些情绪就会造成精神压力。要活得幸福，快乐，那就是幽默。幽默是知识和修养的体现。善于幽默者，多是见多识广、思维敏捷、心地宽阔的乐天派。幽默属于热爱生活、奋发向上、充满自信的人。\n\n封面——网络\n",
+          tags: ["轻音乐", "放松", "流行"],
+          playCount: 61927,
+          trackUpdateTime: 1675668831873,
+          specialType: 300,
+          totalDuration: 0,
+          creator: {
+            defaultAvatar: false,
+            province: 340000,
+            authStatus: 1,
+            followed: false,
+            avatarUrl:
+              "http://p1.music.126.net/O7z0l0F6jdLbHNmQDnWtyQ==/109951168241985026.jpg",
+            accountStatus: 0,
+            gender: 1,
+            city: 341500,
+            birthday: 1105632000000,
+            userId: 633281700,
+            userType: 4,
+            nickname: "模嗯嗯",
+            signature:
+              "知识动态风向标，你的学习小助手～～\n\n世界愈悲伤，我要愈快乐。当人心愈险恶，我要愈善良。当挫折来了，我要挺身面对。我要做一个乐观向上，不退缩不屈不饶不怨天尤人的人，勇敢去接受人生所有挑战的人。\n备战高考，等我回来～",
+            description: "",
+            detailDescription: "",
+            avatarImgId: 109951168241985020,
+            backgroundImgId: 109951166237198910,
+            backgroundUrl:
+              "http://p1.music.126.net/o8ndm003qq1TLrOAiGDWHg==/109951166237198912.jpg",
+            authority: 0,
+            mutual: false,
+            expertTags: null,
+            experts: null,
+            djStatus: 10,
+            vipType: 0,
+            remarkName: null,
+            authenticationTypes: 536648,
+            avatarDetail: {
+              userType: 4,
+              identityLevel: 1,
+              identityIconUrl:
+                "https://p5.music.126.net/obj/wo3DlcOGw6DClTvDisK1/4874132307/4499/f228/d867/da64b9725e125943ad4e14e4c72d0884.png",
+            },
+            avatarImgIdStr: "109951168241985026",
+            anchor: true,
+            backgroundImgIdStr: "109951166237198912",
+            avatarImgId_str: "109951168241985026",
+          },
+          tracks: null,
+          subscribers: [
+            {
+              defaultAvatar: false,
+              province: 430000,
+              authStatus: 0,
+              followed: false,
+              avatarUrl:
+                "http://p1.music.126.net/Hacpu6y2IwsLvtub2MRDjA==/109951168028794683.jpg",
+              accountStatus: 0,
+              gender: 2,
+              city: 430200,
+              birthday: 1002785126000,
+              userId: 1606508379,
+              userType: 0,
+              nickname: "孟小颖LM",
+              signature: "唱歌唱歌！！！",
+              description: "",
+              detailDescription: "",
+              avatarImgId: 109951168028794690,
+              backgroundImgId: 109951165600671280,
+              backgroundUrl:
+                "http://p1.music.126.net/zbpozWD4zWFk8F1Sjp5i3w==/109951165600671279.jpg",
+              authority: 0,
+              mutual: false,
+              expertTags: null,
+              experts: null,
+              djStatus: 10,
+              vipType: 11,
+              remarkName: null,
+              authenticationTypes: 0,
+              avatarDetail: null,
+              avatarImgIdStr: "109951168028794683",
+              anchor: false,
+              backgroundImgIdStr: "109951165600671279",
+              avatarImgId_str: "109951168028794683",
+            },
+          ],
+          subscribed: false,
+          commentThreadId: "A_PL_0_6717795791",
+          newImported: false,
+          adType: 0,
+          highQuality: false,
+          privacy: 0,
+          ordered: true,
+          anonimous: false,
+          coverStatus: 3,
+          recommendInfo: null,
+          socialPlaylistCover: null,
+          recommendText: null,
+          shareCount: 10,
+          coverImgId_str: "109951165901965005",
+          alg: "alg_sq_nsearch",
+          commentCount: 8,
+        },
+        {
+          name: "那些年怀念的·繁星过后民谣酒馆",
+          id: 7017030699,
+          trackNumberUpdateTime: 1670595784161,
+          status: 0,
+          userId: 636457516,
+          createTime: 1634026312856,
+          updateTime: 1670595784161,
+          subscribedCount: 147,
+          trackCount: 75,
+          cloudTrackCount: 0,
+          coverImgUrl:
+            "http://p1.music.126.net/HXSwAL5rwl1-9-5qZxAXaw==/109951167785796259.jpg",
+          coverImgId: 109951167785796260,
+          description:
+            "总有一个人会让你来的你身边\n愿山海皆可平，你我终相见。\n念念不忘，必有回响。\n如果足够想念就能抵达梦境。",
+          tags: ["民谣", "流行", "放松"],
+          playCount: 31395,
+          trackUpdateTime: 1674240862105,
+          specialType: 0,
+          totalDuration: 0,
+          creator: {
+            defaultAvatar: false,
+            province: 370000,
+            authStatus: 0,
+            followed: false,
+            avatarUrl:
+              "http://p1.music.126.net/tsdl0dQZ0Y9AGlZhZJqf7g==/109951168003749757.jpg",
+            accountStatus: 0,
+            gender: 1,
+            city: 371100,
+            birthday: 943442809106,
+            userId: 636457516,
+            userType: 0,
+            nickname: "找不着对象不改网名",
+            signature: "照顾好自己",
+            description: "",
+            detailDescription: "",
+            avatarImgId: 109951168003749760,
+            backgroundImgId: 109951165424649820,
+            backgroundUrl:
+              "http://p1.music.126.net/PHPJLipW-QACxLrAbaGlcw==/109951165424649829.jpg",
+            authority: 0,
+            mutual: false,
+            expertTags: null,
+            experts: null,
+            djStatus: 10,
+            vipType: 0,
+            remarkName: null,
+            authenticationTypes: 0,
+            avatarDetail: null,
+            avatarImgIdStr: "109951168003749757",
+            anchor: false,
+            backgroundImgIdStr: "109951165424649829",
+            avatarImgId_str: "109951168003749757",
+          },
+          tracks: null,
+          subscribers: [
+            {
+              defaultAvatar: false,
+              province: 330000,
+              authStatus: 0,
+              followed: false,
+              avatarUrl:
+                "http://p1.music.126.net/SUeqMM8HOIpHv9Nhl9qt9w==/109951165647004069.jpg",
+              accountStatus: 0,
+              gender: 0,
+              city: 330100,
+              birthday: -2209017600000,
+              userId: 7892139347,
+              userType: 0,
+              nickname: "云村村民165457320454185",
+              signature: "",
+              description: "",
+              detailDescription: "",
+              avatarImgId: 109951165647004060,
+              backgroundImgId: 109951162868126480,
+              backgroundUrl:
+                "http://p1.music.126.net/_f8R60U9mZ42sSNvdPn2sQ==/109951162868126486.jpg",
+              authority: 0,
+              mutual: false,
+              expertTags: null,
+              experts: null,
+              djStatus: 0,
+              vipType: 11,
+              remarkName: null,
+              authenticationTypes: 0,
+              avatarDetail: null,
+              avatarImgIdStr: "109951165647004069",
+              anchor: false,
+              backgroundImgIdStr: "109951162868126486",
+              avatarImgId_str: "109951165647004069",
+            },
+          ],
+          subscribed: false,
+          commentThreadId: "A_PL_0_7017030699",
+          newImported: false,
+          adType: 0,
+          highQuality: false,
+          privacy: 0,
+          ordered: true,
+          anonimous: false,
+          coverStatus: 3,
+          recommendInfo: null,
+          socialPlaylistCover: null,
+          recommendText: null,
+          shareCount: 6,
+          coverImgId_str: "109951167785796259",
+          alg: "alg_sq_nsearch",
+          commentCount: 0,
+        },
+        {
+          name: "「后摇」冷藏室里的寂静黑夜",
+          id: 2657026123,
+          trackNumberUpdateTime: 1651524035123,
+          status: 0,
+          userId: 80489675,
+          createTime: 1549437354775,
+          updateTime: 1651524035123,
+          subscribedCount: 150,
+          trackCount: 85,
+          cloudTrackCount: 0,
+          coverImgUrl:
+            "http://p1.music.126.net/uVXs50TZhM6t7HHyobHZ9A==/109951163843892105.jpg",
+          coverImgId: 109951163843892110,
+          description:
+            "后摇不是无休止的丧，它是心中一切情感与音乐的沟通，是音乐无与伦比的共情性，它缠绕在冰冷的心脏上传递着它的温暖；它像是一个过来人，诉说着绝望中的绝望同时给予人无限的希望。\n想静静的活在自己的世界里。",
+          tags: ["后摇", "夜晚", "孤独"],
+          playCount: 44065,
+          trackUpdateTime: 1673629381104,
+          specialType: 0,
+          totalDuration: 0,
+          creator: {
+            defaultAvatar: false,
+            province: 420000,
+            authStatus: 0,
+            followed: false,
+            avatarUrl:
+              "http://p1.music.126.net/1bUmEgIlW4aixWLSozZdKg==/109951164902459158.jpg",
+            accountStatus: 0,
+            gender: 0,
+            city: 420100,
+            birthday: 1007827200000,
+            userId: 80489675,
+            userType: 0,
+            nickname: "长野便利店",
+            signature: "💤",
+            description: "",
+            detailDescription: "",
+            avatarImgId: 109951164902459150,
+            backgroundImgId: 109951164673970610,
+            backgroundUrl:
+              "http://p1.music.126.net/7kpQJS__W3nH2mrGAaGgRw==/109951164673970613.jpg",
+            authority: 0,
+            mutual: false,
+            expertTags: null,
+            experts: null,
+            djStatus: 0,
+            vipType: 11,
+            remarkName: null,
+            authenticationTypes: 0,
+            avatarDetail: null,
+            avatarImgIdStr: "109951164902459158",
+            anchor: false,
+            backgroundImgIdStr: "109951164673970613",
+            avatarImgId_str: "109951164902459158",
+          },
+          tracks: null,
+          subscribers: [
+            {
+              defaultAvatar: false,
+              province: 0,
+              authStatus: 0,
+              followed: false,
+              avatarUrl:
+                "http://p1.music.126.net/SUeqMM8HOIpHv9Nhl9qt9w==/109951165647004069.jpg",
+              accountStatus: 0,
+              gender: 0,
+              city: 100,
+              birthday: -2209017600000,
+              userId: 8360276883,
+              userType: 0,
+              nickname: "nLnghuAn",
+              signature: "",
+              description: "",
+              detailDescription: "",
+              avatarImgId: 109951165647004060,
+              backgroundImgId: 109951162868128400,
+              backgroundUrl:
+                "http://p1.music.126.net/2zSNIqTcpHL2jIvU6hG0EA==/109951162868128395.jpg",
+              authority: 0,
+              mutual: false,
+              expertTags: null,
+              experts: null,
+              djStatus: 0,
+              vipType: 0,
+              remarkName: null,
+              authenticationTypes: 0,
+              avatarDetail: null,
+              avatarImgIdStr: "109951165647004069",
+              anchor: false,
+              backgroundImgIdStr: "109951162868128395",
+              avatarImgId_str: "109951165647004069",
+            },
+          ],
+          subscribed: false,
+          commentThreadId: "A_PL_0_2657026123",
+          newImported: false,
+          adType: 0,
+          highQuality: false,
+          privacy: 0,
+          ordered: true,
+          anonimous: false,
+          coverStatus: 3,
+          recommendInfo: null,
+          socialPlaylistCover: null,
+          recommendText: null,
+          shareCount: 8,
+          coverImgId_str: "109951163843892105",
+          alg: "alg_sq_nsearch",
+          commentCount: 2,
+        },
+      ],
+      total: 634,
+      code: 200,
+      more: true,
+      cat: "全部",
+    };
+
+    playlist_list.value = data.playlists;
+    playlist_loading.value = false;
+  };
+
+  // 切换歌单类别
+  const choosePlayListType = (index) => {
+    playlist_index.value = index;
+    playlist_params.value.cat = index !== 7 ? playlist_tags[index].name : "";
+    playlist_loading.value = true;
+    getPlayList(playlist_params);
+  };
+
+  onMounted(() => {
+    getHotTags();
+    getPlayList(playlist_params);
+  });
+</script>
+
+<style lang="less" scoped>
+  .hot-list {
+    padding: 0 20px;
+    margin-bottom: 25px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 20px 27px rgb(0 0 0 / 5%);
+  }
+  .h_title {
+    padding: 20px 0 10px;
+
+    h3 {
+      display: inline-block;
+      padding-right: 50px;
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    span {
+      display: inline-block;
+      font-size: 16px;
+      margin: 0 40px 0 0;
+      color: var(--color-text-main);
+      cursor: pointer;
+
+      &.active {
+        position: relative;
+        z-index: 1;
+        font-weight: 600;
+        color: var(--color-text-main);
+
+        &:after {
+          position: absolute;
+          content: "";
+          left: 0;
+          bottom: 1px;
+          width: 100%;
+          height: 6px;
+          background: var(--color-text-height);
+          z-index: -1;
+        }
+      }
+    }
+  }
+</style>

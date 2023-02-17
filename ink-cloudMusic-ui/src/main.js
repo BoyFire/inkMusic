@@ -1,16 +1,27 @@
-import {createApp} from 'vue'
-import App from './App.vue'
-import router from './router'
+import * as getApi from "@api/http";
+import * as ElementPlusIconsVue from "@element-plus/icons-vue";
+import store from "@store/index";
+import util from "@utils/util";
+import ElementPlus from "element-plus";
+import "element-plus/dist/index.css";
+import zhCn from "element-plus/dist/locale/zh-cn.mjs";
+import {createApp} from "vue";
+import App from "./App.vue";
+import router from "./router";
 
-import ElementPlus from 'element-plus'
-import 'element-plus/dist/index.css'
-import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
+import "@assets/css/global.css";
+import "@assets/fonts/fonts.css";
+import "@assets/less/reset.less";
 
-import './assets/main.css'
+const app = createApp(App);
 
-const app = createApp(App)
+app.config.globalProperties.$utils = util;
+app.config.globalProperties.$http = getApi;
 
-app.use(router)
-app.use(ElementPlus, { locale: zhCn })
+for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+  app.component(key, component);
+}
 
-app.mount('#app')
+app.use(router).use(store).use(ElementPlus, { locale: zhCn });
+
+app.mount("#app");

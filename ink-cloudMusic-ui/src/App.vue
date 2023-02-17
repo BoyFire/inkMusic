@@ -1,28 +1,21 @@
 <template>
-  <div class="body">
-    <el-container>
-      <el-header> <Header></Header>  </el-header>
-      <el-container>
-        <el-aside> <Aside></Aside> </el-aside>
-        <el-main>
-          <RouterView/>
-        </el-main>
-      </el-container>
-    </el-container>
-
-  </div>
+  <el-container>
+    <el-aside>
+      <Aside />
+    </el-aside>
+    <el-main>
+      <Header />
+      <RouterView />
+    </el-main>
+  </el-container>
+  <!-- <el-footer> 音乐播放器 </el-footer> -->
 </template>
 
-<script setup>
-import { RouterLink, RouterView } from 'vue-router'
-import "element-plus/theme-chalk/el-container.css"
-import Header from "@views/topbar/index.vue";
-import Aside from "@views/asside/index.vue"
-
+<script lang="ts" setup>
+  import Aside from "@views/components/aside/index.vue";
+  import Header from "@views/components/topbar/index.vue";
+  import "element-plus/theme-chalk/el-container.css";
+  import { RouterView } from "vue-router";
 </script>
 
-<style type="text/css" scoped>
-.body{
-  width:100%,
-}
-</style>
+<style></style>

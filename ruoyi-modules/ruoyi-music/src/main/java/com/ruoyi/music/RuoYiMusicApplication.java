@@ -17,6 +17,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class RuoYiMusicApplication
 {
+
     public static void main(String[] args)
     {
         SpringApplication.run(RuoYiMusicApplication.class, args);
