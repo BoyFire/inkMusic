@@ -35,7 +35,7 @@
               >{{ item.name }}</router-link
             >
             <router-link
-              :to="{ path: '/singer', query: { id: item.artistId } }"
+              :to="{ path: '/artist/detail', query: { id: item.artistId } }"
               class="mv-author"
               v-if="!item.publishTime"
               >{{ item.artistName }}</router-link
@@ -54,15 +54,12 @@
   </el-skeleton>
 </template>
 
-<script>
-  export default {
-    props: {
-      mvList: Array,
-      num: Number,
-      loading: Boolean,
-    },
-    setup() {},
-  };
+<script lang="ts" setup>
+  defineProps({
+    mvList: Array<any>,
+    num: Number,
+    loading: Boolean,
+  });
 </script>
 <style scoped lang="less">
   .mv {

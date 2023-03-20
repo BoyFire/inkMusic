@@ -57,16 +57,27 @@
     </template>
   </el-skeleton>
 </template>
-<script>
-  export default {
-    props: {
-      playList: Array,
-      num: Number,
-      loading: Boolean,
-    },
-    setup(props) {},
-  };
+<script setup lang="ts">
+  import { ref, watch } from "vue";
+  const props = defineProps({
+    playList: Array<any>,
+    num: Number,
+    loading: Boolean,
+  });
+  const playList = ref(props.playList);
+  const num = ref(props.num);
+  const loading = ref(props.loading);
+
+  watch(props, (newVal, oldVal) => {
+    loading.value = newVal.loading;
+    num.value = newVal.num;
+    playList.value = newVal.playList;
+  }),
+    {
+      deep: true,
+    };
 </script>
+
 <style lang="less" scoped>
   .playlist {
     display: flex;

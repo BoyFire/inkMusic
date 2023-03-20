@@ -51,5 +51,4 @@ ajaxMethod.forEach((method) => {
     });
   };
 });
-
 export default api;

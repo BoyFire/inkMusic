@@ -3,7 +3,7 @@
     <em class="circle"></em>
 
     <router-link
-      :to="{ path: '/singer', query: { id: item.id } }"
+      :to="{ path: '/artist/detail', query: { id: item.id } }"
       class="faceImg">
       <el-image :src="item.picUrl + '?param=120y120'">
         <div slot="placeholder" class="image-slot">
@@ -15,7 +15,7 @@
     <div class="info">
       <div class="info-header">
         <router-link
-          :to="{ path: '/singer', query: { id: item.id } }"
+          :to="{ path: '/artist/detail', query: { id: item.id } }"
           class="name"
           >{{ item.name }}</router-link
         >
@@ -32,17 +32,12 @@
     </div>
   </div>
 </template>
-<script>
-  import { defineComponent, reactive } from "vue";
-
-  export default defineComponent({
-    name: "ArtistItem",
-    props: {
-      item: {
-        // 歌手信息
-        type: Object,
-        required: true,
-      },
+<script lang="ts" setup>
+  defineProps({
+    item: {
+      // 歌手信息
+      type: Object,
+      required: true,
     },
   });
 </script>

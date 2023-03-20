@@ -2,6 +2,7 @@
   "compilerOptions": {
     "target": "esnext",
     "module": "esnext",
+    "types": ["node"],
     "strict": false,
     "jsx": "preserve",
     "moduleResolution": "node",

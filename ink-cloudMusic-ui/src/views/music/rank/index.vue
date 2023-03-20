@@ -1,7 +1,7 @@
 <template>
   <div class="rank">
     <div class="rank-container">
-      <!-- 歌单主体 -->
+      <!-- 排行主体 -->
       <div class="rank-main">
         <div class="cover">
           <div class="cover-img">
@@ -131,7 +131,9 @@
                 {{ item.updateFrequency }}
               </div>
             </div>
-            <el-image class="item-img" :src="item.coverImgUrl">
+            <el-image
+              class="item-img"
+              :src="item.coverImgUrl + '?param=120y120'">
               <div slot="placeholder" class="image-slot">
                 <i class="iconfont icon-placeholder"></i>
               </div>
@@ -167,20 +169,29 @@
 
   // 获取歌单详情
   const getTopListDetail = async () => {
-    const data = await proxy.$http.topListDetail();
+    const { data: res } = await proxy.$http.topListDetail();
+
+    if (res.code !== 200) {
+      return console.log("数据请求失败");
+    }
 
     // Top榜
-    listTop.value = data.data.list.filter((item) => {
+    listTop.value = res.list.filter((item: any) => {
       return item.ToplistType;
     });
+
     // 特色榜
-    listFeature.value = data.data.list.filter((item) => {
-      return !item.ToplistType && item.name.indexOf("云音乐") >= 0;
-    });
+    listFeature.value = res.list.filter(
+      (item: { ToplistType: any; name: string | string[] }) => {
+        return !item.ToplistType && item.name.indexOf("云音乐") >= 0;
+      }
+    );
     // 场景榜
-    listOther.value = data.data.list.filter((item) => {
-      return !item.ToplistType && item.name.indexOf("云音乐") < 0;
-    });
+    listOther.value = res.list.filter(
+      (item: { ToplistType: any; name: string | string[] }) => {
+        return !item.ToplistType && item.name.indexOf("云音乐") < 0;
+      }
+    );
 
     switch (type.value) {
       case "Top":
@@ -193,6 +204,7 @@
         list.value = listOther.value;
         break;
     }
+
     rId.value = rId.value ? rId.value : listTop.value[0].id;
   };
 
@@ -204,7 +216,6 @@
       id: rId.value,
       s: -1,
     });
-    console.log(data);
 
     rankInfo.value = data.data.playlist;
     songList.value = proxy.$utils.formatSongs(
@@ -216,7 +227,7 @@
   };
 
   // 修改歌单一级类别
-  const selectType = (item) => {
+  const selectType = (item: string) => {
     type.value = item;
 
     switch (type.value) {
@@ -243,8 +254,8 @@
   };
 
   //修改榜单 二级类型
-  const selectItem = (item) => {
-    rId.value = item;
+  const selectItem = (item: any) => {
+    rId.value = item.id;
     router.push({
       path: "rank",
       query: {
@@ -254,7 +265,7 @@
     });
   };
   // 收藏歌单
-  const subPlayList = (item) => {
+  const subPlayList = (item: any) => {
     console.log("finish");
   };
 
@@ -314,7 +325,7 @@
       top: 0;
       left: 0;
       z-index: -1;
-      width: 100%;
+      width: 90%;
       height: 100%;
       content: "";
       transform: scale(0.95) translateX(5%);

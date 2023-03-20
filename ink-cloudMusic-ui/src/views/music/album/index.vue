@@ -19,7 +19,7 @@
           </div>
           <div class="album-singer">
             歌手：<router-link
-              :to="{ path: '/singer', query: { id: author.id } }"
+              :to="{ path: '/artist/detail', query: { id: author.id } }"
               class="song_name"
               v-for="(author, k) in details.artists"
               :key="author.name"
@@ -48,15 +48,214 @@
           </div>
         </div>
       </div>
+      <!-- 歌曲信息 -->
+      <div class="song-main">
+        <div class="song-header">
+          <h4>
+            包含歌曲列表 <em>{{ details.size + "首歌" }}</em>
+          </h4>
+          <span class="play-all" @click="playAllSongs"
+            ><i class="iconfont icon-audio-play"></i> 播放全部</span
+          >
+          <span
+            :class="['collect', dynamic.isSub ? 'active' : '']"
+            @click="subAlbum"
+            ><i
+              :class="[
+                'iconfont',
+                'icon-collect' + (dynamic.isSub ? '-active' : ''),
+              ]"></i>
+            {{ dynamic.isSub ? "已收藏" : "收藏" }}</span
+          >
+        </div>
+        <song-list :songList="songList" :stripe="true"></song-list>
+      </div>
+
+      <!-- 评论信息 -->
+      <div class="album-comments" ref="comment">
+        <CommentList :type="type" :sId="albumId" />
+      </div>
     </div>
 
     <!-- 侧边栏 -->
-    <div class="aside-box"></div>
+    <div class="aside-box">
+      <!-- 查询同时订阅了专辑的人 -->
+      <!-- <div class="album-aside album-collect">
+              <h3 class="aside-title">喜欢这张专辑的人</h3>
+              <div class="aside-main aside-album-main">
+                  <router-link class="aside-album-item" :to="{ path: '/album', query: { id: item.id }}" v-for="item in hotAlbums" :key="item.id">
+                      <el-image :src="item.picUrl">
+                          <div slot="placeholder" class="image-slot">
+                              <i class="iconfont icon-placeholder"></i>
+                          </div>
+                      </el-image>
+                      <div class="aside-album-info">
+                          <div class="aside-album-name">{{item.name}}</div>
+                          <div class="aside-album-time">
+                              {{$utils.formartDate(details.publishTime, 'yyyy-MM-dd')}}
+                          </div>
+                      </div>
+                  </router-link>
+              </div>
+            </div> -->
+
+      <!-- 歌手的其他的专辑 -->
+      <div class="album-aside album-other">
+        <h3 class="aside-title">
+          {{ details.artist.name }}的其他专辑
+          <router-link
+            :to="{
+              path: '/artist/detail',
+              query: { id: details.artist.id, type: 'album' },
+            }"
+            class="album-more"
+            >全部>>
+          </router-link>
+        </h3>
+
+        <div class="aside-main aside-album-main">
+          <router-link
+            class="aside-album-item"
+            :to="{ path: '/album', query: { id: item.id } }"
+            v-for="item in hotAlbums"
+            :key="item.id">
+            <el-image :src="item.picUrl">
+              <div slot="placeholder" class="image-slot">
+                <i class="iconfont icon-placeholder"></i>
+              </div>
+            </el-image>
+            <div class="aside-album-info">
+              <div class="aside-album-name">{{ item.name }}</div>
+              <div class="aside-album-time">
+                {{ $utils.formartDate(details.publishTime, "yyyy-MM-dd") }}
+              </div>
+            </div>
+          </router-link>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-  const songList = [{ name: "a" }];
+  import CommentList from "@/components/CommentList.vue";
+  import SongList from "@/components/SongList.vue";
+  import { getCurrentInstance, onMounted, ref, Ref } from "vue";
+  import { onBeforeRouteUpdate, useRoute } from "vue-router";
+  import { useStore } from "vuex";
+
+  const { proxy } = getCurrentInstance();
+  const store = useStore();
+  const route = useRoute();
+
+  const albumId: Ref<string> = ref("");
+  const details: Ref<any> = ref({
+    picUrl: "",
+    artist: {
+      name: "",
+      id: "",
+    },
+  });
+  const songList: Ref<any[]> = ref([]);
+  const dynamic: Ref<any> = ref({});
+  const hotAlbums: Ref<any[]> = ref([]);
+  const comments: Ref<any[]> = ref([]);
+  const type: Ref<number> = ref(3); // 0: 歌曲 1: mv 2: 歌单 3: 专辑  4: 电台 5: 视频 6: 动态
+  const isShowDesc: Ref<boolean> = ref(false);
+  const collects: Ref<any[]> = ref([]);
+
+  // 获取歌单详细信息
+  const getAlbum = async (params) => {
+    const { data: res } = await proxy.$http.album(params);
+
+    if (res.code !== 200) {
+      return console.log("数据请求失败");
+    }
+
+    details.value = res.album;
+    const privileges = [];
+    res.songs.forEach((item) => {
+      privileges.push(item.privilege);
+    });
+    songList.value = proxy.$utils.formatSongs(res.songs, privileges);
+    getArtistAlbum();
+  };
+
+  // 获取歌手专辑
+  const getArtistAlbum = async () => {
+    const { data: res } = await proxy.$http.artistAlbum({
+      id: details.value.artists[0].id,
+      limit: 5,
+    });
+    if (res.code !== 200) {
+      return console.log("数据请求失败");
+    }
+    hotAlbums.value = res.hotAlbums;
+  };
+
+  // 获取歌单的动态信息
+  const getAlbumDynamic = async (params) => {
+    const { data: res } = await proxy.$http.albumDynamic(params);
+
+    if (res.code !== 200) {
+      return console.log("数据请求失败");
+    }
+    dynamic.value = res;
+  };
+
+  // 专辑简介展开
+  const showAllDesc = () => {
+    if (details.value.description.length > 120) {
+      isShowDesc.value = !isShowDesc.value;
+    }
+  };
+
+  // 全部播放
+  const playAllSongs = () => {
+    store.dispatch("playAll", {
+      list: songList,
+    });
+    store.commit("SET_PLAYLISTTIPS", true);
+  };
+
+  // 收藏/取消 收藏专辑
+  const subAlbum = async () => {
+    const { data: res } = await proxy.$http.albumSub({
+      id: albumId.value,
+      t: Number(!dynamic.value.isSub),
+    });
+    if (res.code !== 200) {
+      return console.log("数据请求失败");
+    }
+    dynamic.value.isSub = Number(!dynamic.value.isSub);
+  };
+
+  // 订阅该歌单的用户列表
+  const getCollect = async (params) => {
+    const { data: res } = await proxy.$http.playlistSCollect(params);
+
+    if (res.code !== 200) {
+      return console.log("数据请求失败");
+    }
+    collects.value = res.subscribers;
+  };
+
+  // 初始化数据
+  const _initialize = () => {
+    getAlbum({ id: albumId.value });
+    getAlbumDynamic({ id: albumId.value });
+    getCollect({ id: albumId.value });
+  };
+
+  onMounted(() => {
+    albumId.value = route.query.id as string;
+    _initialize();
+  });
+
+  onBeforeRouteUpdate((to) => {
+    albumId.value = to.query.id as string;
+    _initialize();
+  });
 </script>
 
 <style scoped lang="less">
@@ -117,7 +316,7 @@
       right: -40px;
       width: 100%;
       height: 100%;
-      background: url("../../assets/img/disc.png") no-repeat;
+      background: url("../../src/assets/img/disc.png") no-repeat;
       background-size: contain;
       transition: all 0.4s linear;
     }

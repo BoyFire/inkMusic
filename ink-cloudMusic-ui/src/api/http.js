@@ -28,6 +28,11 @@ const serachSuggest = ({ keywords = "" }) => {
 const serachMatch = ({ keywords = "" }) => {
   return api.get(`/search/multimatch?keywords=${keywords}`, {});
 };
+//匿名登录
+const anonimous = () => {
+  return api.get(`/register/anonimous`);
+};
+
 // 登录
 const login = ({ phone = "", pwd = "", realIP = "43.241.243.255" }) => {
   return api.post(`/login/cellphone`, { phone, password: pwd, realIP });
@@ -211,6 +216,10 @@ const albumComment = ({
 };
 
 /* ********* 歌手 ********* */
+//歌手详情
+const artistDetall = ({ id = "" }) => {
+  return api.get(`artist/detail?id=${id}`, {});
+};
 // 歌手介绍
 const artistDesc = ({ id = "" }) => {
   return api.get(`/artist/desc?id=${id}`, {});
@@ -222,6 +231,10 @@ const artists = ({ id = "" }) => {
 // 收藏/取消收藏歌手
 const artistSub = ({ id = "", t = "1" }) => {
   return api.get(`/artist/sub?id=${id}&t=${t}`, {});
+};
+// 相似歌手
+const artistSimi = ({ id = "" }) => {
+  return api.get(`/simi/artist?id=${id}`, {});
 };
 // 获取歌手专辑
 const artistAlbum = ({ id = "", limit = 50, offset = 0 }) => {
@@ -376,6 +389,7 @@ export {
   serachMatch,
   cloudsearch,
   login,
+  anonimous,
   logout,
   getUserInfo,
   checkSong,
@@ -403,12 +417,14 @@ export {
   albumSub,
   albumDynamic,
   albumComment,
+  artistDetall,
   artistDesc,
   artists,
   artistSub,
   artistAlbum,
   artistMv,
   artistList,
+  artistSimi,
   mv,
   mvDetail,
   mvUrl,

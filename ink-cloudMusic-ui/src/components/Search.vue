@@ -16,6 +16,7 @@
       <template #prefix>
         <el-icon><Search /></el-icon>
       </template>
+      <!-- 历史搜索 -->
       <div
         class="history-search"
         v-if="!keyVal && historySearchList.length > 0">
@@ -40,13 +41,13 @@
         <el-option
           v-for="(item, index) in searchHot"
           :key="index"
-          :label="item.name"
-          :value="item.name"
+          :label="item.first"
+          :value="item.first"
           @click="jumpSearch(item)">
           <span :class="[index < 3 ? 'top-' + index : '']">{{
             index + 1 + "."
           }}</span>
-          {{ item.name }}
+          {{ item.first }}
         </el-option>
       </div>
 
@@ -83,7 +84,7 @@
   import { useRoute, useRouter } from "vue-router";
   import { useStore } from "vuex";
 
-  const proxy = getCurrentInstance();
+  const { proxy } = getCurrentInstance();
   const route = useRoute();
   const router = useRouter();
   const store = useStore();
@@ -91,10 +92,11 @@
   const historySearchListSize = 10;
 
   // 搜索框关键字
-  const keyVal: Ref<string> = ref("");
+  const keyVal = ref("");
+  const oldKeyVal = ref("");
   const loading: Ref<Boolean> = ref(false);
-  const suggestInfo = ref([]);
-  const searchHot = ref([]);
+  const suggestInfo: Ref<any> = ref([]);
+  const searchHot: Ref<any> = ref([]);
   const historySearchList: Ref<string[]> = ref([]);
 
   // TODO 后期根据后端返回值进行修改
@@ -106,12 +108,11 @@
   };
 
   // 远程搜索方法
-  const remoteMethod = (query: string) => {
+  const remoteMethod = (query) => {
     keyVal.value = query;
     if (keyVal.value) {
       loading.value = true;
       suggestInfo.value = [];
-
       getSearchSuggest();
     }
   };
@@ -140,193 +141,42 @@
     );
 
     // 访问后台 获取搜索结果
-    const res = {
-      albums: [
-        {
-          id: 155167369,
-          name: "爱如火",
-          artist: {
-            id: 54743524,
-            name: "那艺娜",
-            picUrl:
-              "https://p2.music.126.net/GAInzw41HYSRjrNvLkpjLA==/109951168272081011.jpg",
-            alias: [],
-            albumSize: 1,
-            picId: 109951168272081010,
-            fansGroup: null,
-            img1v1Url:
-              "https://p2.music.126.net/6y-UleORITEDbvrOLV0Q8A==/5639395138885805.jpg",
-            img1v1: 0,
-            trans: null,
-          },
-          publishTime: 1668700800000,
-          size: 1,
-          copyrightId: 2706808,
-          status: 1,
-          picId: 109951168074588340,
-          mark: 0,
-        },
-        {
-          id: 159349615,
-          name: "爱如火0.8x",
-          artist: {
-            id: 53096940,
-            name: "格先森",
-            picUrl:
-              "https://p2.music.126.net/wyXJSAJU2kTSRiZWtnIu9A==/109951167580518264.jpg",
-            alias: ["毛将军"],
-            albumSize: 50,
-            picId: 109951167580518270,
-            fansGroup: null,
-            img1v1Url:
-              "https://p2.music.126.net/6y-UleORITEDbvrOLV0Q8A==/5639395138885805.jpg",
-            img1v1: 0,
-            alia: ["毛将军"],
-            trans: null,
-          },
-          publishTime: 1675353600000,
-          size: 1,
-          copyrightId: 0,
-          status: 1,
-          picId: 109951168282634900,
-          mark: 0,
-        },
-      ],
-      songs: [
-        {
-          id: 1999552137,
-          name: "爱如火",
-          artists: [
-            {
-              id: 54743524,
-              name: "那艺娜",
-              picUrl: null,
-              alias: [],
-              albumSize: 0,
-              picId: 0,
-              fansGroup: null,
-              img1v1Url:
-                "https://p1.music.126.net/6y-UleORITEDbvrOLV0Q8A==/5639395138885805.jpg",
-              img1v1: 0,
-              trans: null,
-            },
-          ],
-          album: {
-            id: 155167369,
-            name: "爱如火",
-            artist: {
-              id: 0,
-              name: "",
-              picUrl: null,
-              alias: [],
-              albumSize: 0,
-              picId: 0,
-              fansGroup: null,
-              img1v1Url:
-                "https://p1.music.126.net/6y-UleORITEDbvrOLV0Q8A==/5639395138885805.jpg",
-              img1v1: 0,
-              trans: null,
-            },
-            publishTime: 1668700800000,
-            size: 1,
-            copyrightId: 2706808,
-            status: 1,
-            picId: 109951168074588340,
-            mark: 0,
-          },
-          duration: 204705,
-          copyrightId: 2706808,
-          status: 0,
-          alias: [],
-          rtype: 0,
-          ftype: 0,
-          mvid: 0,
-          fee: 8,
-          rUrl: null,
-          mark: 536870912,
-        },
-        {
-          id: 2019598678,
-          name: "爱如火 0.8 x",
-          artists: [
-            {
-              id: 53096940,
-              name: "格先森",
-              picUrl: null,
-              alias: [],
-              albumSize: 0,
-              picId: 0,
-              fansGroup: null,
-              img1v1Url:
-                "https://p2.music.126.net/6y-UleORITEDbvrOLV0Q8A==/5639395138885805.jpg",
-              img1v1: 0,
-              trans: null,
-            },
-          ],
-          album: {
-            id: 159349615,
-            name: "爱如火0.8x",
-            artist: {
-              id: 0,
-              name: "",
-              picUrl: null,
-              alias: [],
-              albumSize: 0,
-              picId: 0,
-              fansGroup: null,
-              img1v1Url:
-                "https://p2.music.126.net/6y-UleORITEDbvrOLV0Q8A==/5639395138885805.jpg",
-              img1v1: 0,
-              trans: null,
-            },
-            publishTime: 1675353600000,
-            size: 1,
-            copyrightId: 0,
-            status: 1,
-            picId: 109951168282634900,
-            mark: 0,
-          },
-          duration: 68334,
-          copyrightId: 0,
-          status: 0,
-          alias: [],
-          rtype: 0,
-          ftype: 0,
-          mvid: 0,
-          fee: 0,
-          rUrl: null,
-          mark: 128,
-        },
-      ],
-      order: ["songs", "albums"],
-    };
-    loading.value = false;
-    suggestInfo.value = res.order.map((item) => {
-      return {
-        label: item,
-        info: res[item],
-      };
+    const { data: res } = await proxy.$http.serachSuggest({
+      keywords: keyVal.value,
     });
+
+    loading.value = false;
+
+    if (res.code !== 200) {
+      return console.log("数据请求失败");
+    }
+    if (res.result.order) {
+      suggestInfo.value = res.result.order.map((item) => {
+        return {
+          label: item,
+          info: res.result[item],
+        };
+      });
+    }
   };
 
   // 热门搜索
   const getSearchHot = async () => {
-    //获取热门搜索
-    searchHot.value = [
-      { name: "他只是经过" },
-      { name: "会不会" },
-      { name: "永不失联的爱" },
-      { name: "不曾遗忘的符号" },
-    ];
+    const { data: res } = await proxy.$http.serachHot();
+
+    if (res.code !== 200) {
+      return console.log("数据请求失败");
+    }
+    searchHot.value = res.result.hots;
   };
 
   // 默认热门搜索列表，点击后台跳转到搜索结果页面
   const jumpSearch = (item) => {
-    keyVal.value = item.name;
-    if (item.name === route.query.key) {
+    keyVal.value = item.first;
+    if (item.first === route.query.key) {
       return;
     }
-    router.push({ path: "/search", query: { key: item.name } });
+    router.push({ path: "/search", query: { key: item.first } });
   };
 
   // 搜索建议列表，点击后跳转到相对应的落地页
@@ -336,7 +186,7 @@
         router.push({ path: "/song", query: { id: item.id } });
         break;
       case "artists":
-        router.push({ path: "/singer", query: { id: item.id } });
+        router.push({ path: "/artist/detail", query: { id: item.id } });
         break;
       case "albums":
         router.push({ path: "/album", query: { id: item.id } });

@@ -66,14 +66,7 @@
     isLogin.value = false;
   }
 
-  /******************************* 搜索操作 */
-  // 搜索值
-  const searchValue: String = "";
-
-  /** 点击搜索 */
-  function searchHandler() {}
-
-  /******************************* logo 操作 */
+  //点击logo 返回主页
   function toHome() {
     router.push("/");
   }

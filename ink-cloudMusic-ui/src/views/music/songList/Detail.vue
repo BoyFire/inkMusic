@@ -29,7 +29,16 @@
                     <i class="iconfont icon-placeholder"></i>
                   </div>
                 </el-image>
-                <div class="cover-name">{{ details.creator.nickname }}</div>
+
+                <div class="cover-name">
+                  <router-link
+                    :to="{
+                      path: '/user',
+                      query: { id: details.creator.userId },
+                    }">
+                    {{ details.creator.nickname }}
+                  </router-link>
+                </div>
                 <div class="cover-date">
                   {{ $utils.formartDate(details.createTime, "yyyy-MM-dd") }}
                 </div>
@@ -291,6 +300,11 @@
 
   // 播放列表为当前歌单的全部歌曲
   const playAllSongs = () => {
+    //清空旧播放列表
+    store.commit("SET_PLAYSTATUS", false);
+    store.commit("SET_PLAYLIST", []);
+    store.commit("SET_PLAYINDEX", 0);
+
     store.dispatch("playAll", {
       list: songList.value,
     });
@@ -389,7 +403,7 @@
       top: 0;
       left: 0;
       z-index: -1;
-      width: 100%;
+      width: 90%;
       height: 100%;
       content: "";
       transform: scale(0.95) translateX(5%);

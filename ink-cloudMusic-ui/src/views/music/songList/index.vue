@@ -130,7 +130,7 @@
     }
   };
 
-  // 获取详情歌曲中
+  // 获取详情歌曲
   const getMoreTxt = () => {
     const itemInfo = sub.value.find((subItem) => {
       return subItem.name === curType;
@@ -207,7 +207,7 @@
       curType.value = cat || allList.value.name;
       params.value = Object.assign(
         {},
-        { order: "hot", cat: "", limit: 50, offset: 0 },
+        { order: "hot", cat: "", limit: 48, offset: 0 },
         { cat: cat || "", order: order || "hot" }
       );
       getMoreTxt();
@@ -216,7 +216,7 @@
 
   onMounted(() => {
     getCatlist();
-    getPlayList(params);
+    getPlayList(params.value);
   });
 </script>
 

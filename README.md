@@ -1,5 +1,5 @@
 ## 云音乐推荐系统
-前端采用Vue3 + TS + vite + element-plus + axios 实现
-后台采用若依框架 微服务版本
+前端采用Vue3 + TS + vite + element-plus + axios 实现 <br>
+后台采用若依框架 微服务版本<br>
 推荐算法为 协同过滤 
 ### 目前仍旧处于开发状态中, 请不要着急
