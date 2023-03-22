@@ -4,7 +4,9 @@ import com.ruoyi.common.core.utils.DateUtils;
 import com.ruoyi.common.security.utils.SecurityUtils;
 import com.ruoyi.music.entity.MmsAlbum;
 import com.ruoyi.music.mapper.MmsAlbumMapper;
+import com.ruoyi.music.mapper.MmsSingerAlbumMapper;
 import com.ruoyi.music.service.IMmsAlbumService;
+import com.ruoyi.music.vo.front.AlbumParamsVo;
 import com.ruoyi.music.vo.front.SimpleAlbum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -23,6 +25,9 @@ import java.util.List;
 public class MmsAlbumServiceImpl implements IMmsAlbumService {
     @Autowired
     private MmsAlbumMapper mmsAlbumMapper;
+
+    @Autowired
+    private MmsSingerAlbumMapper mmsSingerAlbumMapper;
     @Autowired
     private StringRedisTemplate redisTemplate;
 
@@ -40,12 +45,12 @@ public class MmsAlbumServiceImpl implements IMmsAlbumService {
     /**
      * 查询专辑列表
      *
-     * @param mmsAlbum 专辑
+     * @param albumParamsVo 专辑
      * @return 专辑
      */
     @Override
-    public List<MmsAlbum> selectMmsAlbumList(MmsAlbum mmsAlbum) {
-        return mmsAlbumMapper.selectMmsAlbumList(mmsAlbum);
+    public List<MmsAlbum> selectMmsAlbumList(AlbumParamsVo albumParamsVo) {
+        return mmsSingerAlbumMapper.selectMmsAlbumList(albumParamsVo);
     }
 
     /**

@@ -71,7 +71,7 @@ public interface MmsAlbumMapper
     String selectMmsAlbumNameByAlbumId(@Param("albumId") Long albumId);
 
     /**
-     * 查询专辑名和id
+     * 查询专辑名 根据歌手id
      * @param singerId 歌手id
      * @return 结果
      */

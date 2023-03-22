@@ -9,6 +9,7 @@ import com.ruoyi.common.log.enums.BusinessType;
 import com.ruoyi.common.security.annotation.RequiresPermissions;
 import com.ruoyi.music.entity.MmsAlbum;
 import com.ruoyi.music.service.IMmsAlbumService;
+import com.ruoyi.music.vo.front.AlbumParamsVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,10 +34,10 @@ public class MmsAlbumController extends BaseController
      */
     @RequiresPermissions("music:album:list")
     @GetMapping("/list")
-    public TableDataInfo list(MmsAlbum mmsAlbum)
+    public TableDataInfo list(AlbumParamsVo albumParamsVo)
     {
         startPage();
-        List<MmsAlbum> list = mmsAlbumService.selectMmsAlbumList(mmsAlbum);
+        List<MmsAlbum> list = mmsAlbumService.selectMmsAlbumList(albumParamsVo);
         return getDataTable(list);
     }
 
@@ -46,9 +47,9 @@ public class MmsAlbumController extends BaseController
     @RequiresPermissions("music:album:export")
     @Log(title = "专辑", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, MmsAlbum mmsAlbum)
+    public void export(HttpServletResponse response, AlbumParamsVo albumParamsVo)
     {
-        List<MmsAlbum> list = mmsAlbumService.selectMmsAlbumList(mmsAlbum);
+        List<MmsAlbum> list = mmsAlbumService.selectMmsAlbumList(albumParamsVo);
         ExcelUtil<MmsAlbum> util = new ExcelUtil<MmsAlbum>(MmsAlbum.class);
         util.exportExcel(response, list, "专辑数据");
     }

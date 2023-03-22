@@ -4,6 +4,7 @@ import com.ruoyi.music.entity.MmsSinger;
 import com.ruoyi.music.vo.front.SimpleSinger;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -76,4 +77,13 @@ public interface MmsSingerMapper
      * @return 结果
      */
     List<SimpleSinger> selectSimpleSinger();
+
+
+    /**
+     * 添加歌手别名
+     * @param singerId 歌手id
+     * @param alias 别名列表
+     * @return 结果
+     */
+    int insertSingerAlias(@Param("singerId") Long singerId, @Param("alias") ArrayList<String> alias);
 }

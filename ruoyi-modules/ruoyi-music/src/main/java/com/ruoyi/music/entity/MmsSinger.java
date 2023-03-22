@@ -1,14 +1,13 @@
 package com.ruoyi.music.entity;
 
-import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.ruoyi.common.core.annotation.Excel;
+import com.ruoyi.common.core.web.domain.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-import com.ruoyi.common.core.annotation.Excel;
-import com.ruoyi.common.core.web.domain.BaseEntity;
+
+import java.util.Date;
 
 /**
  * 歌手对象 mms_singer
@@ -70,5 +69,15 @@ public class MmsSinger extends BaseEntity
     /** 是否删除;0-未删除,1-删除 */
     @Excel(name = "是否删除;0-未删除,1-删除")
     private Integer isDel;
+
+    /** 歌手歌曲数 */
+    @Excel(name = "歌手歌曲数")
+    private Integer singerMusicSize;
+    /** 歌手粉丝数 */
+    @Excel(name = "歌手粉丝数")
+    private Integer SingerFanCount;
+    /** 歌手专辑数 */
+    @Excel(name = "歌手专辑数")
+    private Integer singerAlbumSize;
 
 }

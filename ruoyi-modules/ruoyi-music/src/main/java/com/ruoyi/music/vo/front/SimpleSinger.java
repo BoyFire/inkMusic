@@ -1,8 +1,7 @@
 package com.ruoyi.music.vo.front;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
@@ -11,8 +10,7 @@ import java.io.Serializable;
  * 2022/10/20
  */
 @Data
-@ToString
-@EqualsAndHashCode
+@NoArgsConstructor
 public class SimpleSinger implements Serializable {
     public final static Long serialVersionUID = 1L;
     private Long singerId;

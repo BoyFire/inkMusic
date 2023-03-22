@@ -115,6 +115,12 @@
             <if test="isDel != null">0,</if>
         </trim>
     </insert>
+    <insert id="insertSingerAlias">
+        insert into mms_singer_alias(singer_alias, singer_id) values
+        <foreach collection="alias" item="alia" separator=",">
+            (#{alia}, #{singerId})
+        </foreach>
+    </insert>
 
     <update id="updateMmsSinger" parameterType="MmsSinger">
         update mms_singer

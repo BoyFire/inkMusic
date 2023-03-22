@@ -2,6 +2,7 @@ package com.ruoyi.music.service;
 
 
 import com.ruoyi.music.entity.MmsAlbum;
+import com.ruoyi.music.vo.front.AlbumParamsVo;
 import com.ruoyi.music.vo.front.SimpleAlbum;
 
 import java.util.List;
@@ -25,10 +26,10 @@ public interface IMmsAlbumService
     /**
      * 查询专辑列表
      * 
-     * @param mmsAlbum 专辑
+     * @param albumParamsVo 专辑
      * @return 专辑集合
      */
-    public List<MmsAlbum> selectMmsAlbumList(MmsAlbum mmsAlbum);
+    public List<MmsAlbum> selectMmsAlbumList(AlbumParamsVo albumParamsVo);
 
     /**
      * 新增专辑
