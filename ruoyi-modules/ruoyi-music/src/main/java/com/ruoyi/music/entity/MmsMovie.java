@@ -41,7 +41,7 @@ public class MmsMovie extends BaseEntity {
      * 视频上传者类型;0-歌手, 1-用户
      */
     @Excel(name = "视频上传者类型;0-歌手, 1-用户")
-    private Long movieUpType;
+    private Integer movieUpType;
 
     /**
      * 视频上传者id
@@ -54,6 +54,19 @@ public class MmsMovie extends BaseEntity {
      */
     @Excel(name = "视频封面url")
     private String movieImageUrl;
+
+    /**
+     * 视频简介
+     */
+    @Excel(name = "视频简介")
+    private String movieDesc;
+
+    /**
+     * 视频播放量
+     */
+    @Excel(name = "视频播放量")
+    private Long moviePlayCount;
+
     /**
      * 视频url
      */

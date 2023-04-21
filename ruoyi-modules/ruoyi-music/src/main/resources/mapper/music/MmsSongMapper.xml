@@ -7,11 +7,10 @@
     <resultMap type="MmsSong" id="MmsSongResult">
         <result property="id" column="id"/>
         <result property="songId" column="song_id"/>
-        <result property="singerId" column="singer_id"/>
         <result property="songName" column="song_name"/>
+        <result property="songDuration" column="song_duration"/>
         <result property="songUrl" column="song_url"/>
         <result property="songImgUrl" column="song_img_url"/>
-        <result property="songLyric" column="song_lyric"/>
         <result property="songStatus" column="song_status"/>
         <result property="createBy" column="create_by"/>
         <result property="createTime" column="create_time"/>
@@ -19,11 +18,14 @@
         <result property="editTime" column="edit_time"/>
         <result property="revision" column="revision"/>
         <result property="isDel" column="is_del"/>
-        <result property="albumName" column="album_name"/>
-        <result property="albumId" column="album_id"/>
-        <result property="singerName" column="singer_name"/>
-        <association property="tagNames" column="song_id"
-                     select="com.ruoyi.music.mapper.MmsSongTagMapper.selectTagNameBySongId"/>
+        <collection property="singers" column="song_id"
+                    select="com.ruoyi.music.mapper.MmsSongSingerMapper.selectSimpleSingerBySongId"/>
+        <collection property="albums" column="song_id"
+                    select="com.ruoyi.music.mapper.MmsSongAlbumMapper.selectSimpleAlbumBySongId"/>
+        <collection property="alias" column="song_id"
+                    select="com.ruoyi.music.mapper.MmsSongAliasMapper.selectSongAliasBySongId"/>
+        <collection property="tagNames" column="song_id"
+                    select="com.ruoyi.music.mapper.MmsSongTagMapper.selectTagNameBySongId"/>
     </resultMap>
 
     <resultMap id="SimpleSongVoResult" type="SimpleSongVo">
@@ -34,41 +36,35 @@
     <sql id="selectMmsSongVo">
         select ms.id,
                ms.song_id,
-               ms.singer_id,
                ms.song_name,
+               ms.song_duration,
                ms.song_url,
                ms.song_img_url,
-               ms.song_lyric,
                ms.song_status,
                ms.create_by,
                ms.create_time,
                ms.edit_by,
                ms.edit_time,
                ms.revision,
-               ms.is_del,
-               msa.album_id,
-               ma.album_name,
-               m.singer_name
+               ms.is_del
         from mms_song ms
-                 left join mms_song_album msa on ms.song_id = msa.song_id
-                 left join mms_album ma on msa.album_id = ma.album_id
-                 left join mms_singer m on ms.singer_id = m.singer_id
     </sql>
 
-    <select id="selectMmsSongList" parameterType="MmsSong" resultMap="MmsSongResult">
+    <select id="selectMmsSongList" parameterType="SongParamsVo" resultMap="MmsSongResult">
         <include refid="selectMmsSongVo"/>
+        INNER JOIN mms_song_album sa on ms.song_id = sa.song_id
+        INNER JOIN mms_album a on a.album_id = sa.album_id
+        INNER JOIN mms_song_singer ss on ss.song_id = ms.song_id
+        INNER JOIN mms_singer s on s.singer_id = ss.singer_id
         <where>
             ms.is_del =0
-            <if test="songId != null ">and ms.song_id = #{songId}</if>
-            <if test="singerId != null ">and ms.singer_id = #{singerId}</if>
-            <if test="songName != null  and songName != ''">and ms.song_name like concat('%', #{songName}, '%')</if>
-            <if test="singerName != null  and singerName != ''">and m.singer_name like concat('%', #{singerName}, '%')
-            </if>
-            <if test="albumName != null  and albumName != ''">and ma.album_name like concat('%', #{albumName}, '%')</if>
-            <if test="songUrl != null  and songUrl != ''">and ms.song_url = #{songUrl}</if>
-            <if test="songImgUrl != null  and songImgUrl != ''">and ms.song_img_url = #{songImgUrl}</if>
-            <if test="songLyric != null  and songLyric != ''">and ms.song_lyric = #{songLyric}</if>
-            <if test="songStatus != null ">and ms.song_status = #{songStatus}</if>
+            <if test="songId != null">and ms.song_id = #{songId}</if>
+            <if test="singerId != null">and ss.singer_id = #{singerId}</if>
+            <if test="albumId != null">and sa.album_id = #{albumId}</if>
+            <if test="songStatus != null">and sa.song_status = #{songStatus}</if>
+            <if test="songName != null and songName != '' ">and ms.song_name like concat(#{songName} ,'%')</if>
+            <if test="singerName != null and singerName != '' ">and s.singer_name like concat(#{singerName} ,'%')</if>
+            <if test="albumName != null and albumName != '' ">and a.album_name like concat(#{albumName} ,'%')</if>
         </where>
     </select>
 
@@ -94,16 +90,24 @@
         <include refid="selectMmsSongVo"/>
         where ms.song_id = #{songId} and ms.is_del =0
     </select>
+    <select id="selectSimpleSongsBySongName" resultMap="SimpleSongVoResult">
+        select song_id,song_name
+        from mms_song
+        where is_del =0
+        <if test=" songName != null and songName !=''">and song_name like concat(#{songName},'%')</if>
+        <if test="songName == null or songName ==''">limit 100</if>
+
+
+    </select>
 
     <insert id="insertMmsSong" parameterType="MmsSong" useGeneratedKeys="true" keyProperty="id">
         insert into mms_song
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="songId != null">song_id,</if>
-            <if test="singerId != null">singer_id,</if>
             <if test="songName != null">song_name,</if>
             <if test="songUrl != null">song_url,</if>
             <if test="songImgUrl != null">song_img_url,</if>
-            <if test="songLyric != null">song_lyric,</if>
+            <if test="songDuration != null">song_duration,</if>
             <if test="songStatus != null">song_status,</if>
             <if test="createBy != null">create_by,</if>
             <if test="createTime != null">create_time,</if>
@@ -114,11 +118,10 @@
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="songId != null">#{songId},</if>
-            <if test="singerId != null">#{singerId},</if>
             <if test="songName != null">#{songName},</if>
             <if test="songUrl != null">#{songUrl},</if>
             <if test="songImgUrl != null">#{songImgUrl},</if>
-            <if test="songLyric != null">#{songLyric},</if>
+            <if test="songDuration != null">#{songDuration},</if>
             <if test="songStatus != null">#{songStatus},</if>
             <if test="createBy != null">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
@@ -128,21 +131,16 @@
             <if test="isDel != null">#{isDel},</if>
         </trim>
     </insert>
-    <insert id="insertSongAlbum">
-        insert into mms_song_album(song_id, album_id)
-        values (#{songId}, #{albumId})
-    </insert>
 
     <update id="updateMmsSong" parameterType="MmsSong">
         update mms_song
         <trim prefix="SET" suffixOverrides=",">
             <if test="songId != null">song_id = #{songId},</if>
-            <if test="singerId != null">singer_id = #{singerId},</if>
             <if test="songName != null">song_name = #{songName},</if>
             <if test="songUrl != null">song_url = #{songUrl},</if>
             <if test="songImgUrl != null">song_img_url = #{songImgUrl},</if>
-            <if test="songLyric != null">song_lyric = #{songLyric},</if>
             <if test="songStatus != null">song_status = #{songStatus},</if>
+            <if test="songDuration != null">song_duration = #{songDuration},</if>
             <if test="createBy != null">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="editBy != null">edit_by = #{editBy},</if>
@@ -152,11 +150,7 @@
         </trim>
         where id = #{id}
     </update>
-    <update id="updateSongAlbum">
-        update mms_song_album
-        set album_id=#{albumId}
-        where song_id = #{songId}
-    </update>
+
 
     <delete id="deleteMmsSongById" parameterType="Long">
         update mms_song

@@ -1,6 +1,7 @@
 package com.ruoyi.music.service;
 
 import com.ruoyi.music.entity.MmsSongList;
+import com.ruoyi.music.entity.MmsUser;
 import com.ruoyi.music.vo.front.SimpleSongListVo;
 
 import java.util.List;
@@ -35,7 +36,7 @@ public interface IMmsSongListService
      * @param mmsSongList 歌单
      * @return 结果
      */
-    public int insertMmsSongList(MmsSongList mmsSongList);
+    public int insertMmsSongList(MmsSongList mmsSongList) throws NullPointerException;
 
     /**
      * 修改歌单
@@ -73,4 +74,21 @@ public interface IMmsSongListService
      * @return  结果
      */
     MmsSongList selectMmsSongListBySongListId(Long songListId);
+
+    /**
+     * 根据 songName 进行模糊查询
+     *
+     * @param songListName 歌单名
+     * @return 结果
+     */
+    List<SimpleSongListVo> selectSimpleSongsBySongName(String songListName);
+
+
+    /**
+     * 给新增的用户添加 最爱的歌单
+     *
+     * @param user 用户id
+     * @return 结果
+     */
+    int insertNewUserLover(MmsUser user) throws NullPointerException;
 }

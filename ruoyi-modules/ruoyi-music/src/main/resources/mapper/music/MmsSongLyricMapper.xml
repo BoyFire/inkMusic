@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ruoyi.music.mapper.MmsSongLyricMapper">
+
+    <insert id="insertSongLyric">
+        insert into mms_song_lyric(song_id, song_lyric)
+        values (#{songId}, #{lyric});
+    </insert>
+    <update id="updateSongLyric">
+        update mms_song_lyric
+        set song_lyric = #{lyric}
+        where song_id = #{songId};
+    </update>
+    <select id="selectLyricBySongId" resultType="java.lang.String">
+        select song_lyric
+        from mms_song_lyric
+        where song_id = #{songId}
+    </select>
+</mapper>

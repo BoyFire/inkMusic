@@ -105,6 +105,11 @@ public class MmsMovieController extends BaseController
         return toAjax(mmsMovieService.deleteMmsMovieByIds(ids));
     }
 
+    //getSimpleMvsByName
+    @GetMapping("/getSimpleMvsByName")
+    public AjaxResult getSimpleMvsByName(@RequestParam("query")String mvName) {
+        return AjaxResult.success(mmsMovieService.getSimpleMvsByName(mvName));
+    }
 
 
 }

@@ -1,26 +1,20 @@
 package com.ruoyi.music.controller;
 
-import java.util.List;
-import javax.servlet.http.HttpServletResponse;
-
-import com.ruoyi.music.entity.MmsUserAuth;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.alibaba.nacos.shaded.com.google.protobuf.ServiceException;
+import com.ruoyi.common.core.utils.poi.ExcelUtil;
+import com.ruoyi.common.core.web.controller.BaseController;
+import com.ruoyi.common.core.web.domain.AjaxResult;
+import com.ruoyi.common.core.web.page.TableDataInfo;
 import com.ruoyi.common.log.annotation.Log;
 import com.ruoyi.common.log.enums.BusinessType;
 import com.ruoyi.common.security.annotation.RequiresPermissions;
+import com.ruoyi.music.entity.MmsUserAuth;
 import com.ruoyi.music.service.IMmsUserAuthService;
-import com.ruoyi.common.core.web.controller.BaseController;
-import com.ruoyi.common.core.web.domain.AjaxResult;
-import com.ruoyi.common.core.utils.poi.ExcelUtil;
-import com.ruoyi.common.core.web.page.TableDataInfo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * 用户认证Controller
@@ -78,7 +72,9 @@ public class MmsUserAuthController extends BaseController
     @PostMapping
     public AjaxResult add(@RequestBody MmsUserAuth mmsUserAuth)
     {
-        if (mmsUserAuthService.insertMmsUserAuth(mmsUserAuth)==0) {
+        try {
+            mmsUserAuthService.insertMmsUserAuth(mmsUserAuth);
+        } catch (ServiceException e) {
             return AjaxResult.error("该用户账号方式已存在,请选择其他");
         }
         return AjaxResult.success();

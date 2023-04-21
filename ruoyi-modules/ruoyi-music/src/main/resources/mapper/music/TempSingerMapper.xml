@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ruoyi.music.mapper.TempSingerMapper">
+
+    <insert id="insertSingerId">
+        insert into temp_singer(api_singer_id, singer_id)
+        values (#{apiId}, #{singerId})
+    </insert>
+
+    <select id="selectApiSinger" resultType="com.ruoyi.music.Temp.ApiSinger">
+        select api_singer_id as apiId, singer_id as singerId
+        from temp_singer
+        limit #{offset}, #{limit}
+    </select>
+
+    <select id="selectSingerIdByApiId" resultType="java.lang.Long">
+        select singer_id
+        from temp_singer
+        where api_singer_id = #{apiId}
+    </select>
+    <select id="selectSingerIdByApiIds" resultType="java.lang.Long">
+        select singer_id
+        from temp_singer
+        where api_singer_id in
+        <foreach collection="apiIds" item="apiId" open="(" close=")" separator=",">
+            #{apiId}
+        </foreach>
+    </select>
+</mapper>

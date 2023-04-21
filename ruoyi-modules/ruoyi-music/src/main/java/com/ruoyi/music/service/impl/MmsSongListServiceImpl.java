@@ -3,6 +3,7 @@ package com.ruoyi.music.service.impl;
 import com.ruoyi.common.core.utils.DateUtils;
 import com.ruoyi.common.security.utils.SecurityUtils;
 import com.ruoyi.music.entity.MmsSongList;
+import com.ruoyi.music.entity.MmsUser;
 import com.ruoyi.music.mapper.MmsSongListMapper;
 import com.ruoyi.music.service.IMmsSongListService;
 import com.ruoyi.music.vo.front.SimpleSongListVo;
@@ -12,6 +13,7 @@ import org.springframework.data.redis.support.atomic.RedisAtomicLong;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 歌单Service业务层处理
@@ -27,6 +29,17 @@ public class MmsSongListServiceImpl implements IMmsSongListService
 
     @Autowired
     private StringRedisTemplate redisTemplate;
+
+    /**
+     * 根据 songName 进行模糊查询
+     *
+     * @param songListName 歌单名
+     * @return 结果
+     */
+    @Override
+    public List<SimpleSongListVo> selectSimpleSongsBySongName(String songListName) {
+        return mmsSongListMapper.selectSimpleSongsBySongName(songListName);
+    }
 
     /**
      * 查询歌单
@@ -59,20 +72,19 @@ public class MmsSongListServiceImpl implements IMmsSongListService
      * @return 结果
      */
     @Override
-    public int insertMmsSongList(MmsSongList mmsSongList)
+    public int insertMmsSongList(MmsSongList mmsSongList) throws NullPointerException
     {
-        RedisAtomicLong atomicLong = new RedisAtomicLong("mms_dict:ids:mms_song_list_id", redisTemplate.getConnectionFactory());
-        long songListId = atomicLong.addAndGet(1);
-        mmsSongList.setSongListId(songListId);
-        if (mmsSongList.getSongListStatus() == null){
-            mmsSongList.setSongListStatus(1);
+
+        if (SecurityUtils.getUsername() == null || "".equals(SecurityUtils.getUsername()) ){
+            mmsSongList.setCreateBy("admin");
+        }else{
+            mmsSongList.setCreateBy(SecurityUtils.getUsername());
         }
-        mmsSongList.setIsDel(0);
-        mmsSongList.setIsFine(0);
-        mmsSongList.setCreateBy(SecurityUtils.getUsername());
-        mmsSongList.setCreateTime(DateUtils.getNowDate());
+        generateSongListMeta(mmsSongList);
         return mmsSongListMapper.insertMmsSongList(mmsSongList);
     }
+
+
 
     /**
      * 修改歌单
@@ -121,5 +133,39 @@ public class MmsSongListServiceImpl implements IMmsSongListService
     public MmsSongList selectMmsSongListBySongListId(Long songListId) {
 
         return mmsSongListMapper.selectMmsSongListBySongListId(songListId);
+    }
+
+
+    /**
+     * 给新增的用户添加 最爱的歌单
+     *
+     * @param user 用户id
+     * @return 结果
+     */
+    @Override
+    public int insertNewUserLover(MmsUser user) throws NullPointerException {
+        MmsSongList mmsSongList = new MmsSongList();
+        mmsSongList.setSongListCreatorId(user.getUserId());
+        mmsSongList.setSongListTitle("我喜欢的音乐");
+        mmsSongList.setCreateBy(user.getUserNickname());
+        generateSongListMeta(mmsSongList);
+        return mmsSongListMapper.insertMmsSongList(mmsSongList);
+    }
+
+
+    /**
+     * 修改 mmsSongList d 基础属性
+     *
+     * @param mmsSongList 要修改的对象
+     */
+    private void generateSongListMeta(MmsSongList mmsSongList) throws NullPointerException {
+        RedisAtomicLong atomicLong  = new RedisAtomicLong("mms_dict:ids:mms_song_list_id", Objects.requireNonNull(redisTemplate.getConnectionFactory()));
+        mmsSongList.setSongListId(atomicLong.addAndGet(1));
+        if (mmsSongList.getSongListStatus() == null){
+            mmsSongList.setSongListStatus(1);
+        }
+        mmsSongList.setIsDel(0);
+        mmsSongList.setIsFine(0);
+        mmsSongList.setCreateTime(DateUtils.getNowDate());
     }
 }

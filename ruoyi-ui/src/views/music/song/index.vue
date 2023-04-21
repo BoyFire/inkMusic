@@ -135,8 +135,21 @@
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="歌曲id" align="center" prop="songId" />
       <el-table-column label="歌曲名" align="center" prop="songName" />
-      <el-table-column label="歌手名" align="center" prop="singerName" />
-      <el-table-column label="专辑名" align="center" prop="albumName" />
+      <el-table-column label="歌手名" align="center" prop="singerName">
+        <template slot-scope="scope">
+          <span v-for="(item, index) in scope.row.singers">
+            {{ (index != 0 ? "," : "") + item.singerName }}
+          </span>
+        </template>
+      </el-table-column>
+      <el-table-column label="专辑名" align="center" prop="albumName">
+        <template slot-scope="scope">
+          {{ scope.row.album }}
+          <span v-for="(item, index) in scope.row.albums">
+            {{ (index != 0 ? "," : "") + item.albumName }}
+          </span>
+        </template>
+      </el-table-column>
 
       <el-table-column label="试听" align="center" prop="songUrl">
         <template slot-scope="scope">
@@ -221,19 +234,24 @@
           <el-input v-model="form.songName" placeholder="请输入歌曲名" />
         </el-form-item>
 
-        <el-form-item label="歌手名" required prop="singerId">
+        <el-form-item label="歌手名" required prop="singers">
           <el-select
-            v-model="form.singerId"
+            v-model="form.singers"
+            multiple
             clearable
             filterable
-            placeholder="请选择歌手"
+            remote
+            value-key="singerId"
+            :remote-method="remoteMethodForSinger"
+            :loading="remoteLoading"
             @change="getSimpleAlbum()"
+            placeholder="请选择歌手"
           >
             <el-option
               v-for="(item, index) in simpleSinger"
               :key="index"
               :label="item.singerName"
-              :value="item.singerId"
+              :value="item"
             >
               <span style="float: left">{{ item.singerName }}</span>
               <span style="float: right; color: #8492a6; font-size: 13px">{{
@@ -243,18 +261,21 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="专辑" required prop="albumId">
+        <el-form-item label="专辑" required prop="albums">
           <el-select
-            v-model="form.albumId"
+            v-model="form.albums"
+            multiple
             clearable
             filterable
+            value-key="albumId"
+            :loading="remoteLoading"
             placeholder="请选择专辑"
           >
             <el-option
               v-for="(item, index) in simpleAlbum"
               :key="index"
               :label="item.albumName"
-              :value="item.albumId"
+              :value="item"
             >
               <span style="float: left">{{ item.albumName }}</span>
               <span style="float: right; color: #8492a6; font-size: 13px">{{
@@ -276,7 +297,17 @@
           <image-upload v-model="form.songImgUrl" />
         </el-form-item>
         <el-form-item label="歌词" prop="songLyric">
-          <file-upload v-model="form.songLyric" :uploadType="'lyric'" />
+          <el-input
+            v-model="form.singerDetail"
+            type="textarea"
+            placeholder="[00:00.000] 作词 : 唐恬
+            [00:00.156] 作曲 : 钱雷
+            [00:00.312] 编曲 : 钱雷
+            [00:00.468] 联合出品 : 腾讯游戏/拳头游戏
+            [00:00.624] 出品监制 : 霍锦/卢泓宇
+            [00:00.780][00:00.900] LIVE 版制作人：Clem Fung
+            "
+          />
         </el-form-item>
 
         <el-form-item label="歌曲状态" prop="songStatus">
@@ -382,21 +413,11 @@
 </template>
 
 <script>
-import {
-  listSong,
-  getSong,
-  delSong,
-  addSong,
-  updateSong,
-} from "@/api/music/song";
-import { listSingerIdAndSingerName } from "@/api/music/singer";
-import { listAlbumIdAndName } from "@/api/music/album";
-import {
-  getSimpleTagsBySongId,
-  deleteSongTagByTagId,
-  addSongTags,
-} from "@/api/music/songTag";
-import { getTagsByParentsId } from "@/api/music/tag";
+import {listAlbumIdAndName} from "@/api/music/album";
+import {listSingerIdAndSingerName, selectSimpleSingerByName,} from "@/api/music/singer";
+import {addSong, delSong, getSong, listSong, updateSong,} from "@/api/music/song";
+import {addSongTags, deleteSongTagByTagId, getSimpleTagsBySongId,} from "@/api/music/songTag";
+import {getTagsByParentsId} from "@/api/music/tag";
 
 export default {
   name: "Song",
@@ -426,11 +447,7 @@ export default {
         pageSize: 10,
         songId: null,
         songName: null,
-        songUrl: null,
-        songImgUrl: null,
-        songLyric: null,
         songStatus: null,
-
         singerName: null,
         albumName: null,
       },
@@ -446,11 +463,14 @@ export default {
         },
       ],
       //列举歌手姓名 及 id
-      simpleSinger: null,
+      simpleSinger: [],
       //列举专辑名 及 id
-      simpleAlbum: null,
+      simpleAlbum: [],
       // 表单参数
-      form: {},
+      form: {
+        singers: [],
+        albums: [],
+      },
       // 表单校验
       rules: {},
       // 歌曲标签抽屉显示
@@ -471,10 +491,13 @@ export default {
       songTagTypeChildrenList: [],
       // 音乐标签所属类别
       songTagType: 1,
+      // 远程调用load
+      remoteLoading: false,
     };
   },
   created() {
     this.getList();
+    this.reset();
   },
   methods: {
     /** 查询歌曲列表 */
@@ -510,11 +533,8 @@ export default {
         editTime: null,
         revision: null,
         isDel: null,
-
-        singerName: null,
-
-        albumId: null,
-        albumName: null,
+        singers: [],
+        albums: [],
       };
       this.resetForm("form");
     },
@@ -537,10 +557,7 @@ export default {
     /** 新增按钮操作 */
     handleAdd() {
       this.reset();
-      listSingerIdAndSingerName().then((response) => {
-        this.simpleSinger = response.data;
-      });
-
+      this.simpleSinger = [];
       this.open = true;
       this.title = "添加歌曲";
     },
@@ -622,10 +639,16 @@ export default {
     },
     /** 当选择歌手后 */
     getSimpleAlbum() {
-      this.simpleAlbum = null;
-      if (this.form.singerId != null) {
-        listAlbumIdAndName(this.form.singerId).then((response) => {
-          this.simpleAlbum = response.data;
+      this.simpleAlbum = [];
+      if (this.form.singers != []) {
+        this.form.singers.forEach((singer) => {
+          listAlbumIdAndName(singer.singerId).then((response) => {
+            for (let index = 0; index < response.data.length; index++) {
+              if (this.simpleAlbum.indexOf(response.data[index]) === -1) {
+                this.simpleAlbum.push(response.data[index]);
+              }
+            }
+          });
         });
       }
     },
@@ -641,7 +664,7 @@ export default {
       });
 
       if (this.drawerForm.tagParentsId != null) {
-        getTagsByParentsId(this.drawerForm.tagParentsId).then((response) => {         
+        getTagsByParentsId(this.drawerForm.tagParentsId).then((response) => {
           var tagsList = response.data;
           tagsList.forEach((item) => {
             if (!tagNameList.includes(item.tagName)) {
@@ -663,7 +686,7 @@ export default {
 
       this.$confirm("确定要提交表单吗？").then(() => {
         this.drawerLoading = true;
-        addSongTags(this.drawerForm,this.selectSongId).then(() => {
+        addSongTags(this.drawerForm, this.selectSongId).then(() => {
           this.$modal.msgSuccess("新增成功");
           getSimpleTagsBySongId(this.selectSongId).then((response) => {
             this.drawerSongTags = response.data;
@@ -698,10 +721,23 @@ export default {
         this.drawerSongTags.splice(this.drawerSongTags.indexOf(tag), 1);
       });
     },
+
+    /** 远程方法 */
+    remoteMethodForSinger(params) {
+      this.remoteLoading = true;
+      this.simpleSinger = this.form.simpleSinger;
+      selectSimpleSingerByName(params).then((response) => {
+        for (let index = 0; index < response.data.length; index++) {
+          if (this.simpleSinger.indexOf(response.data[index]) === -1) {
+            this.simpleSinger.push(response.data[index]);
+          }
+        }
+      });
+      this.remoteLoading = false;
+    },
   },
 };
 </script>
-
 
 <style>
 .el-tag + .el-tag {

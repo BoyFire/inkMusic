@@ -1,8 +1,11 @@
 package com.ruoyi.music.service;
 
 
+import com.alibaba.nacos.shaded.com.google.protobuf.ServiceException;
+import com.ruoyi.music.entity.MmsUser;
 import com.ruoyi.music.entity.MmsUserAuth;
-import com.ruoyi.music.vo.MmsUserAuthIdsVo;
+import com.ruoyi.music.model.dto.UserLoginDTO;
+import com.ruoyi.music.model.dto.UserRegisterDTO;
 
 import java.util.List;
 
@@ -36,7 +39,7 @@ public interface IMmsUserAuthService
      * @param mmsUserAuth 用户认证
      * @return 结果
      */
-    public int insertMmsUserAuth(MmsUserAuth mmsUserAuth);
+    public int insertMmsUserAuth(MmsUserAuth mmsUserAuth) throws ServiceException;
 
     /**
      * 修改用户认证
@@ -67,4 +70,18 @@ public interface IMmsUserAuthService
      * @return
      */
     List<Long> selectMmsUserIds();
+
+    /**
+     * 验证 用户登录
+     */
+    MmsUser matches(UserLoginDTO userLoginDTO) throws ServiceException;
+
+    /**
+     * 客户端用户注册
+     *
+     * @param mmsUser 注册生成的用户类
+     * @param userRegisterDTO 前端 注册信息
+     * @return 结果
+     */
+    Integer insertMmsUserAuth(MmsUser mmsUser, UserRegisterDTO userRegisterDTO) throws ServiceException;
 }

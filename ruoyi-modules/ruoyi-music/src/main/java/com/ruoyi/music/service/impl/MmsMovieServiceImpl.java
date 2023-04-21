@@ -4,6 +4,7 @@ import com.ruoyi.common.core.utils.DateUtils;
 import com.ruoyi.common.security.utils.SecurityUtils;
 import com.ruoyi.music.entity.MmsMovie;
 import com.ruoyi.music.mapper.MmsMovieMapper;
+import com.ruoyi.music.mapper.MmsSingerMvMapper;
 import com.ruoyi.music.service.IMmsMovieService;
 import com.ruoyi.music.vo.front.SimpleMovieVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,11 @@ import java.util.List;
 public class MmsMovieServiceImpl implements IMmsMovieService {
     @Autowired
     private MmsMovieMapper mmsMovieMapper;
+    @Autowired
+    private MmsSingerMvMapper mmsSingerMvMapper;
+
+
+
     @Autowired
     private StringRedisTemplate redisTemplate;
 
@@ -56,16 +62,24 @@ public class MmsMovieServiceImpl implements IMmsMovieService {
      */
     @Override
     public int insertMmsMovie(MmsMovie mmsMovie) {
+        if (mmsMovie.getMovieUrl() == null || mmsMovie.getMovieUrl() ==""){
+            return 0;
+        }
+
         RedisAtomicLong redisAtomicLong = new RedisAtomicLong("mms_dict:ids:mms_movie_id", redisTemplate.getConnectionFactory());
         long movieId = redisAtomicLong.addAndGet(1);
         mmsMovie.setMovieId(movieId);
+        mmsMovie.setMoviePlayCount(0L);
         mmsMovie.setIsDel(0);
-        mmsMovie.setCreateBy(SecurityUtils.getUsername());
+        if (mmsMovie.getCreateBy() ==null) {
+            mmsMovie.setCreateBy(SecurityUtils.getUsername());
+        }
         if (mmsMovie.getMovieStatus() == null) {
             mmsMovie.setMovieStatus(1);
         }
         mmsMovie.setCreateTime(DateUtils.getNowDate());
-        return mmsMovieMapper.insertMmsMovie(mmsMovie);
+        mmsMovieMapper.insertMmsMovie(mmsMovie);
+        return mmsSingerMvMapper.insertSingerMv(mmsMovie.getMovieUpId(), mmsMovie.getMovieId());
     }
 
     /**
@@ -108,5 +122,14 @@ public class MmsMovieServiceImpl implements IMmsMovieService {
         return mmsMovieMapper.listSimpleMovie();
     }
 
-
+    /**
+     * 根据Mv名进行模糊查询
+     *
+     * @param mvName mv名
+     * @return 结果
+     */
+    @Override
+    public List<SimpleMovieVo> getSimpleMvsByName(String mvName) {
+        return mmsMovieMapper.selectSimpleMvsByName(mvName);
+    }
 }

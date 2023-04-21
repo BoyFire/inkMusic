@@ -71,7 +71,7 @@ public interface MmsAlbumMapper
     String selectMmsAlbumNameByAlbumId(@Param("albumId") Long albumId);
 
     /**
-     * 查询专辑名 根据歌手id
+     * 根据歌手id 查询专辑
      * @param singerId 歌手id
      * @return 结果
      */
@@ -82,4 +82,25 @@ public interface MmsAlbumMapper
      * @return  结果
      */
     List<SimpleAlbum> listSimpleAlbum();
+
+
+    /**
+     * 更新专辑歌曲数
+     *
+     * @param albumId id
+     * @param albumSize 歌曲数
+     * @return 结果
+     */
+    int updateAlbumSize(@Param("albumId") Long albumId, @Param("albumSize") int albumSize);
+
+    /**
+     * 批量更新专辑歌曲数
+     *
+     * @param albums SimpleAlbum类 列表
+     * @param albumSize 歌曲数
+     * @return 结果
+     */
+    int updateAlbumsSize(@Param("albums") List<SimpleAlbum> albums, @Param("albumSize") int albumSize);
+
+    List<SimpleAlbum> selectSimpleAlbumsByAlbumName(@Param("albumName") String albumName);
 }

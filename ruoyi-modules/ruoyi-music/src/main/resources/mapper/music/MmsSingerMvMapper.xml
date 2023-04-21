@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ruoyi.music.mapper.MmsSingerMvMapper">
+
+    <insert id="insertSingerMv">
+        insert into mms_singer_movie(singer_id, movie_id)
+        VALUES (#{singerId}, #{mvId})
+    </insert>
+</mapper>

@@ -10,6 +10,9 @@ export default {
   setLoginDialog(state, val) {
     state.loginDialogVisible = val;
   },
+  setRegisterDialog(state, val) {
+    state.registerDialogVisible = val;
+  },
   [types.SET_PLAYSTATUS](state, val = false) {
     state.isPlayed = val;
   },

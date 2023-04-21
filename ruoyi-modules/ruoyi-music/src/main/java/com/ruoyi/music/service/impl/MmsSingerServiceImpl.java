@@ -112,4 +112,9 @@ public class MmsSingerServiceImpl implements IMmsSingerService {
     public List<SimpleSinger> selectSimpleSingerList() {
         return mmsSingerMapper.selectSimpleSinger();
     }
+
+    @Override
+    public List<SimpleSinger> selectSimpleSingerListBySingerName(String singerName) {
+        return mmsSingerMapper.selectSimpleSingerBySingerName( singerName);
+    }
 }

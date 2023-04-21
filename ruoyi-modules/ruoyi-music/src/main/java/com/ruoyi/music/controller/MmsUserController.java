@@ -1,5 +1,6 @@
 package com.ruoyi.music.controller;
 
+import com.alibaba.nacos.shaded.com.google.protobuf.ServiceException;
 import com.ruoyi.common.core.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.web.controller.BaseController;
 import com.ruoyi.common.core.web.domain.AjaxResult;
@@ -9,8 +10,11 @@ import com.ruoyi.common.log.enums.BusinessType;
 import com.ruoyi.common.security.annotation.RequiresPermissions;
 import com.ruoyi.common.security.utils.SecurityUtils;
 import com.ruoyi.music.entity.MmsUser;
+import com.ruoyi.music.model.dto.UserLoginDTO;
+import com.ruoyi.music.model.dto.UserRegisterDTO;
 import com.ruoyi.music.service.IMmsUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -18,7 +22,7 @@ import java.util.List;
 
 /**
  * 用户Controller
- * 
+ *
  * @author ruoyi
  * @date 2022-10-16
  */
@@ -101,7 +105,7 @@ public class MmsUserController extends BaseController
      */
     @RequiresPermissions("music:user:remove")
     @Log(title = "用户", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{ids}")
+    @DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable Long[] ids)
     {
         return toAjax(mmsUserService.deleteMmsUserByIds(ids));
@@ -118,4 +122,40 @@ public class MmsUserController extends BaseController
         mmsUser.setUpdateBy(SecurityUtils.getUsername());
         return toAjax(mmsUserService.updateUserStatus(mmsUser));
     }
+
+    @GetMapping("/getSimpleUserByName")
+    public AjaxResult getSimpleSingerByName(@RequestParam("query")String userName){
+        return AjaxResult.success(mmsUserService.selectSimpleUserListByName(userName));
+    }
+
+    /**
+     * 客户端账号登录
+     *
+     */
+    @PostMapping("/login")
+    public AjaxResult login(@RequestBody UserLoginDTO userLoginDTO){
+        MmsUser mmsUser;
+        try {
+            mmsUser =  mmsUserService.login(userLoginDTO);
+        } catch (ServiceException e) {
+            return AjaxResult.error(e.getMessage());
+        }
+        return AjaxResult.success(mmsUser) ;
+    }
+
+    /**
+     * 客户端账号注册
+     */
+    @PostMapping("/register")
+    public AjaxResult register(@RequestBody @Validated UserRegisterDTO userRegisterDTO){
+        int rows ;
+        try {
+            rows =  mmsUserService.insertMmsUser(userRegisterDTO);
+        } catch (ServiceException e) {
+            return AjaxResult.error(e.getMessage());
+        }
+        return toAjax(rows) ;
+    }
+
+
 }

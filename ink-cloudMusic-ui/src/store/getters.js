@@ -8,6 +8,9 @@ export default {
   loginDialogVisible(state) {
     return state.loginDialogVisible;
   },
+  registerDialogVisible(state) {
+    return state.registerDialogVisible;
+  },
   userInfo(state) {
     return (
       state.userInfo ||

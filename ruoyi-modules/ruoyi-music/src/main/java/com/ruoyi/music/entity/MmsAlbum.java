@@ -34,11 +34,30 @@ public class MmsAlbum extends BaseEntity {
     @Excel(name = "专辑id")
     private Long albumId;
 
+
+    /**
+     * 专辑id
+     */
+    @Excel(name = "专辑歌曲数")
+    private Integer albumSize;
     /**
      * 专辑名
      */
     @Excel(name = "专辑名")
     private String albumName;
+
+
+    /**
+     * 专辑类型
+     */
+    @Excel(name = "专辑类型:singer,album")
+    private String albumType;
+
+    /**
+     * 专辑描述
+     */
+    @Excel(name = "专辑描述")
+    private String albumDesc;
 
     /**
      * 专辑封面URL

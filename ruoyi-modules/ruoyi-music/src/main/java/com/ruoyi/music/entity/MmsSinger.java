@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 歌手对象 mms_singer
@@ -79,5 +80,7 @@ public class MmsSinger extends BaseEntity
     /** 歌手专辑数 */
     @Excel(name = "歌手专辑数")
     private Integer singerAlbumSize;
+
+    private List<String> alias;
 
 }

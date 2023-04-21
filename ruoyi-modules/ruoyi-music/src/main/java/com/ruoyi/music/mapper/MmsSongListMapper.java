@@ -82,4 +82,13 @@ public interface MmsSongListMapper
      * @return  结果
      */
     MmsSongList selectMmsSongListBySongListId(@Param("songListId") Long songListId);
+
+    /**
+     * 根据 songName 进行模糊查询
+     *
+     * @param songListName 歌单名
+     * @return 结果
+     */
+    List<SimpleSongListVo> selectSimpleSongsBySongName(@Param("songListName") String songListName);
+
 }

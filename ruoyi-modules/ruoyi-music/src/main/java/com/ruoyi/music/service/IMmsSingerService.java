@@ -66,4 +66,11 @@ public interface IMmsSingerService
      * @return  结果
      */
     List<SimpleSinger> selectSimpleSingerList();
+
+    /**
+     * 根据歌手姓名 模糊查询
+     * @param singerName  歌手姓名
+     * @return 结果
+     */
+    List<SimpleSinger> selectSimpleSingerListBySingerName(String singerName);
 }

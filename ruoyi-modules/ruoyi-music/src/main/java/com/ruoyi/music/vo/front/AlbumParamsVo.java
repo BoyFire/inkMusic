@@ -1,7 +1,6 @@
 package com.ruoyi.music.vo.front;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.ruoyi.common.core.annotation.Excel;
 import com.ruoyi.common.core.web.domain.BaseEntity;
 import lombok.Data;
 
@@ -39,7 +38,6 @@ public class AlbumParamsVo extends BaseEntity {
     /**
      * 更新者
      */
-    @Excel(name = "更新者")
     private String editBy;
 
     /**

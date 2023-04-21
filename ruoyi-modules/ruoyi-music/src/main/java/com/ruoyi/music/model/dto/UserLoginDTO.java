@@ -1,4 +1,4 @@
-package com.ruoyi.music.vo;
+package com.ruoyi.music.model.dto;
 
 import lombok.*;
 
@@ -11,8 +11,8 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 @EqualsAndHashCode
-public class UserLoginVo {
-    private Integer userAuthType;
+public class UserLoginDTO {
+    private String userAuthType;
     private String username;
     private String password;
 }

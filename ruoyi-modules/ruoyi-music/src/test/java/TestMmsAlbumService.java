@@ -25,6 +25,4 @@ public class TestMmsAlbumService {
         System.out.println(result);
     }
 
-    @Test
-    public void test
 }

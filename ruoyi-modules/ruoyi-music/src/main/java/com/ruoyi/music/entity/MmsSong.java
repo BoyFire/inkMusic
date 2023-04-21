@@ -2,6 +2,8 @@ package com.ruoyi.music.entity;
 
 import com.ruoyi.common.core.annotation.Excel;
 import com.ruoyi.common.core.web.domain.BaseEntity;
+import com.ruoyi.music.vo.front.SimpleAlbum;
+import com.ruoyi.music.vo.front.SimpleSinger;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -29,13 +31,13 @@ public class MmsSong extends BaseEntity
     @Excel(name = "歌曲id")
     private Long songId;
 
-    /** 歌手id */
-    @Excel(name = "歌手id")
-    private Long singerId;
-
     /** 歌曲名 */
     @Excel(name = "歌曲名")
     private String songName;
+
+    /** 歌曲时长 */
+    @Excel(name = "歌曲时长")
+    private Long songDuration;
 
     /** 歌曲URL */
     @Excel(name = "歌曲URL")
@@ -44,10 +46,6 @@ public class MmsSong extends BaseEntity
     /** 歌曲图像URL */
     @Excel(name = "歌曲图像URL")
     private String songImgUrl;
-
-    /** 歌词url地址 */
-    @Excel(name = "歌词url")
-    private String songLyric;
 
     /** 歌曲状态, 1-启用,0-停用 */
     @Excel(name = "歌曲状态, 1-启用,0-停用")
@@ -65,14 +63,14 @@ public class MmsSong extends BaseEntity
     /** 是否删除;0-未删除,1-删除 */
     private Integer isDel;
 
-    // 歌手名
-    private String singerName;
+    // 歌手信息
+    private List<SimpleSinger> singers;
 
-    //专辑名
-    private String albumName;
+    //专辑信息
+    private List<SimpleAlbum> albums;
 
-    //专辑id
-    private Long albumId;
+    //歌曲别名
+    private List<String> alias;
 
     // 标签列表
     private List<String> tagNames;

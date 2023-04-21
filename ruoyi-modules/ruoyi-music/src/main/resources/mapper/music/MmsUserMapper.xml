@@ -44,7 +44,8 @@
         <where>
             is_del =0
             <if test="userId != null  and userId != ''">and user_id = #{userId}</if>
-            <if test="userNickname != null  and userNickname != ''">and user_nickname like concat('%', #{userNickname},'%')
+            <if test="userNickname != null  and userNickname != ''">and user_nickname like concat('%',
+                #{userNickname},'%')
             </if>
             <if test="userImgUrl != null  and userImgUrl != ''">and user_img_url = #{userImgUrl}</if>
             <if test="userGender != null ">and user_gender = #{userGender}</if>
@@ -70,11 +71,20 @@
         where mms_user.is_del = 0
     </select>
     <select id="selectUserNameByUserId" resultType="String">
-        select  user_nickname
+        select user_nickname
         from mms_user
-        where is_del = 0 and user_id=#{userId}
+        where is_del = 0
+          and user_id = #{userId}
     </select>
+    <select id="selectSimpleUsersByUserName" resultMap="SimpleUserResult">
+        select user_nickname, user_id
+        from mms_user
+        <where>
+            <if test="userName != null || userName != ''">user_nickname like concat(#{userName}, '%')</if>
+        </where>
+        <if test="userName == null || userName == ''">limit 100</if>
 
+    </select>
 
     <insert id="insertMmsUser" parameterType="MmsUser" useGeneratedKeys="true" keyProperty="id">
         insert into mms_user

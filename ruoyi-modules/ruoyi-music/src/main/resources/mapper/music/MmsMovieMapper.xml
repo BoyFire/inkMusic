@@ -15,14 +15,12 @@
         <result property="movieStatus" column="movie_status"/>
         <result property="createBy" column="create_by"/>
         <result property="createTime" column="create_time"/>
+        <result property="movieDesc" column="movie_desc"/>
+        <result property="moviePlayCount" column="movie_play_count"/>
         <result property="editBy" column="edit_by"/>
         <result property="editTime" column="edit_time"/>
         <result property="revision" column="revision"/>
         <result property="isDel" column="is_del"/>
-        <association property="userName" select="com.ruoyi.music.mapper.MmsUserMapper.selectUserNameByUserId"
-                     column="movie_up_id"/>
-        <association property="singerName" select="com.ruoyi.music.mapper.MmsSingerMapper.selectSingerNameBySingerId"
-                     column="movie_up_id"/>
     </resultMap>
     <resultMap id="SimpleMovieVoResult" type="SimpleMovieVo">
         <result property="movieId" column="movie_id"/>
@@ -43,7 +41,9 @@
                edit_by,
                edit_time,
                revision,
-               is_del
+               is_del,
+               movie_desc,
+               movie_play_count
         from mms_movie
     </sql>
 
@@ -58,6 +58,7 @@
             <if test="movieImageUrl != null  and movieImageUrl != ''">and movie_image_url = #{movieImageUrl}</if>
             <if test="movieUrl != null  and movieUrl != ''">and movie_url = #{movieUrl}</if>
             <if test="movieStatus != null  and movieStatus != ''">and movie_status = #{movieStatus}</if>
+            <if test="movieDesc != null  and movieDesc != ''">and movie_desc = #{movieDesc}</if>
             <if test="editBy != null  and editBy != ''">and edit_by = #{editBy}</if>
             <if test="editTime != null ">and edit_time = #{editTime}</if>
             <if test="revision != null ">and revision = #{revision}</if>
@@ -79,6 +80,14 @@
         from mms_movie
         where is_del = 0
     </select>
+    <select id="selectSimpleMvsByName" resultMap="SimpleMovieVoResult">
+        select movie_id, movie_name
+        from mms_movie
+        where is_del = 0
+        <if test=" mvName !=null and mvName != ''">and movie_name like concat(#{mvName},'%')</if>
+        <if test=" mvName ==null or mvName == ''">limit 100</if>
+
+    </select>
 
     <insert id="insertMmsMovie" parameterType="MmsMovie" useGeneratedKeys="true" keyProperty="id">
         insert into mms_movie
@@ -89,6 +98,7 @@
             <if test="movieUpId != null">movie_up_id,</if>
             <if test="movieImageUrl != null and movieImageUrl != ''">movie_image_url,</if>
             <if test="movieUrl != null and movieUrl != ''">movie_url,</if>
+            <if test="movieDesc != null and movieDesc != ''">movie_desc,</if>
             <if test="movieStatus != null and movieStatus != ''">movie_status,</if>
             <if test="createBy != null">create_by,</if>
             <if test="createTime != null">create_time,</if>
@@ -104,6 +114,7 @@
             <if test="movieUpId != null">#{movieUpId},</if>
             <if test="movieImageUrl != null and movieImageUrl != ''">#{movieImageUrl},</if>
             <if test="movieUrl != null and movieUrl != ''">#{movieUrl},</if>
+            <if test="movieDesc != null and movieDesc != ''">#{movieDesc},</if>
             <if test="movieStatus != null and movieStatus != ''">#{movieStatus},</if>
             <if test="createBy != null">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
@@ -123,6 +134,7 @@
             <if test="movieUpId != null">movie_up_id = #{movieUpId},</if>
             <if test="movieImageUrl != null and movieImageUrl != ''">movie_image_url = #{movieImageUrl},</if>
             <if test="movieUrl != null and movieUrl != ''">movie_url = #{movieUrl},</if>
+            <if test="movieDesc != null and movieDesc != ''">movie_desc = #{movieDesc},</if>
             <if test="movieStatus != null and movieStatus != ''">movie_status = #{movieStatus},</if>
             <if test="createBy != null">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>

@@ -16,8 +16,11 @@
         <result property="editTime" column="edit_time"/>
         <result property="revision" column="revision"/>
         <result property="isDel" column="is_del"/>
+        <result property="albumType" column="album_type"/>
+        <result property="albumDesc" column="album_desc"/>
+        <result property="albumSize" column="album_size"/>
         <collection property="singers" column="album_id"
-                    select="com.ruoyi.music.mapper.MmsSingerAlbumMapper.selectSingerNamesByAlbumId"/>
+                    select="com.ruoyi.music.mapper.MmsSingerAlbumMapper.selectSimpleSingerByAlbumId"/>
     </resultMap>
     <resultMap id="SimpleAlbumResult" type="SimpleAlbum">
         <result property="albumId" column="album_id"/>
@@ -35,7 +38,10 @@
                ma.edit_by,
                ma.edit_time,
                ma.revision,
-               ma.is_del
+               ma.is_del,
+               ma.album_desc,
+               ma.album_type,
+               ma.album_size
         from mms_album ma
     </sql>
 
@@ -62,16 +68,25 @@
     </select>
 
     <select id="selectSimpleAlbumsBySingerId" resultMap="SimpleAlbumResult">
-        select album_name, album_id
+        select ma.album_name, ma.album_id
         from mms_album ma
-            left join mms_singer_album msa on ma.album_id = msa.album_id
+                 left join mms_singer_album msa on ma.album_id = msa.album_id
         where msa.singer_id = #{singerId}
           and ma.is_del = 0
     </select>
     <select id="listSimpleAlbum" resultMap="SimpleAlbumResult">
-        select album_name,album_id
+        select album_name, album_id
         from mms_album
         where is_del = 0
+    </select>
+    <select id="selectSimpleAlbumsByAlbumName" resultMap="SimpleAlbumResult">
+        select album_name, album_id
+        from mms_album
+        where is_del=0
+        <if test="albumName != null and albumName != ''">and album_name like concat(#{albumName}, '%')</if>
+        <if test="albumName == null or albumName == ''">limit 100</if>
+
+
     </select>
 
     <insert id="insertMmsAlbum" parameterType="MmsAlbum" useGeneratedKeys="true" keyProperty="id">
@@ -81,6 +96,8 @@
             <if test="albumName != null">album_name,</if>
             <if test="albumImgUrl != null">album_img_URL,</if>
             <if test="albumStatus != null">album_status,</if>
+            <if test="albumStatus != null">album_type,</if>
+            <if test="albumStatus != null">album_desc,</if>
             <if test="createBy != null">create_by,</if>
             <if test="createTime != null">create_time,</if>
             <if test="editBy != null">edit_by,</if>
@@ -93,6 +110,8 @@
             <if test="albumName != null">#{albumName},</if>
             <if test="albumImgUrl != null">#{albumImgUrl},</if>
             <if test="albumStatus != null">#{albumStatus},</if>
+            <if test="albumStatus != null">#{albumType},</if>
+            <if test="albumStatus != null">#{albumDesc},</if>
             <if test="createBy != null">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
             <if test="editBy != null">#{editBy},</if>
@@ -109,6 +128,8 @@
             <if test="albumName != null">album_name = #{albumName},</if>
             <if test="albumImgUrl != null">album_img_URL = #{albumImgUrl},</if>
             <if test="albumStatus != null">album_status = #{albumStatus},</if>
+            <if test="albumStatus != null">album_type = #{albumType},</if>
+            <if test="albumStatus != null">album_desc = #{albumDesc},</if>
             <if test="createBy != null">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="editBy != null">edit_by = #{editBy},</if>
@@ -117,6 +138,19 @@
             <if test="isDel != null">is_del = #{isDel},</if>
         </trim>
         where id = #{id}
+    </update>
+    <update id="updateAlbumSize">
+        update mms_album
+        set album_size = album_size + #{albumSize}
+        where album_id = #{albumId}
+    </update>
+    <update id="updateAlbumsSize">
+        update mms_album
+        set album_size = album_size + #{albumSize}
+        where album_id in
+        <foreach collection="albums" item="album" open="(" separator="," close=")">
+            #{album.albumId}
+        </foreach>
     </update>
 
     <delete id="deleteMmsAlbumById" parameterType="Long">

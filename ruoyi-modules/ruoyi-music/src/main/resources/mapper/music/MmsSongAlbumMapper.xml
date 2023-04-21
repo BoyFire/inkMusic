@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ruoyi.music.mapper.MmsSongAlbumMapper">
+
+    <resultMap id="SimpleAlbumResult" type="SimpleAlbum">
+        <result property="albumId" column="album_id"/>
+        <result property="albumName" column="album_name"/>
+    </resultMap>
+
+    <insert id="insertSongsAlbum">
+        insert into mms_song_album(song_id, album_id) VALUES
+        <foreach collection="songIds" item="songId" separator=",">
+            (#{songId}, #{albumId} )
+        </foreach>
+    </insert>
+    <insert id="insertSongAlbums">
+        insert into mms_song_album(song_id, album_id) VALUES
+        <foreach collection="albums" item="album" separator=",">
+            (#{songId},#{album.albumId})
+        </foreach>
+
+    </insert>
+    <delete id="deleteSongAlbumByAlbumId">
+        delete
+        from mms_song_album
+        where album_id = #{albumId}
+    </delete>
+    <delete id="deleteSongAlbumBySongId">
+        delete
+        from mms_song_album
+        where song_id = #{songId}
+    </delete>
+
+    <select id="selectSimpleAlbumBySongId" resultMap="SimpleAlbumResult">
+        select ma.album_id, ma.album_name
+        from mms_song_album msa
+                 left join mms_album ma on msa.album_id = ma.album_id
+        where msa.song_id = #{songId}
+    </select>
+</mapper>

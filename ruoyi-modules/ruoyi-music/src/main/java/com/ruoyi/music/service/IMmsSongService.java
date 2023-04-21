@@ -2,6 +2,7 @@ package com.ruoyi.music.service;
 
 import com.ruoyi.music.entity.MmsSong;
 import com.ruoyi.music.vo.front.SimpleSongVo;
+import com.ruoyi.music.vo.front.SongParamsVo;
 
 import java.util.List;
 
@@ -23,11 +24,11 @@ public interface IMmsSongService
 
     /**
      * 查询歌曲列表
-     * 
-     * @param mmsSong 歌曲
+     *
+     * @param songParams 歌曲
      * @return 歌曲集合
      */
-    public List<MmsSong> selectMmsSongList(MmsSong mmsSong);
+    public List<MmsSong> selectMmsSongList(SongParamsVo songParams);
 
     /**
      * 新增歌曲
@@ -73,4 +74,12 @@ public interface IMmsSongService
      * @return  结果
      */
     MmsSong selectMmsSongBySongId( Long songId);
+
+    /**
+     * 根据歌曲名 查询简单歌曲
+     *
+     * @param songName
+     * @return
+     */
+    List<SimpleSongVo> selectSimpleSongsBySongName(String songName);
 }

@@ -80,6 +80,14 @@
         <include refid="selectMmsSongListVo"/>
         where msl.song_list_id = #{songListId} and msl.is_del = 0
     </select>
+    <select id="selectSimpleSongsBySongName" resultMap="SimpleSongListVoResult">
+        select song_list_title, song_list_id
+        from mms_song_list
+        where is_del = 0
+        <if test="songListName != null and songListName !=''">and song_list_title like  concat(#{songListName}, '%')</if>
+        <if test="songListName == null or songListName !=''">limit 100</if>
+
+    </select>
 
     <insert id="insertMmsSongList" parameterType="MmsSongList" useGeneratedKeys="true" keyProperty="id">
         insert into mms_song_list

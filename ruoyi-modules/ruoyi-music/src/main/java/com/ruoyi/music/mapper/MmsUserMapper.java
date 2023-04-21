@@ -79,4 +79,13 @@ public interface MmsUserMapper
 
     List<SimpleUserVo> selectSimpleUsers();
 
+    /**
+     * 获取简单用户列表 通过模糊用户名
+     *
+     * @param userName 用户名
+     * @return 结果
+     */
+    List<SimpleUserVo> selectSimpleUsersByUserName(@Param("userName") String userName);
+
+
 }

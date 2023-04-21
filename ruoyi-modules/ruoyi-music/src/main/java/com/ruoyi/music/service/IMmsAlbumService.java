@@ -4,6 +4,7 @@ package com.ruoyi.music.service;
 import com.ruoyi.music.entity.MmsAlbum;
 import com.ruoyi.music.vo.front.AlbumParamsVo;
 import com.ruoyi.music.vo.front.SimpleAlbum;
+import com.ruoyi.music.vo.front.SimpleSinger;
 
 import java.util.List;
 
@@ -76,4 +77,19 @@ public interface IMmsAlbumService
      * @return 结果
      */
     List<SimpleAlbum> listSimpleAlbums();
+
+    /**
+     * 根据简单歌手列表 查询专辑列表s
+     * @param singers SimpleSinger类
+     * @return 结果
+     */
+    List<SimpleAlbum> selectSimpleAlbumsBySingers(List<SimpleSinger> singers);
+
+    /**
+     * 根据专辑名 返回专辑列表
+     *
+     * @param albumName  专辑名
+     * @return 结果
+     */
+    List<SimpleAlbum> selectSimpleAlbumListByAlbumName(String albumName);
 }

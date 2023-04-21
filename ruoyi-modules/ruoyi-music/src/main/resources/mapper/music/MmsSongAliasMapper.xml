@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ruoyi.music.mapper.MmsSongAliasMapper">
+
+    <insert id="insertSongAlias">
+        insert into mms_song_alias(song_id, alia) VALUES
+        <foreach collection="alias" item="alia" separator=",">
+            (#{songId} ,#{alia} )
+        </foreach>
+    </insert>
+    <delete id="deleteSongAlias">
+        delete
+        from mms_song_alias
+        where song_id = #{songId}
+    </delete>
+
+
+    <select id="selectSongAliasBySongId" resultType="java.lang.String">
+        select alia
+        from mms_song_alias
+        where song_id = #{songId}
+    </select>
+</mapper>

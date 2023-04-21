@@ -1,6 +1,9 @@
 package com.ruoyi.music.service;
 
+import com.alibaba.nacos.shaded.com.google.protobuf.ServiceException;
 import com.ruoyi.music.entity.MmsUser;
+import com.ruoyi.music.model.dto.UserLoginDTO;
+import com.ruoyi.music.model.dto.UserRegisterDTO;
 import com.ruoyi.music.vo.front.SimpleUserVo;
 
 import java.util.List;
@@ -74,4 +77,29 @@ public interface IMmsUserService
      * @return 结果
      */
     List<SimpleUserVo> selectSimpleUsers();
+
+    /**
+     * 获取简单用户列表 通过姓名模糊查询
+     *
+     * @param userName 姓名
+     * @return 结果
+     */
+    List<SimpleUserVo> selectSimpleUserListByName(String userName);
+
+
+    /**
+     * 用户登录
+     *
+     * @param userLoginDTO VO
+     * @return 结果
+     */
+    MmsUser login(UserLoginDTO userLoginDTO) throws ServiceException;
+
+    /**
+     * 客户端用户注册
+     *
+     * @param userRegisterDTO 表单信息
+     * @return 结果
+     */
+    int insertMmsUser(UserRegisterDTO userRegisterDTO) throws ServiceException;
 }

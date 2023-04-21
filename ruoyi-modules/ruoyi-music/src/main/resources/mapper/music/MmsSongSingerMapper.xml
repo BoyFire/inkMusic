@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ruoyi.music.mapper.MmsSongSingerMapper">
+
+    <resultMap id="simpleSingerResult" type="SimpleSinger">
+        <result property="singerId" column="singer_id"/>
+        <result property="singerName" column="singer_name"/>
+    </resultMap>
+    <insert id="insertSongSinger">
+        insert into mms_song_singer(singer_id, song_id) VALUES
+        <foreach collection="singerIds" item="singerId" separator=",">
+            (#{singerId}, #{songId} )
+        </foreach>
+    </insert>
+    <insert id="insertSongSingers">
+        insert into mms_song_singer(singer_id, song_id) VALUES
+        <foreach collection="singers" item="singer" separator=",">
+            (#{singer.singerId}, #{songId})
+        </foreach>
+
+    </insert>
+    <delete id="deleteSongSingerBySongId">
+        delete
+        from mms_song_singer
+        where song_id = #{songId}
+    </delete>
+
+
+    <select id="selectSimpleSingerBySongId" resultMap="simpleSingerResult">
+        select ms.singer_id, ms.singer_name
+        from mms_song_singer mss
+                 left join mms_singer ms on mss.singer_id = ms.singer_id
+        where mss.song_id = #{songId}
+    </select>
+</mapper>

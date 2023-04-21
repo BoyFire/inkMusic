@@ -103,4 +103,10 @@ public class MmsSongListController extends BaseController
     {
         return toAjax(mmsSongListService.deleteMmsSongListByIds(ids));
     }
+
+    @GetMapping("/getSimpleSongListsByName")
+    public AjaxResult getSimpleSongListsByName(@RequestParam("songName")String songListName) {
+        return AjaxResult.success(mmsSongListService.selectSimpleSongsBySongName(songListName));
+    }
+
 }

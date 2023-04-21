@@ -9,6 +9,7 @@ import com.ruoyi.common.log.enums.BusinessType;
 import com.ruoyi.common.security.annotation.RequiresPermissions;
 import com.ruoyi.music.entity.MmsSong;
 import com.ruoyi.music.service.IMmsSongService;
+import com.ruoyi.music.vo.front.SongParamsVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,10 +34,10 @@ public class MmsSongController extends BaseController
      */
     @RequiresPermissions("music:song:list")
     @GetMapping("/list")
-    public TableDataInfo list(MmsSong mmsSong)
+    public TableDataInfo list(SongParamsVo songParams)
     {
         startPage();
-        List<MmsSong> list = mmsSongService.selectMmsSongList(mmsSong);
+        List<MmsSong> list = mmsSongService.selectMmsSongList(songParams);
         return getDataTable(list);
     }
 
@@ -54,9 +55,9 @@ public class MmsSongController extends BaseController
     @RequiresPermissions("music:song:export")
     @Log(title = "歌曲", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, MmsSong mmsSong)
+    public void export(HttpServletResponse response, SongParamsVo songParams)
     {
-        List<MmsSong> list = mmsSongService.selectMmsSongList(mmsSong);
+        List<MmsSong> list = mmsSongService.selectMmsSongList(songParams);
         ExcelUtil<MmsSong> util = new ExcelUtil<MmsSong>(MmsSong.class);
         util.exportExcel(response, list, "歌曲数据");
     }
@@ -103,4 +104,11 @@ public class MmsSongController extends BaseController
     {
         return toAjax(mmsSongService.deleteMmsSongByIds(ids));
     }
+
+
+    @GetMapping("/getSimpleSongByName")
+    public AjaxResult getSimpleSingerByName(@RequestParam("songName")String songName) {
+        return AjaxResult.success(mmsSongService.selectSimpleSongsBySongName(songName));
+    }
+
 }

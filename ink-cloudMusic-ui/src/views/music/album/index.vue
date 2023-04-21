@@ -31,7 +31,6 @@
               $utils.formartDate(details.publishTime, "yyyy-MM-dd")
             }}
           </div>
-          <div class="album-company">发行公司：{{ details.company }}</div>
           <div class="album-desc" v-if="details.description">
             <h5>
               歌单简介<em
@@ -138,13 +137,13 @@
 </template>
 
 <script lang="ts" setup>
-  import CommentList from "@/components/CommentList.vue";
-  import SongList from "@/components/SongList.vue";
-  import { getCurrentInstance, onMounted, ref, Ref } from "vue";
-  import { onBeforeRouteUpdate, useRoute } from "vue-router";
-  import { useStore } from "vuex";
+import CommentList from "@/components/CommentList.vue";
+import SongList from "@/components/SongList.vue";
+import {getCurrentInstance, onMounted, ref, Ref} from "vue";
+import {onBeforeRouteUpdate, useRoute} from "vue-router";
+import {useStore} from "vuex";
 
-  const { proxy } = getCurrentInstance();
+const { proxy } = getCurrentInstance();
   const store = useStore();
   const route = useRoute();
 

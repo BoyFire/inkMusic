@@ -1,22 +1,22 @@
 package com.ruoyi.music.mapper;
 
+import com.ruoyi.music.entity.MmsUser;
 import com.ruoyi.music.entity.MmsUserAuth;
-import com.ruoyi.music.vo.MmsUserAuthIdsVo;
+import com.ruoyi.music.model.dto.UserLoginDTO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
 /**
  * 用户认证Mapper接口
- * 
+ *
  * @author ruoyi
  * @date 2022-10-19
  */
-public interface MmsUserAuthMapper 
-{
+public interface MmsUserAuthMapper {
     /**
      * 查询用户认证
-     * 
+     *
      * @param id 用户认证主键
      * @return 用户认证
      */
@@ -24,7 +24,7 @@ public interface MmsUserAuthMapper
 
     /**
      * 查询用户认证列表
-     * 
+     *
      * @param mmsUserAuth 用户认证
      * @return 用户认证集合
      */
@@ -32,7 +32,7 @@ public interface MmsUserAuthMapper
 
     /**
      * 新增用户认证
-     * 
+     *
      * @param mmsUserAuth 用户认证
      * @return 结果
      */
@@ -40,7 +40,7 @@ public interface MmsUserAuthMapper
 
     /**
      * 修改用户认证
-     * 
+     *
      * @param mmsUserAuth 用户认证
      * @return 结果
      */
@@ -48,7 +48,7 @@ public interface MmsUserAuthMapper
 
     /**
      * 删除用户认证
-     * 
+     *
      * @param id 用户认证主键
      * @return 结果
      */
@@ -56,7 +56,7 @@ public interface MmsUserAuthMapper
 
     /**
      * 批量删除用户认证
-     * 
+     *
      * @param ids 需要删除的数据主键集合
      * @return 结果
      */
@@ -65,7 +65,7 @@ public interface MmsUserAuthMapper
     /**
      * 根据用户id 和 用户认证类型查询 用户认证
      *
-     * @param userId 用户id
+     * @param userId       用户id
      * @param userAuthType 用户认证类型
      * @return 结果
      */
@@ -79,4 +79,19 @@ public interface MmsUserAuthMapper
      * @return 结果
      */
     List<Integer> selectMmsUserAuthTypesById(@Param("userId") Long userId);
+
+    /**
+     * 登录
+     *
+     * @param userLoginDTO VO
+     * @return 结果
+     */
+    MmsUser getUserInfo(UserLoginDTO userLoginDTO);
+
+    /**
+     * 获取用户密码
+     *
+     * @return 结果
+     */
+    String getUserPassword(UserLoginDTO userLoginDTO);
 }

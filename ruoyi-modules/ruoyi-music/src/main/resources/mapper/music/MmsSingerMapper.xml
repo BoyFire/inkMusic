@@ -19,6 +19,8 @@
         <result property="editTime" column="edit_time"/>
         <result property="revision" column="revision"/>
         <result property="isDel" column="is_del"/>
+        <collection property="alias" column="singer_id"
+                    select="com.ruoyi.music.mapper.MmsSingerMapper.selectSingerAliasBySingerId"/>
     </resultMap>
 
     <resultMap id="simpleSingerResult" type="SimpleSinger">
@@ -80,6 +82,19 @@
         from mms_singer
         where is_del = 0
     </select>
+    <select id="selectSimpleSingerBySingerName" resultMap="simpleSingerResult">
+        select singer_name, singer_id
+        from mms_singer
+        <where>
+            <if test=" singerName != null || singerName != '' ">singer_name like concat(#{singerName}, '%')</if>
+        </where>
+        <if test=" singerName == null || singerName == '' ">limit 100</if>
+    </select>
+    <select id="selectSingerAliasBySingerId" resultType="java.lang.String">
+        select singer_alias
+        from mms_singer_alias
+        where singer_id = #{singerId}
+    </select>
 
 
     <insert id="insertMmsSinger" parameterType="MmsSinger" useGeneratedKeys="true" keyProperty="id">
@@ -140,6 +155,21 @@
             <if test="isDel != null">is_del = #{isDel},</if>
         </trim>
         where id = #{id} and is_del=0
+    </update>
+    <update id="updateSingerSongSize">
+        update mms_singer
+        set singer_music_size = singer_music_size + #{songSize}
+        where singer_id = #{singerId}
+    </update>
+    <update id="updateSingerAlbumSize">
+        update mms_singer
+        set singer_album_size = singer_album_size + #{albumSize}
+        where singer_id = #{singerId}
+    </update>
+    <update id="updateSingeFanSize">
+        update mms_singer
+        set singer_fans_count = singer_fans_count + #{fanSize}
+        where singer_id = #{singerId}
     </update>
 
     <delete id="deleteMmsSingerById" parameterType="Long">

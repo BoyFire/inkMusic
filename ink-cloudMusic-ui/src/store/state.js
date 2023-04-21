@@ -1,6 +1,7 @@
 export default {
   isLogin: false, //是否登录
   loginDialogVisible: false, // 登录弹窗显示与隐藏
+  registerDialogVisible: false, // 注册弹窗显示与隐藏
   isPlayed: false, //播放状态
   playList: [], //播放列表
   userInfo: null, //用户信息

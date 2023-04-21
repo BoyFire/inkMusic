@@ -105,4 +105,9 @@ public class MmsSingerController extends BaseController
     {
         return AjaxResult.success(mmsSingerService.selectSimpleSingerList());
     }
+
+    @GetMapping("/getSimpleSingerByName")
+    public AjaxResult getSimpleSingerByName(@RequestParam("query")String singerName){
+        return AjaxResult.success(mmsSingerService.selectSimpleSingerListBySingerName(singerName));
+    }
 }

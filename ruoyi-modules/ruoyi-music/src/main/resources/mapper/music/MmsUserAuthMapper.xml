@@ -58,7 +58,7 @@
         Group by user_id
     </select>
 
-    <select id="selectMmsUserByUserIdAndUserAuthType" resultMap="MmsUserAuthResult">
+    <select id="selectMmsUserByUserIdAndUserAuthType" resultMap="com.ruoyi.music.mapper.MmsUserMapper.MmsUserResult">
         <include refid="selectMmsUserAuthVo"/>
         where user_id= #{userId} and user_auth_type = #{userAuthType} and is_del =0
     </select>
@@ -67,6 +67,31 @@
         select user_auth_type
         from mms_user_auth
         where user_id = #{userId}
+    </select>
+    <select id="getUserInfo" resultType="com.ruoyi.music.entity.MmsUser">
+        select mu.user_id       as userId,
+               mu.user_nickname as userNickname,
+               mu.user_img_url  as userImgUrl,
+               mu.user_gender   as userGender,
+               mu.user_status   as userStatus,
+               mu.create_by     as createBy,
+               mu.create_time   as createTime,
+               mu.edit_by       as editBy,
+               mu.edit_time     as editTime,
+               mu.revision      as Revision,
+               mu.is_del        as isDel
+        from mms_user mu
+                 left join mms_user_auth mua on mu.user_id = mua.user_id
+        where user_auth_type = #{userAuthType}
+          and user_auth_login = #{username}
+
+    </select>
+    <select id="getUserPassword" resultType="java.lang.String">
+        select user_auth_password
+        from mms_user_auth
+        where user_auth_login = #{username}
+          and user_auth_type = #{userAuthType}
+          and is_del = 0;
     </select>
 
     <insert id="insertMmsUserAuth" parameterType="MmsUserAuth" useGeneratedKeys="true" keyProperty="id">

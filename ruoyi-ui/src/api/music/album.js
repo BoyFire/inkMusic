@@ -17,7 +17,7 @@ export function getAlbum(id) {
   });
 }
 
-//查询歌手id及姓名列表
+//查询单个专辑 通过歌手id
 export function listAlbumIdAndName(singerId) {
   return request({
     url: "/music/album/list/" + singerId,
@@ -25,10 +25,26 @@ export function listAlbumIdAndName(singerId) {
   });
 }
 
+//批量查询专辑 通过歌手
+export function listAllSimpleAlbum(query) {
+  return request({
+    url: "/music/album/list/simpleAlbums",
+    method: "post",
+    params: query,
+  });
+}
+
 //查询简单专辑列表
 export function listSimpleAlbum() {
   return request({
     url: "/music/album/listSimpleAlbum",
+    method: "get",
+  });
+}
+
+export function selectSimpleSingerByName(query) {
+  return request({
+    url: "/music/album/getSimpleAlbumByName?query=" + query,
     method: "get",
   });
 }

@@ -86,4 +86,46 @@ public interface MmsSingerMapper
      * @return 结果
      */
     int insertSingerAlias(@Param("singerId") Long singerId, @Param("alias") ArrayList<String> alias);
+
+    /**
+     * 查询歌手别名
+     * @param singerId 歌手id
+     * @return 结果
+     */
+    List<String> selectSingerAliasBySingerId(@Param("singerId") Long singerId);
+
+    /**
+     * 更新歌手歌曲数
+     *
+     * @param singerId 歌手id
+     * @param songSize 歌曲数
+     * @return 结果
+     */
+    int updateSingerSongSize(@Param("singerId") Long singerId, @Param("songSize") int songSize);
+
+    /**
+     * 更新歌手歌曲数
+     *
+     * @param singerId 歌手id
+     * @param albumSize 歌曲数
+     * @return 结果
+     */
+    int updateSingerAlbumSize(@Param("singerId") Long singerId, @Param("albumSize") int albumSize);
+
+    /**
+     * 更新歌手歌曲数
+     *
+     * @param singerId 歌手id
+     * @param fanSize 粉丝数
+     * @return 结果
+     */
+    int updateSingeFanSize(@Param("singerId") Long singerId, @Param("fanSize") int fanSize);
+
+
+    /**
+     * 根据歌手姓名 模糊查询
+     * @param singerName 歌手姓名
+     * @return 结果
+     */
+    List<SimpleSinger> selectSimpleSingerBySingerName(@Param("singerName") String singerName);
 }

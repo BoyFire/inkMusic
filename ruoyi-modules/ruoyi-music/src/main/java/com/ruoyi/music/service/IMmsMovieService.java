@@ -68,4 +68,12 @@ public interface IMmsMovieService
      * @return 结果
      */
     List<SimpleMovieVo>  listSimpleMovie();
+
+    /**
+     * 根据Mv名进行模糊查询
+     *
+     * @param mvName  mv名
+     * @return 结果
+     */
+    List<SimpleMovieVo> getSimpleMvsByName(String mvName);
 }

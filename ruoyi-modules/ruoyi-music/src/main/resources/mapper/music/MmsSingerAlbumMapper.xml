@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ruoyi.music.mapper.MmsSingerAlbumMapper">
+    <resultMap id="MmsAlbumResult" type="MmsAlbum">
+        <result property="id" column="id"/>
+        <result property="albumId" column="album_id"/>
+        <result property="albumName" column="album_name"/>
+        <result property="albumImgUrl" column="album_img_URL"/>
+        <result property="albumStatus" column="album_status"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="editBy" column="edit_by"/>
+        <result property="editTime" column="edit_time"/>
+        <result property="revision" column="revision"/>
+        <result property="isDel" column="is_del"/>
+        <collection property="singers" column="album_id"
+                    select="com.ruoyi.music.mapper.MmsSingerAlbumMapper.selectSimpleSingerByAlbumId"/>
+    </resultMap>
+
+    <resultMap id="simpleSingerResult" type="SimpleSinger">
+        <result property="singerId" column="singer_id"/>
+        <result property="singerName" column="singer_name"/>
+    </resultMap>
+
+    <sql id="selectMmsAlbumVo">
+        select ma.id,
+               ma.album_id,
+               ma.album_name,
+               ma.album_img_URL,
+               ma.album_status,
+               ma.create_by,
+               ma.create_time,
+               ma.edit_by,
+               ma.edit_time,
+               ma.revision,
+               ma.is_del
+        from mms_album ma
+    </sql>
+
+    <insert id="insertSingerAlbum">
+        insert into mms_singer_album(album_id, singer_id) values
+        <foreach collection="list" item="singerId" separator=",">
+            (#{albumId},#{singerId})
+        </foreach>
+    </insert>
+    <delete id="deleteMmsAlbumByAlbumId">
+        delete from mms_singer_album
+        where album_id in
+        <foreach item="albumId" collection="array" open="(" separator="," close=")">
+            #{albumId}
+        </foreach>
+
+    </delete>
+    <delete id="deleteMmsAlbumByAlbumIdSingerId">
+        delete
+        from mms_singer_album
+        where album_id = #{AlbumId}
+          and singer_id = #{singerId}
+    </delete>
+    <select id="selectSingerNamesByAlbumId" resultType="java.lang.String">
+        select ms.singer_name
+        from mms_singer_album
+                 left join mms_singer ms on mms_singer_album.singer_id = ms.singer_id
+        where mms_singer_album.album_id = #{albumId}
+    </select>
+    <select id="selectAlbumsBySingerId" resultMap="MmsAlbumResult">
+        <include refid="selectMmsAlbumVo"/>
+        inner join mms_singer_album msa on msa.album_id = ma.album_id
+        where msa.singer_id = #{singerId} and ma.is_del = 0
+    </select>
+    <select id="selectMmsAlbumList" resultMap="MmsAlbumResult">
+        <include refid="selectMmsAlbumVo"/>
+        left join mms_singer_album msa on msa.album_id = ma.album_id
+        left join mms_singer ms on ms.singer_id = msa.singer_id
+        <where>
+            ma.is_del =0
+            <if test="albumId != null  and albumId != ''">and ma.album_id = #{albumId}</if>
+            <if test="albumName != null  and albumName != ''">and ma.album_name like concat(#{albumName}, '%')</if>
+            <if test="singerId != null ">and ms.singer_id = #{singerId}</if>
+            <if test="singerName != null  and singerName != ''">and ms.singer_name like concat( #{singerName}, '%')</if>
+            <if test="albumStatus != null ">and ma.album_status = #{albumStatus}</if>
+        </where>
+    </select>
+    <select id="selectSimpleSingerByAlbumId" resultMap="simpleSingerResult">
+        select ms.singer_id, ms.singer_name
+        from mms_singer_album msa
+                 left join mms_singer ms on msa.singer_id = ms.singer_id
+        where msa.album_id = #{albumId}
+    </select>
+    <select id="selectSimpleAlbumsBySingers" resultMap="com.ruoyi.music.mapper.MmsAlbumMapper.SimpleAlbumResult">
+        select ma.album_id,ma.album_name
+        from mms_singer_album msa
+        inner join mms_album ma on msa.album_id = ma.album_id
+        where msa.singer_id in
+        <foreach collection="singers" item="singer" open="(" separator="," close=")">
+            #{singer.singerId}
+        </foreach>
+    </select>
+</mapper>

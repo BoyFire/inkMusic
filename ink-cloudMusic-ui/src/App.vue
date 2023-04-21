@@ -8,17 +8,30 @@
       <RouterView />
     </el-main>
   </el-container>
+  <Login v-show="loginDialogVisible" />
+  <Register v-show="registerDialogVisible" />
   <PlayBar />
 </template>
 
 <script lang="ts" setup>
-  import PlayBar from "@components/PlayBar/index.vue";
-  import Aside from "@views/components/aside/index.vue";
-  import Header from "@views/components/topbar/index.vue";
-  import "element-plus/theme-chalk/el-container.css";
-  import Cookie from "js-cookie";
-  import { getCurrentInstance, onMounted } from "vue";
-  import { RouterView } from "vue-router";
+import Register from "@/views/components/topbar/Register.vue";
+import PlayBar from "@components/PlayBar/index.vue";
+import Aside from "@views/components/aside/index.vue";
+import Login from "@views/components/topbar/Login.vue";
+import Header from "@views/components/topbar/index.vue";
+import {computed} from "@vue/reactivity";
+import "element-plus/theme-chalk/el-container.css";
+import Cookie from "js-cookie";
+import {getCurrentInstance, onMounted} from "vue";
+import {RouterView} from "vue-router";
+import {useStore} from "vuex";
+
+const store = useStore();
+
+  const loginDialogVisible = computed(() => store.getters.loginDialogVisible);
+  const registerDialogVisible = computed(
+    () => store.getters.registerDialogVisible
+  );
 
   const { proxy } = getCurrentInstance();
 

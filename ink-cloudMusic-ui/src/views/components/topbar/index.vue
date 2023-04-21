@@ -7,10 +7,11 @@
 
     <div v-if="!isLogin" class="login">
       <el-space spacer="|">
-        <el-button :text="true" @click="login()">登录</el-button>
-        <el-button :text="true">注册</el-button>
+        <el-button :text="true" @click="loginDialog()">登录</el-button>
+        <el-button :text="true" @click="registerDialog()">注册</el-button>
       </el-space>
     </div>
+
     <div v-else class="user-avatar">
       <!-- 头像 -->
       <el-avatar :size="avatarSize" :src="avatarSrc" />
@@ -37,14 +38,21 @@
 </template>
 
 <script lang="ts" setup>
-  import Search from "@components/Search.vue";
-  import { ArrowDown } from "@element-plus/icons-vue";
-  import router from "@router/index.js";
-  import { reactive, ref, toRefs } from "vue";
+import Search from "@components/Search.vue";
+import {ArrowDown} from "@element-plus/icons-vue";
+import router from "@router/index.js";
+import {computed, reactive, toRefs} from "vue";
+import {useStore} from "vuex";
+
+const store = useStore();
 
   /******************************* 登录操作 */
+  // 是否显示登录弹窗
+  const loginDialog = () => store.commit("setLoginDialog", true);
+  // 是否显示注册弹窗
+  const registerDialog = () => store.commit("setRegisterDialog", true);
   // 登录状态
-  const isLogin = ref<Boolean>(false);
+  const isLogin = computed(() => store.getters.isLogin);
 
   /** 登录数据 */
   const state = reactive({
@@ -54,16 +62,9 @@
   });
   const { avatarSize, avatarSrc, userName } = toRefs(state);
 
-  /** 登录 */
-  function login() {
-    isLogin.value = true;
-    avatarSrc.value =
-      "http://127.0.0.1:9205/images/2023/01/18/0379458_20230118160434A001.jpg";
-  }
-
   /** 注销 */
   function loginOut() {
-    isLogin.value = false;
+    store.commit("SET_LOGIN", false);
   }
 
   //点击logo 返回主页

@@ -8,6 +8,7 @@ import com.ruoyi.music.mapper.MmsSingerAlbumMapper;
 import com.ruoyi.music.service.IMmsAlbumService;
 import com.ruoyi.music.vo.front.AlbumParamsVo;
 import com.ruoyi.music.vo.front.SimpleAlbum;
+import com.ruoyi.music.vo.front.SimpleSinger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.support.atomic.RedisAtomicLong;
@@ -30,6 +31,17 @@ public class MmsAlbumServiceImpl implements IMmsAlbumService {
     private MmsSingerAlbumMapper mmsSingerAlbumMapper;
     @Autowired
     private StringRedisTemplate redisTemplate;
+
+    /**
+     * 根据专辑名 返回专辑列表
+     *
+     * @param albumName 专辑名
+     * @return 结果
+     */
+    @Override
+    public List<SimpleAlbum> selectSimpleAlbumListByAlbumName(String albumName) {
+        return mmsAlbumMapper.selectSimpleAlbumsByAlbumName(albumName);
+    }
 
     /**
      * 查询专辑
@@ -72,8 +84,10 @@ public class MmsAlbumServiceImpl implements IMmsAlbumService {
         }
         mmsAlbum.setIsDel(0);
         mmsAlbum.setRevision(0);
-        mmsAlbum.setCreateBy(SecurityUtils.getUsername());
-        mmsAlbum.setCreateTime(DateUtils.getNowDate());
+        if (mmsAlbum.getCreateBy()== null) {
+            mmsAlbum.setCreateBy(SecurityUtils.getUsername());
+            mmsAlbum.setCreateTime(DateUtils.getNowDate());
+        }
         return mmsAlbumMapper.insertMmsAlbum(mmsAlbum);
     }
 
@@ -98,6 +112,7 @@ public class MmsAlbumServiceImpl implements IMmsAlbumService {
      */
     @Override
     public int deleteMmsAlbumByIds(Long[] ids) {
+        mmsSingerAlbumMapper.deleteMmsAlbumByAlbumId(ids);
         return mmsAlbumMapper.deleteMmsAlbumByIds(ids);
     }
 
@@ -126,5 +141,10 @@ public class MmsAlbumServiceImpl implements IMmsAlbumService {
     @Override
     public List<SimpleAlbum> listSimpleAlbums() {
         return mmsAlbumMapper.listSimpleAlbum();
+    }
+
+    @Override
+    public List<SimpleAlbum> selectSimpleAlbumsBySingers(List<SimpleSinger> singers) {
+        return mmsSingerAlbumMapper.selectSimpleAlbumsBySingers(singers);
     }
 }
