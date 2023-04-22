@@ -4,6 +4,7 @@ package com.ruoyi.music.service;
 import com.alibaba.nacos.shaded.com.google.protobuf.ServiceException;
 import com.ruoyi.music.entity.MmsUser;
 import com.ruoyi.music.entity.MmsUserAuth;
+import com.ruoyi.music.model.MmsLoginUser;
 import com.ruoyi.music.model.dto.UserLoginDTO;
 import com.ruoyi.music.model.dto.UserRegisterDTO;
 
@@ -74,7 +75,7 @@ public interface IMmsUserAuthService
     /**
      * 验证 用户登录
      */
-    MmsUser matches(UserLoginDTO userLoginDTO) throws ServiceException;
+    MmsLoginUser matches(UserLoginDTO userLoginDTO) throws ServiceException;
 
     /**
      * 客户端用户注册

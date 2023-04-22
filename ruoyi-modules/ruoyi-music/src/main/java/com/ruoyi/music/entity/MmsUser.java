@@ -1,11 +1,11 @@
 package com.ruoyi.music.entity;
 
-import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.core.annotation.Excel;
 import com.ruoyi.common.core.web.domain.BaseEntity;
+import lombok.Data;
+
+import java.util.Date;
 
 /**
  * 用户对象 mms_user
@@ -13,6 +13,7 @@ import com.ruoyi.common.core.web.domain.BaseEntity;
  * @author ruoyi
  * @date 2022-10-19
  */
+@Data
 public class MmsUser extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
@@ -36,7 +37,7 @@ public class MmsUser extends BaseEntity
     @Excel(name = "用户性别;1-男, 2-女, 0-未知")
     private Integer userGender;
 
-    /** 用户状态;0-启用,1-停用 */
+    /** 用户状态;1-启用,0-停用 */
     @Excel(name = "用户状态;1-启用,0-停用")
     private Integer userStatus;
 
@@ -56,113 +57,4 @@ public class MmsUser extends BaseEntity
     /** 是否删除;0-未删除,1-删除 */
     @Excel(name = "是否删除;0-未删除,1-删除")
     private Integer isDel;
-
-    public void setId(Long id)
-    {
-        this.id = id;
-    }
-
-    public Long getId()
-    {
-        return id;
-    }
-    public void setUserId(Long userId)
-    {
-        this.userId = userId;
-    }
-
-    public Long getUserId()
-    {
-        return userId;
-    }
-    public void setUserNickname(String userNickname)
-    {
-        this.userNickname = userNickname;
-    }
-
-    public String getUserNickname()
-    {
-        return userNickname;
-    }
-    public void setUserImgUrl(String userImgUrl)
-    {
-        this.userImgUrl = userImgUrl;
-    }
-
-    public String getUserImgUrl()
-    {
-        return userImgUrl;
-    }
-    public void setUserGender(Integer userGender)
-    {
-        this.userGender = userGender;
-    }
-
-    public Integer getUserGender()
-    {
-        return userGender;
-    }
-    public void setUserStatus(Integer userStatus)
-    {
-        this.userStatus = userStatus;
-    }
-
-    public Integer getUserStatus()
-    {
-        return userStatus;
-    }
-    public void setEditBy(String editBy)
-    {
-        this.editBy = editBy;
-    }
-
-    public String getEditBy()
-    {
-        return editBy;
-    }
-    public void setEditTime(Date editTime)
-    {
-        this.editTime = editTime;
-    }
-
-    public Date getEditTime()
-    {
-        return editTime;
-    }
-    public void setRevision(Integer revision)
-    {
-        this.revision = revision;
-    }
-
-    public Integer getRevision()
-    {
-        return revision;
-    }
-    public void setIsDel(Integer isDel)
-    {
-        this.isDel = isDel;
-    }
-
-    public Integer getIsDel()
-    {
-        return isDel;
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-                .append("id", getId())
-                .append("userId", getUserId())
-                .append("userNickname", getUserNickname())
-                .append("userImgUrl", getUserImgUrl())
-                .append("userGender", getUserGender())
-                .append("userStatus", getUserStatus())
-                .append("createBy", getCreateBy())
-                .append("createTime", getCreateTime())
-                .append("editBy", getEditBy())
-                .append("editTime", getEditTime())
-                .append("revision", getRevision())
-                .append("isDel", getIsDel())
-                .toString();
-    }
 }

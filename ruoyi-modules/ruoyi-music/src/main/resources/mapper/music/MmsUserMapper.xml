@@ -23,6 +23,14 @@
         <result property="nickname" column="user_nickname"/>
     </resultMap>
 
+    <resultMap id="UserDTOResult" type="MmsUserDTO">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="userNickname" column="user_nickname"/>
+        <result property="userImgUrl" column="user_img_url"/>
+        <result property="userGender" column="user_gender"/>
+    </resultMap>
+
     <sql id="selectMmsUserVo">
         select id,
                user_id,
@@ -83,6 +91,14 @@
             <if test="userName != null || userName != ''">user_nickname like concat(#{userName}, '%')</if>
         </where>
         <if test="userName == null || userName == ''">limit 100</if>
+
+    </select>
+    <select id="selectUserDTOByUserId" resultMap="UserDTOResult">
+        select id, user_id, user_nickname, user_img_url, user_gender
+        from mms_user
+        where user_id = #{userId}
+          and is_del = 0
+
 
     </select>
 

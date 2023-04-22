@@ -1,11 +1,5 @@
 package com.ruoyi.common.security.service;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import javax.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import com.ruoyi.common.core.constant.CacheConstants;
 import com.ruoyi.common.core.constant.SecurityConstants;
 import com.ruoyi.common.core.utils.JwtUtils;
@@ -16,6 +10,13 @@ import com.ruoyi.common.core.utils.uuid.IdUtils;
 import com.ruoyi.common.redis.service.RedisService;
 import com.ruoyi.common.security.utils.SecurityUtils;
 import com.ruoyi.system.api.model.LoginUser;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * token验证处理
@@ -135,8 +136,6 @@ public class TokenService
 
     /**
      * 验证令牌有效期，相差不足120分钟，自动刷新缓存
-     *
-     * @param loginUser
      */
     public void verifyToken(LoginUser loginUser)
     {
@@ -166,4 +165,5 @@ public class TokenService
     {
         return ACCESS_TOKEN + token;
     }
+
 }

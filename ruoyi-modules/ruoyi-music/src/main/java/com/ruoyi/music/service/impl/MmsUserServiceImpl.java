@@ -5,6 +5,8 @@ import com.ruoyi.common.core.utils.DateUtils;
 import com.ruoyi.common.security.utils.SecurityUtils;
 import com.ruoyi.music.entity.MmsUser;
 import com.ruoyi.music.mapper.MmsUserMapper;
+import com.ruoyi.music.model.MmsLoginUser;
+import com.ruoyi.music.model.dto.MmsUserDTO;
 import com.ruoyi.music.model.dto.UserLoginDTO;
 import com.ruoyi.music.model.dto.UserRegisterDTO;
 import com.ruoyi.music.service.IMmsSongListService;
@@ -153,11 +155,8 @@ public class MmsUserServiceImpl implements IMmsUserService {
      * @return 结果
      */
     @Override
-    public MmsUser login(UserLoginDTO userLoginDTO) throws ServiceException {
-
-        MmsUser userInfo = mmsUserAuthService.matches(userLoginDTO);
-
-        return userInfo;
+    public MmsLoginUser login(UserLoginDTO userLoginDTO) throws ServiceException {
+        return mmsUserAuthService.matches(userLoginDTO);
     }
 
 
@@ -185,6 +184,14 @@ public class MmsUserServiceImpl implements IMmsUserService {
     }
 
     /**
+     * 获取客户端用户信息
+     */
+    @Override
+    public MmsUserDTO selectMmsUserByUserId(Long userId) {
+        return mmsUserMapper.selectUserDTOByUserId(userId);
+    }
+
+    /**
      * 生成用户通用元素
      * 主要涉及 userId, 未指定gender, is_del, revision, userStatus
      */
@@ -195,7 +202,7 @@ public class MmsUserServiceImpl implements IMmsUserService {
         mmsUser.setRevision(0);
         mmsUser.setCreateTime(DateUtils.getNowDate());
         if (mmsUser.getUserStatus() == null) {
-            mmsUser.setUserStatus(0);
+            mmsUser.setUserStatus(1);
         }
         if (mmsUser.getUserGender() == null) {
             mmsUser.setUserGender(0);

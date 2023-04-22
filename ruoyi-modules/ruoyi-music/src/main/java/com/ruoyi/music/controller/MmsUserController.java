@@ -1,6 +1,9 @@
 package com.ruoyi.music.controller;
 
 import com.alibaba.nacos.shaded.com.google.protobuf.ServiceException;
+import com.ruoyi.common.core.domain.R;
+import com.ruoyi.common.core.utils.JwtUtils;
+import com.ruoyi.common.core.utils.StringUtils;
 import com.ruoyi.common.core.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.web.controller.BaseController;
 import com.ruoyi.common.core.web.domain.AjaxResult;
@@ -8,15 +11,19 @@ import com.ruoyi.common.core.web.page.TableDataInfo;
 import com.ruoyi.common.log.annotation.Log;
 import com.ruoyi.common.log.enums.BusinessType;
 import com.ruoyi.common.security.annotation.RequiresPermissions;
+import com.ruoyi.common.security.auth.AuthUtil;
 import com.ruoyi.common.security.utils.SecurityUtils;
 import com.ruoyi.music.entity.MmsUser;
+import com.ruoyi.music.model.MmsLoginUser;
 import com.ruoyi.music.model.dto.UserLoginDTO;
 import com.ruoyi.music.model.dto.UserRegisterDTO;
 import com.ruoyi.music.service.IMmsUserService;
+import com.ruoyi.music.service.ITokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
@@ -32,6 +39,8 @@ public class MmsUserController extends BaseController
 {
     @Autowired
     private IMmsUserService mmsUserService;
+    @Autowired
+    private ITokenService tokenService;
 
     /**
      * 查询用户列表
@@ -133,14 +142,14 @@ public class MmsUserController extends BaseController
      *
      */
     @PostMapping("/login")
-    public AjaxResult login(@RequestBody UserLoginDTO userLoginDTO){
-        MmsUser mmsUser;
+    public R login(@RequestBody @Validated UserLoginDTO userLoginDTO){
+        MmsLoginUser mmsLoginUser;
         try {
-            mmsUser =  mmsUserService.login(userLoginDTO);
+            mmsLoginUser =  mmsUserService.login(userLoginDTO);
         } catch (ServiceException e) {
-            return AjaxResult.error(e.getMessage());
+            return R.fail(e.getMessage());
         }
-        return AjaxResult.success(mmsUser) ;
+        return R.ok(tokenService.createToken(mmsLoginUser)) ;
     }
 
     /**
@@ -155,6 +164,22 @@ public class MmsUserController extends BaseController
             return AjaxResult.error(e.getMessage());
         }
         return toAjax(rows) ;
+    }
+
+    @DeleteMapping("/logout")
+    public R<?> logout(HttpServletRequest request){
+        String token = SecurityUtils.getToken(request);
+        if (StringUtils.isNotEmpty(token)){
+            JwtUtils.getUserName(token);
+            AuthUtil.logoutByToken(token);
+        }
+        return R.ok();
+    }
+
+    // TODO 待测试
+    @GetMapping("/id={id}")
+    public AjaxResult getUserInfoById(@PathVariable("id")Long userId){
+        return AjaxResult.success(mmsUserService.selectMmsUserByUserId(userId));
     }
 
 

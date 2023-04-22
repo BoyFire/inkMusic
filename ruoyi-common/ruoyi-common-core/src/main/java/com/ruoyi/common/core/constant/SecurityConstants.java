@@ -43,6 +43,11 @@ public class SecurityConstants
     public static final String LOGIN_USER = "login_user";
 
     /**
+     * 登录用户类型
+     */
+    public static final String LOGIN_USER_TYPE = "login_user_type";
+
+    /**
      * 角色权限
      */
     public static final String ROLE_PERMISSION = "role_permission";

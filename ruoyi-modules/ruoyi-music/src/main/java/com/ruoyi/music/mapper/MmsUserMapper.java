@@ -2,6 +2,7 @@ package com.ruoyi.music.mapper;
 
 
 import com.ruoyi.music.entity.MmsUser;
+import com.ruoyi.music.model.dto.MmsUserDTO;
 import com.ruoyi.music.vo.front.SimpleUserVo;
 import org.apache.ibatis.annotations.Param;
 
@@ -88,4 +89,8 @@ public interface MmsUserMapper
     List<SimpleUserVo> selectSimpleUsersByUserName(@Param("userName") String userName);
 
 
+    /**
+     * 获取用户信息
+     */
+    MmsUserDTO selectUserDTOByUserId(@Param("userId") Long userId);
 }

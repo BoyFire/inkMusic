@@ -3,12 +3,12 @@ package com.ruoyi.music.service.impl;
 
 import com.alibaba.nacos.shaded.com.google.protobuf.ServiceException;
 import com.ruoyi.common.core.utils.DateUtils;
-import com.ruoyi.common.core.utils.StringUtils;
 import com.ruoyi.common.security.utils.SecurityUtils;
 import com.ruoyi.music.entity.MmsUser;
 import com.ruoyi.music.entity.MmsUserAuth;
 import com.ruoyi.music.mapper.MmsUserAuthMapper;
 import com.ruoyi.music.mapper.MmsUserMapper;
+import com.ruoyi.music.model.MmsLoginUser;
 import com.ruoyi.music.model.dto.UserLoginDTO;
 import com.ruoyi.music.model.dto.UserRegisterDTO;
 import com.ruoyi.music.service.IMmsUserAuthService;
@@ -150,10 +150,8 @@ public class MmsUserAuthServiceImpl implements IMmsUserAuthService {
      * @param userLoginDTO
      */
     @Override
-    public MmsUser matches(UserLoginDTO userLoginDTO) throws ServiceException {
-        if (StringUtils.isAnyBlank(userLoginDTO.getUsername(), userLoginDTO.getPassword())) {
-            throw new ServiceException("用户名/密码必须填写");
-        }
+    public MmsLoginUser matches(UserLoginDTO userLoginDTO) throws ServiceException {
+        MmsLoginUser loginUser = new MmsLoginUser();
         MmsUser userInfo = mmsUserAuthMapper.getUserInfo(userLoginDTO);
         if (userInfo == null) {
             throw new ServiceException("账号不存在,请重新输入");
@@ -166,7 +164,10 @@ public class MmsUserAuthServiceImpl implements IMmsUserAuthService {
         if (!SecurityUtils.matchesPassword(userLoginDTO.getPassword(),rawPassword)){
             throw new ServiceException("账号或密码不正确");
         }
-        return userInfo;
+        loginUser.setUsername(userLoginDTO.getUsername());
+        loginUser.setUserAuthType(userLoginDTO.getUserAuthType());
+        loginUser.setMmsUser(userInfo);
+        return loginUser;
     }
 
     /**

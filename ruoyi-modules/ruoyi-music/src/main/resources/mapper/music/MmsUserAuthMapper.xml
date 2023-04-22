@@ -69,7 +69,8 @@
         where user_id = #{userId}
     </select>
     <select id="getUserInfo" resultType="com.ruoyi.music.entity.MmsUser">
-        select mu.user_id       as userId,
+        select mu.id            as id,
+               mu.user_id       as userId,
                mu.user_nickname as userNickname,
                mu.user_img_url  as userImgUrl,
                mu.user_gender   as userGender,
