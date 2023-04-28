@@ -9,7 +9,7 @@ const instance = axios.create({
   validateStatus: (status) => {
     return status >= 200 && status < 300; // default
   },
-  baseURL: "http://localhost:3000",
+  baseURL: "http://localhost:5173",
 });
 
 // 添加请求拦截器

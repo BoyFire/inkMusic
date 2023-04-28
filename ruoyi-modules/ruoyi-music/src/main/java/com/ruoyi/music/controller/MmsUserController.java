@@ -177,10 +177,9 @@ public class MmsUserController extends BaseController
     }
 
     // TODO 待测试
-    @GetMapping("/id={id}")
-    public AjaxResult getUserInfoById(@PathVariable("id")Long userId){
+    @GetMapping("/getUserInfo")
+    public AjaxResult getUserInfoById(@RequestParam Long userId){
         return AjaxResult.success(mmsUserService.selectMmsUserByUserId(userId));
     }
-
 
 }

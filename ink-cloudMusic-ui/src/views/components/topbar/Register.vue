@@ -50,11 +50,11 @@
 </template>
 
 <script lang="ts" setup>
-import type {FormInstance, FormRules} from "element-plus";
-import {getCurrentInstance, reactive, ref} from "vue";
-import {useStore} from "vuex";
+  import type { FormInstance, FormRules } from "element-plus";
+  import { getCurrentInstance, reactive, ref } from "vue";
+  import { useStore } from "vuex";
 
-const store = useStore();
+  const store = useStore();
   const { proxy } = getCurrentInstance();
   const isVisible = ref(true);
   const handleClose = () => store.commit("setRegisterDialog", false);
@@ -80,6 +80,13 @@ const store = useStore();
   });
   // 表单验证
   const rules = reactive<FormRules>({
+    userNickname: [
+      {
+        required: true,
+        message: "请输入昵称",
+        trigger: "blur",
+      },
+    ],
     userLogin: [
       {
         required: true,
@@ -117,9 +124,11 @@ const store = useStore();
     if (!formEl) {
       return;
     }
-    formEl.validate((valid) => {
+    formEl.validate(async (valid) => {
       if (valid) {
-        console.log(registerForm);
+        console.log(111);
+        const result = await proxy.$http.register(registerForm);
+        console.log(result);
 
         // if (res.code !== 200) {
         //   console.log(res.msg);

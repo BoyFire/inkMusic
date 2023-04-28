@@ -1,6 +1,6 @@
 import vue from "@vitejs/plugin-vue";
-import {resolve} from "path";
-import {defineConfig} from "vite";
+import { resolve } from "path";
+import { defineConfig } from "vite";
 
 function pathResolve(dir) {
   return resolve(__dirname, ".", dir);
@@ -35,11 +35,19 @@ export default defineConfig({
     },
   },
   server: {
+    host: "localhost",
     open: true,
     proxy: {
+      "^/mms": {
+        target: "http://localhost:9204",
+        changeOrigin: true,
+        pathRewrite: {
+          "^/mms": "",
+        },
+      },
       "^/api": {
-        target: "http://localhost:3000", // 后端服务实际地址
-        changeOrigin: true, //开启代理
+        target: "http://localhost:3000",
+        changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ""),
       },
     },

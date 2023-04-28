@@ -12,7 +12,7 @@
     </div>
 
     <div class="wrapper">
-      <MvList :MvList="mv_list" :loading="mv_loading" :num="mv_count"></MvList>
+      <MvList :mvList="mv_list" :loading="mv_loading" :num="mv_count"></MvList>
     </div>
   </div>
 </template>
