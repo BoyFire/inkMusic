@@ -9,7 +9,7 @@
           :rules="loginFormRules"
           label-width="">
           <el-form-item prop="phone" label-width="">
-            <el-input v-model="loginForm.userName" placeholder="请输入帐号登录">
+            <el-input v-model="loginForm.username" placeholder="请输入帐号登录">
             </el-input>
           </el-form-item>
           <el-form-item prop="pwd" label-width="">
@@ -23,7 +23,9 @@
       </div>
       <template #footer>
         <span class="dialog-footer">
-          <el-button type="primary" @click="submitForm">登录</el-button>
+          <el-button type="primary" @click="submitForm(loginFormRef)"
+            >登录</el-button
+          >
         </span>
       </template>
     </el-dialog>
@@ -31,65 +33,61 @@
 </template>
 
 <script lang="ts" setup>
-import {getCurrentInstance, reactive, ref, toRefs} from "vue";
-import {useStore} from "vuex";
+  import { FormInstance, FormRules } from "element-plus";
+  import { getCurrentInstance, reactive, ref } from "vue";
+  import { useStore } from "vuex";
 
-const store = useStore();
+  const store = useStore();
   const { proxy } = getCurrentInstance();
   const isVisible = ref(true);
   const handleClose = () => store.commit("setLoginDialog", false);
-  const loginFormRef = ref(null);
-  const formInfo = reactive({
-    loginForm: {
-      userName: "",
-      pwd: "",
-    },
-    loginFormRules: {
-      userName: [
-        {
-          required: true,
-          message: "请输入账号",
-          trigger: "blur",
-        },
-      ],
-      pwd: [
-        {
-          required: true,
-          message: "请输入密码",
-          trigger: "blur",
-        },
-      ],
-    },
-  });
-  const { loginForm, loginFormRules } = toRefs(formInfo);
+  const loginFormRef = ref<FormInstance>();
 
-  const submitForm = () => {
-    loginFormRef.validate(async (valid) => {
+  const loginForm = reactive({
+    userAuthType: "0",
+    username: "",
+    pwd: "",
+  });
+
+  const loginFormRules = reactive<FormRules>({
+    userName: [
+      {
+        required: true,
+        message: "请输入账号",
+        trigger: "blur",
+      },
+    ],
+    pwd: [
+      {
+        required: true,
+        message: "请输入密码",
+        trigger: "blur",
+      },
+    ],
+  });
+
+  const submitForm = (formEl: FormInstance | undefined) => {
+    if (!formEl) {
+      return;
+    }
+    formEl.validate(async (valid) => {
       if (valid) {
-        const { data: res } = await proxy.$http.login(formInfo["loginForm"]);
+        const { data: res } = await proxy.$http.myLogin(loginForm);
+        console.log(res);
 
         if (res.code !== 200) {
-          console.log(res.msg);
+          proxy.$msg.error(res.msg);
         } else {
-          getUserInfo(res.profile.userId);
-          window.localStorage.setItem("token", res.token);
-          window.localStorage.setItem("cookie", res.cookie);
+          const userInfo = res.data.mmsUser;
+          window.localStorage.setItem("token", res.data.token);
+          window.localStorage.setItem("isLogin", "true");
+          window.localStorage.setItem("userInfo", JSON.stringify(userInfo));
+          store.commit("SET_LOGIN", true);
+          store.commit("setUserInfo", userInfo);
           store.commit("setLoginDialog", false);
         }
       }
     });
-  };
-  const getUserInfo = async (uid) => {
-    const { data: res } = await proxy.$http.getUserInfo({ uid: uid });
-
-    if (res.code !== 200) {
-      console.log(res.msg);
-    } else {
-      window.localStorage.setItem("isLogin", "true");
-      window.localStorage.setItem("userInfo", JSON.stringify(res.profile));
-      store.commit("SET_LOGIN", true);
-      store.commit("setUserInfo", res.profile);
-    }
   };
 </script>
 

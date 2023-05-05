@@ -19,5 +19,6 @@ declare module "@vue/runtime-core" {
   interface ComponentCustomProperties {
     $utils: any;
     $http: any;
+    $msg: any;
   }
 }

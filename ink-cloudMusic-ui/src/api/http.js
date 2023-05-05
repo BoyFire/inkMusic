@@ -9,13 +9,29 @@ const register = ({
   pwd = "",
   checkPwd = "",
 }) => {
-  return api.post(`/mms/music/user/register`, {
+  return api.post(`/music/user/register`, {
     userNickname: userNickname,
     userLogin: userLogin,
     pwd: pwd,
     checkPwd: checkPwd,
   });
 };
+
+// 登录
+const myLogin = ({ userAuthType = "0", username = "", pwd = "" }) => {
+  return api.post(`/music/user/login`, {
+    userAuthType: userAuthType,
+    username: username,
+    password: pwd,
+  });
+};
+export function myLogout(header) {
+  return api.delete(`/music/user/logout`, {
+    headers: {
+      Authorization: header,
+    },
+  });
+}
 
 /** 我的程序 ++++++++++++++++++++++++++++++++++++++++++++ */
 
@@ -388,8 +404,8 @@ const topAlbum = ({
   offset = 0,
   area = "all",
   type = "new",
-  year = "",
-  month = "",
+  year = "2023",
+  month = "4",
 }) => {
   return api.get(
     `/api/top/album?limit=${limit}&offset=${offset}&area=${area}&type=${type}&year=${year}&month=${month}`,
@@ -478,4 +494,5 @@ export {
 
   // 我的程序
   register,
+  myLogin,
 };

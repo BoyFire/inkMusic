@@ -59,6 +59,7 @@ public class TokenServiceImpl implements ITokenService {
         HashMap<String, Object> rspMap = new HashMap<>();
         rspMap.put("access_token", JwtUtils.createToken(claimsMap));
         rspMap.put("expires_in", expireTime);
+        rspMap.put("token",token);
         return rspMap;
     }
 
@@ -75,8 +76,6 @@ public class TokenServiceImpl implements ITokenService {
 
     /**
      * 获取用户身份信息
-     *
-     * @param token
      */
     @Override
     public MmsLoginUser getLoginUser(String token) {

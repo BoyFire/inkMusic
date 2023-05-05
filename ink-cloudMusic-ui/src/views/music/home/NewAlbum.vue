@@ -34,7 +34,7 @@
 
   const album_list: Ref<any[]> = ref([]);
   const album_index: Ref<number> = ref(0);
-  const album_params: Ref<any> = ref({ limit: 12, area: "all" });
+  const album_params: Ref<any> = ref({ limit: 12, offset: 0, area: "all" });
   const album_count: number = 12;
   const album_loading: Ref<boolean> = ref(true);
 

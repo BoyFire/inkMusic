@@ -126,10 +126,8 @@
     }
     formEl.validate(async (valid) => {
       if (valid) {
-        console.log(111);
         const result = await proxy.$http.register(registerForm);
         console.log(result);
-
         // if (res.code !== 200) {
         //   console.log(res.msg);
         // } else {

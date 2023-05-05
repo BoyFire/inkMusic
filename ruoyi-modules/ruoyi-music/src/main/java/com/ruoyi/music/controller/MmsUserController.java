@@ -142,14 +142,15 @@ public class MmsUserController extends BaseController
      *
      */
     @PostMapping("/login")
-    public R login(@RequestBody @Validated UserLoginDTO userLoginDTO){
+    public AjaxResult login(@RequestBody @Validated UserLoginDTO userLoginDTO){
         MmsLoginUser mmsLoginUser;
         try {
             mmsLoginUser =  mmsUserService.login(userLoginDTO);
+            mmsLoginUser.setToken(String.valueOf(tokenService.createToken(mmsLoginUser).get("token")));
         } catch (ServiceException e) {
-            return R.fail(e.getMessage());
+            return AjaxResult.error(e.getMessage());
         }
-        return R.ok(tokenService.createToken(mmsLoginUser)) ;
+        return AjaxResult.success(mmsLoginUser);
     }
 
     /**
@@ -176,7 +177,9 @@ public class MmsUserController extends BaseController
         return R.ok();
     }
 
-    // TODO 待测试
+    /**
+     * 通过用户ID 获取用户信息
+     */
     @GetMapping("/getUserInfo")
     public AjaxResult getUserInfoById(@RequestParam Long userId){
         return AjaxResult.success(mmsUserService.selectMmsUserByUserId(userId));

@@ -7,9 +7,9 @@ const instance = axios.create({
   // `validateStatus` 定义对于给定的HTTP 响应状态码是 resolve 或 reject  promise 。
   // 如果 `validateStatus` 返回 `true` (或者设置为 `null` 或 `undefined`)，promise 将被 resolve; 否则，promise 将被 rejecte
   validateStatus: (status) => {
-    return status >= 200 && status < 300; // default
+    return status >= 200 && status < 405; // default
   },
-  baseURL: "http://localhost:5173",
+  // baseURL: "http://localhost:5173",
 });
 
 // 添加请求拦截器
@@ -35,11 +35,15 @@ instance.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
-const ajaxMethod = ["get", "post"];
+axios.defaults.headers["Content-Type"] = "application/json;charset=utf-8";
+const ajaxMethod = ["get", "post", "delete"];
 const api = {};
 ajaxMethod.forEach((method) => {
   api[method] = function (uri, data, config) {
+    axios.defaults.baseURL = "http://localhost:8080";
+    if (uri.indexOf("music") !== -1) {
+      axios.defaults.baseURL = "http://localhost:5173";
+    }
     return new Promise(function (resolve, reject) {
       instance[method](uri, data, config)
         .then((response) => {

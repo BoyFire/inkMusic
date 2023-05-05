@@ -14,11 +14,11 @@
 
     <div v-else class="user-avatar">
       <!-- 头像 -->
-      <el-avatar :size="avatarSize" :src="avatarSrc" />
+      <el-avatar :size="33" :src="userInfo.userImgUrl" />
 
       <el-dropdown trigger="click">
         <div class="logined">
-          <span class="nickname"> {{ userName }}</span>
+          <span class="nickname"> {{ userInfo.userNickname }}</span>
           <span
             ><el-icon> <arrow-down /></el-icon
           ></span>
@@ -38,13 +38,16 @@
 </template>
 
 <script lang="ts" setup>
-import Search from "@components/Search.vue";
-import {ArrowDown} from "@element-plus/icons-vue";
-import router from "@router/index.js";
-import {computed, reactive, toRefs} from "vue";
-import {useStore} from "vuex";
+  import Search from "@components/Search.vue";
+  import { ArrowDown } from "@element-plus/icons-vue";
+  import router from "@router/index.js";
+  import { computed, getCurrentInstance } from "vue";
+  import { useRoute } from "vue-router";
+  import { useStore } from "vuex";
 
-const store = useStore();
+  const route = useRoute();
+  const store = useStore();
+  const { proxy } = getCurrentInstance();
 
   /******************************* 登录操作 */
   // 是否显示登录弹窗
@@ -55,17 +58,28 @@ const store = useStore();
   const isLogin = computed(() => store.getters.isLogin);
 
   /** 登录数据 */
-  const state = reactive({
-    avatarSrc: "",
-    avatarSize: 33,
-    userName: "阿斯顿飞过撒旦",
+  const userInfo = computed(() => {
+    return store.getters.userInfo;
   });
-  const { avatarSize, avatarSrc, userName } = toRefs(state);
 
   /** 注销 */
-  function loginOut() {
-    store.commit("SET_LOGIN", false);
-  }
+  const loginOut = async () => {
+    const { data: res } = await proxy.$http.myLogout(store.getters.token);
+    if (res.code !== 200) {
+      proxy.$msg.error(res.msg);
+    } else {
+      proxy.$msg.success("退出成功");
+      window.localStorage.removeItem("token");
+      window.localStorage.removeItem("cookie");
+      window.localStorage.removeItem("userInfo");
+      window.localStorage.removeItem("isLogin");
+      store.commit("setUserInfo", {});
+      store.commit("SET_LOGIN", false);
+    }
+    if (route.path.indexOf("/my") >= 0) {
+      router.push({ path: "/" });
+    }
+  };
 
   //点击logo 返回主页
   function toHome() {
@@ -88,12 +102,14 @@ const store = useStore();
   }
   .user-avatar {
     text-align: center;
+    vertical-align: middle;
     .logined {
       display: flex;
       align-items: center;
 
       span {
         display: inline-block;
+        font-size: 18px;
         height: 24px;
         line-height: 24px;
         font-weight: 300;

@@ -35,20 +35,17 @@ export default defineConfig({
     },
   },
   server: {
-    host: "localhost",
     open: true,
+    http: true,
     proxy: {
-      "^/mms": {
-        target: "http://localhost:9204",
-        changeOrigin: true,
-        pathRewrite: {
-          "^/mms": "",
-        },
-      },
-      "^/api": {
+      "/api": {
         target: "http://localhost:3000",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ""),
+      },
+      "/music": {
+        target: "http://localhost:8080",
+        changeOrigin: true,
       },
     },
   },
