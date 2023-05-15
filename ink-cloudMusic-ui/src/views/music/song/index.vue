@@ -213,7 +213,7 @@
       timestamp: new Date().valueOf(),
     });
     if (res.code !== 200) {
-      return console.log("数据请求失败");
+      return proxy.$msg.error(res.message);
     }
 
     // 是否有版权播放
@@ -250,7 +250,7 @@
     const { data: res } = await proxy.$http.simiSong({ id: sId.value });
 
     if (res.code !== 200) {
-      return console.log("数据请求失败");
+      return proxy.$msg.error(res.message);
     }
     simiSong.value = res.songs.map((item) => {
       return {
@@ -274,7 +274,7 @@
     const { data: res } = await proxy.$http.simiPlayList({ id: sId.value });
 
     if (res.code !== 200) {
-      return console.log("数据请求失败");
+      return proxy.$msg.error(res.message);
     }
 
     playlists.value = res.playlists;

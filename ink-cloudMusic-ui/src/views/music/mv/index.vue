@@ -85,7 +85,7 @@
     const { data: res } = await proxy.$http.mv(params);
 
     if (res.code !== 200) {
-      return console.log("数据请求失败");
+      return proxy.$msg.error(res.message);
     }
 
     list.value = params.offset !== 0 ? [...list.value, ...res.data] : res.data;

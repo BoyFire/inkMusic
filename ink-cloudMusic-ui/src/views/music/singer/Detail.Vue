@@ -131,7 +131,7 @@
     const { data: res } = await proxy.$http.artistDetall({ id: id });
 
     if (res.code !== 200) {
-      return console.log("数据请求失败");
+      return proxy.$msg.error(res.message);
     }
     details.value = res.data.artist;
     isLoading.value = false;
@@ -142,7 +142,7 @@
     let idsArr = [];
     const { data: res } = await proxy.$http.artists({ id: id });
     if (res.code !== 200) {
-      console.log("数据请求失败");
+      proxy.$msg.error(res.message);
     }
 
     const idList = [];
@@ -194,7 +194,7 @@
     });
 
     if (res.code !== 200) {
-      return console.log("数据请求失败");
+      return proxy.$msg.error(res.message);
     }
     album_list.value =
       albumOffset.value !== 0
@@ -223,7 +223,7 @@
     const { data: res } = await proxy.$http.artistMv({ id: id });
 
     if (res.code !== 200) {
-      return console.log("数据请求失败");
+      return proxy.$msg.error(res.message);
     }
     mv_list.value = res.mvs;
     mv_loading.value = false;

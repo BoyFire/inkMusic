@@ -1,4 +1,4 @@
-import {formatSongInfo} from "@utils/song";
+import { formatSongInfo } from "@utils/song";
 
 export default {
   // 数字过万的处理
@@ -89,9 +89,11 @@ export default {
     const ret = [];
     list.map((item, index) => {
       if (item.id) {
-        // 是否有版权播放
-        item.license = !privileges[index].cp;
-        ret.push(formatSongInfo(item));
+        if (index !== null || index !== undefined) {
+          // 是否有版权播放
+          item.license = !privileges[index].cp;
+          ret.push(formatSongInfo(item));
+        }
       }
     });
     return ret;

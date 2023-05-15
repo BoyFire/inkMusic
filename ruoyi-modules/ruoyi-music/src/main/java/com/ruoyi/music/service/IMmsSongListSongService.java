@@ -60,4 +60,6 @@ public interface IMmsSongListSongService
      * @return 结果
      */
     public int deleteMmsSongListSongById(Long id);
+
+    List<MmsSongListSong> selectMmsSongListSongBySongListId(Long songListId);
 }

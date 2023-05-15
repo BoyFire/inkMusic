@@ -57,25 +57,22 @@
   const getLyrics = async (id) => {
     const { data: res } = await proxy.$http.lyrics({ id: id });
     if (res.code !== 200) {
-      return console.log("数据请求失败");
+      return proxy.$msg.error(res.message);
     }
     formartLyric(res.lrc);
   };
   // 格式化歌词
   const formartLyric = (lrc) => {
-    lyric.value = lrc.lyric;
-    const lyricLis = lrc.lyric.split("\n");
-    //分割时间
-    const lrcReg = /\[\d{2}:\d{2}.\d{2,3}\]/;
+    const lrcReg = /^\[(\d{2}):(\d{2}.\d{2,})\]\s*(.+)$/;
+
     if (!lrc.lyric) {
       lyric.value = true;
       return;
     }
+    const lyricLis = lrc.lyric.split("\n");
+
+    lyric.value = lrc.lyric;
     lyricLis.forEach((item) => {
-      if (item === "") {
-        // 判空
-        return;
-      }
       const arr = lrcReg.exec(item);
       if (!arr) {
         return;
@@ -85,6 +82,11 @@
         t: Number.parseInt(arr[1]) * 60 * 1 + Number.parseInt(arr[2]) * 1,
         txt: arr[3],
       });
+    });
+
+    // 根据时间轴重排顺序
+    lyricObj.value.sort((a, b) => {
+      return a.t - b.t;
     });
   };
 

@@ -91,4 +91,6 @@ public interface MmsSongListMapper
      */
     List<SimpleSongListVo> selectSimpleSongsBySongName(@Param("songListName") String songListName);
 
+    List<MmsSongList> selectMmsSongListRand();
+
 }

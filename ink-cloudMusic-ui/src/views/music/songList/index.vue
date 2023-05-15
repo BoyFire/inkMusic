@@ -116,7 +116,7 @@
   const getCatlist = async () => {
     const { data: res } = await proxy.$http.catlist();
     if (res.code !== 200) {
-      return console.log("数据请求失败");
+      return proxy.$msg.error(res.message);
     }
 
     sub.value = res.sub;
@@ -170,7 +170,7 @@
     const { data: res } = await proxy.$http.playList(params);
 
     if (res.code !== 200) {
-      return console.log("数据请求失败");
+      return proxy.$msg.error(res.message);
     }
     playlist_list.value =
       params.offset !== 0
@@ -178,6 +178,7 @@
         : res.playlists;
     busy.value = playlist_list.value.length >= res.total;
     playlist_loading.value = false;
+    console.log(res);
   };
 
   // 无限滚动

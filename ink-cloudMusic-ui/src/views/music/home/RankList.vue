@@ -101,7 +101,7 @@
     const { data: res } = await proxy.$http.toplist();
 
     if (res.code !== 200) {
-      return console.log("数据请求失败");
+      return proxy.$msg.error(res.message);
     }
 
     topList.value = res.list.splice(0, 4);

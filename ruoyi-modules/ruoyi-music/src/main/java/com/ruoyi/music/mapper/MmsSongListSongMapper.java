@@ -1,6 +1,7 @@
 package com.ruoyi.music.mapper;
 
 import com.ruoyi.music.entity.MmsSongListSong;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -59,4 +60,6 @@ public interface MmsSongListSongMapper
      * @return 结果
      */
     public int deleteMmsSongListSongByIds(Long[] ids);
+
+    int getSongListCount(@Param("songListId") Long songListId);
 }

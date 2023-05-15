@@ -95,4 +95,9 @@ public class MmsCommentController extends BaseController
     {
         return toAjax(mmsCommentService.deleteMmsCommentByIds(ids));
     }
+
+    @GetMapping("/detail")
+    public AjaxResult getComment(@RequestParam("type")Integer type, @RequestParam("id")Long id){
+        return AjaxResult.success(mmsCommentService.selectMmsCommentListByTypeAndId(type,id));
+    }
 }

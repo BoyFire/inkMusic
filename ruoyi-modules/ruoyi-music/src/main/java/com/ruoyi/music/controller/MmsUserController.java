@@ -35,8 +35,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/user")
-public class MmsUserController extends BaseController
-{
+public class MmsUserController extends BaseController {
     @Autowired
     private IMmsUserService mmsUserService;
     @Autowired
@@ -47,8 +46,7 @@ public class MmsUserController extends BaseController
      */
     @RequiresPermissions("music:user:list")
     @GetMapping("/list")
-    public TableDataInfo list(MmsUser mmsUser)
-    {
+    public TableDataInfo list(MmsUser mmsUser) {
         startPage();
         List<MmsUser> list = mmsUserService.selectMmsUserList(mmsUser);
         return getDataTable(list);
@@ -60,8 +58,7 @@ public class MmsUserController extends BaseController
     @RequiresPermissions("music:user:export")
     @Log(title = "用户", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, MmsUser mmsUser)
-    {
+    public void export(HttpServletResponse response, MmsUser mmsUser) {
         List<MmsUser> list = mmsUserService.selectMmsUserList(mmsUser);
         ExcelUtil<MmsUser> util = new ExcelUtil<MmsUser>(MmsUser.class);
         util.exportExcel(response, list, "用户数据");
@@ -72,8 +69,7 @@ public class MmsUserController extends BaseController
      */
     @RequiresPermissions("music:user:query")
     @GetMapping(value = "/{id}")
-    public AjaxResult getInfo(@PathVariable("id") Long id)
-    {
+    public AjaxResult getInfo(@PathVariable("id") Long id) {
         return AjaxResult.success(mmsUserService.selectMmsUserById(id));
     }
 
@@ -82,8 +78,7 @@ public class MmsUserController extends BaseController
      */
     @RequiresPermissions("music:user:query")
     @GetMapping("/listUserIdAndNickName")
-    public AjaxResult listUserIdAndNickname()
-    {
+    public AjaxResult listUserIdAndNickname() {
         return AjaxResult.success(mmsUserService.selectSimpleUsers());
     }
 
@@ -93,8 +88,7 @@ public class MmsUserController extends BaseController
     @RequiresPermissions("music:user:add")
     @Log(title = "用户", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody MmsUser mmsUser)
-    {
+    public AjaxResult add(@RequestBody MmsUser mmsUser) {
         return toAjax(mmsUserService.insertMmsUser(mmsUser));
     }
 
@@ -104,8 +98,7 @@ public class MmsUserController extends BaseController
     @RequiresPermissions("music:user:edit")
     @Log(title = "用户", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody MmsUser mmsUser)
-    {
+    public AjaxResult edit(@RequestBody MmsUser mmsUser) {
         return toAjax(mmsUserService.updateMmsUser(mmsUser));
     }
 
@@ -115,8 +108,7 @@ public class MmsUserController extends BaseController
     @RequiresPermissions("music:user:remove")
     @Log(title = "用户", businessType = BusinessType.DELETE)
     @DeleteMapping("/{ids}")
-    public AjaxResult remove(@PathVariable Long[] ids)
-    {
+    public AjaxResult remove(@PathVariable Long[] ids) {
         return toAjax(mmsUserService.deleteMmsUserByIds(ids));
     }
 
@@ -126,26 +118,24 @@ public class MmsUserController extends BaseController
     @RequiresPermissions("music:user:edit")
     @Log(title = "用户", businessType = BusinessType.UPDATE)
     @PutMapping("/changeStatus")
-    public AjaxResult changeStatus(@RequestBody MmsUser mmsUser)
-    {
+    public AjaxResult changeStatus(@RequestBody MmsUser mmsUser) {
         mmsUser.setUpdateBy(SecurityUtils.getUsername());
         return toAjax(mmsUserService.updateUserStatus(mmsUser));
     }
 
     @GetMapping("/getSimpleUserByName")
-    public AjaxResult getSimpleSingerByName(@RequestParam("query")String userName){
+    public AjaxResult getSimpleSingerByName(@RequestParam("query") String userName) {
         return AjaxResult.success(mmsUserService.selectSimpleUserListByName(userName));
     }
 
     /**
      * 客户端账号登录
-     *
      */
     @PostMapping("/login")
-    public AjaxResult login(@RequestBody @Validated UserLoginDTO userLoginDTO){
+    public AjaxResult login(@RequestBody @Validated UserLoginDTO userLoginDTO) {
         MmsLoginUser mmsLoginUser;
         try {
-            mmsLoginUser =  mmsUserService.login(userLoginDTO);
+            mmsLoginUser = mmsUserService.login(userLoginDTO);
             mmsLoginUser.setToken(String.valueOf(tokenService.createToken(mmsLoginUser).get("token")));
         } catch (ServiceException e) {
             return AjaxResult.error(e.getMessage());
@@ -157,20 +147,20 @@ public class MmsUserController extends BaseController
      * 客户端账号注册
      */
     @PostMapping("/register")
-    public AjaxResult register(@RequestBody @Validated UserRegisterDTO userRegisterDTO){
-        int rows ;
+    public AjaxResult register(@RequestBody @Validated UserRegisterDTO userRegisterDTO) {
+        int rows;
         try {
-            rows =  mmsUserService.insertMmsUser(userRegisterDTO);
+            rows = mmsUserService.insertMmsUser(userRegisterDTO);
         } catch (ServiceException e) {
             return AjaxResult.error(e.getMessage());
         }
-        return toAjax(rows) ;
+        return toAjax(rows);
     }
 
     @DeleteMapping("/logout")
-    public R<?> logout(HttpServletRequest request){
+    public R<?> logout(HttpServletRequest request) {
         String token = SecurityUtils.getToken(request);
-        if (StringUtils.isNotEmpty(token)){
+        if (StringUtils.isNotEmpty(token)) {
             JwtUtils.getUserName(token);
             AuthUtil.logoutByToken(token);
         }
@@ -181,7 +171,7 @@ public class MmsUserController extends BaseController
      * 通过用户ID 获取用户信息
      */
     @GetMapping("/getUserInfo")
-    public AjaxResult getUserInfoById(@RequestParam Long userId){
+    public AjaxResult getUserInfoById(@RequestParam Long userId) {
         return AjaxResult.success(mmsUserService.selectMmsUserByUserId(userId));
     }
 

@@ -103,4 +103,11 @@ public class MmsSongListSongServiceImpl implements IMmsSongListSongService {
     public int deleteMmsSongListSongById(Long id) {
         return mmsSongListSongMapper.deleteMmsSongListSongById(id);
     }
+
+    @Override
+    public List<MmsSongListSong> selectMmsSongListSongBySongListId(Long songListId) {
+        MmsSongListSong mmsSongListSong = new MmsSongListSong();
+        mmsSongListSong.setSongListId(songListId);
+        return mmsSongListSongMapper.selectMmsSongListSongList(mmsSongListSong);
+    }
 }

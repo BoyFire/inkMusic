@@ -129,7 +129,7 @@
     //获取数据
     const { data: res } = await proxy.$http.artistList(params.value);
     if (res.code !== 200) {
-      return console.log("数据请求失败");
+      return proxy.$msg.error(res.message);
     }
 
     list.value =

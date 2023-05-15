@@ -216,7 +216,7 @@
     isLoading.value = true;
     const { data: res } = await proxy.$http.playlistdetail(params);
     if (res.code !== 200) {
-      return console.log("数据请求失败");
+      return proxy.$msg.error(res.message);
     }
 
     details.value = res.playlist;
@@ -273,7 +273,7 @@
     const { data: res } = await proxy.$http.playlistSCollect(params);
 
     if (res.code !== 200) {
-      return console.log("数据请求失败");
+      return proxy.$msg.error(res.message);
     }
     collects.value = res.subscribers;
   };
@@ -283,7 +283,7 @@
     const { data: res } = await proxy.$http.playlistRelated(params);
 
     if (res.code !== 200) {
-      return console.log("数据请求失败");
+      return proxy.$msg.error(res.message);
     }
     playlists.value = res.playlists;
   };
@@ -293,7 +293,7 @@
     const { data: res } = await proxy.$http.playlistComment(params);
 
     if (res.code !== 200) {
-      return console.log("数据请求失败");
+      return proxy.$msg.error(res.message);
     }
     comments.value = res.comments;
   };
@@ -319,7 +319,7 @@
     });
 
     if (res.code !== 200) {
-      return console.log("数据请求失败");
+      return proxy.$msg.error(res.message);
     }
     details.value.subscribed = !details.value.subscribed;
   };

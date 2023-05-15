@@ -41,10 +41,9 @@
 
   // 获取热门推荐歌单标签
   const getHotTags = async () => {
-    // 调用接口获取数据
     const { data: res } = await proxy.$http.hotList();
     if (res.code !== 200) {
-      return console.log("数据请求失败");
+      return proxy.$msg.error(res.message);
     }
     playlist_tags.value = res.tags.splice(0, 6);
   };
@@ -54,7 +53,7 @@
     const { data: res } = await proxy.$http.playList(params);
 
     if (res.code !== 200) {
-      return console.log("数据请求失败");
+      return proxy.$msg.error(res.message);
     }
     playlist_list.value = res.playlists;
     playlist_loading.value = false;

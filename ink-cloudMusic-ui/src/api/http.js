@@ -32,6 +32,22 @@ export function myLogout(header) {
     },
   });
 }
+export function getMyUserInfo({ userId = 0 }) {
+  return api.get(`/music/user/getUserInfo?userId=${userId}`, {})
+}
+export function getUserSongList({ userId = 0 }) {
+  return api.get(`/music/songList/getUserSongLists?userId=${userId}`, {})
+}
+
+export function getCommentDetail({ songListId = 0, type = 4 }) {
+  //1-评论,2-专辑,3-歌曲,4-歌单,5-视频
+  return api.get(`/music/songListSong/detail?songListId=${songListId}&type=${type}`, {})
+}
+
+export function getSongListRelated({ songListId = 4 }) {
+  return api.get(`/music/songList/getRelated?songListId=${songListId}`, {})
+
+}
 
 /** 我的程序 ++++++++++++++++++++++++++++++++++++++++++++ */
 

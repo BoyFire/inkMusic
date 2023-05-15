@@ -109,4 +109,16 @@ public class MmsSongListController extends BaseController
         return AjaxResult.success(mmsSongListService.selectSimpleSongsBySongName(songListName));
     }
 
+    @GetMapping("/getUserSongLists")
+    public AjaxResult getUserSongLists(@RequestParam("userId")Long userId){
+        return AjaxResult.success(mmsSongListService.selectMmsSongListByUserId(userId));
+    }
+
+    @GetMapping("/getRelated")
+    public AjaxResult getRelated(@RequestParam("songListId") Long songListId) {
+        return AjaxResult.success(mmsSongListService.selectMmsSongLisRelatedBySongListId(songListId));
+    }
+
+
+
 }

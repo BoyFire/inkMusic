@@ -68,4 +68,7 @@ public class MmsSongList extends BaseEntity
     // 歌单创建者姓名
     private String songListCreatorName;
 
+    //歌单总数
+    private Integer count;
+
 }

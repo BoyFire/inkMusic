@@ -97,4 +97,9 @@ public class MmsSongListSongController extends BaseController
     {
         return toAjax(mmsSongListSongService.deleteMmsSongListSongByIds(ids));
     }
+
+    @GetMapping("/detail")
+    public AjaxResult detail(@RequestParam("songListId")Long songListId){
+        return AjaxResult.success(mmsSongListSongService.selectMmsSongListSongBySongListId(songListId));
+    }
 }

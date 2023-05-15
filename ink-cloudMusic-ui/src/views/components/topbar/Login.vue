@@ -14,6 +14,7 @@
           </el-form-item>
           <el-form-item prop="pwd" label-width="">
             <el-input
+              @keyup.enter.native="submitForm(loginFormRef)"
               v-model="loginForm.pwd"
               placeholder="请输入密码"
               show-password>
@@ -73,11 +74,11 @@
     formEl.validate(async (valid) => {
       if (valid) {
         const { data: res } = await proxy.$http.myLogin(loginForm);
-        console.log(res);
-
         if (res.code !== 200) {
           proxy.$msg.error(res.msg);
         } else {
+          loginForm.pwd = "";
+          loginForm.username = "";
           const userInfo = res.data.mmsUser;
           window.localStorage.setItem("token", res.data.token);
           window.localStorage.setItem("isLogin", "true");

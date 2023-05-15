@@ -44,7 +44,7 @@
     const { data: res } = await proxy.$http.topAlbum(params);
 
     if (res.code !== 200) {
-      return console.log("数据请求失败");
+      return proxy.$msg.error(res.message);
     }
     if (album_params.value.area === "all") {
       album_list.value = res.monthData.splice(0, album_count);

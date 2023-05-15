@@ -267,8 +267,14 @@
 </template>
 
 <script>
-import {addAlbum, delAlbum, getAlbum, listAlbum, updateAlbum,} from "@/api/music/album";
-import {selectSimpleSingerByName} from "@/api/music/singer";
+import {
+  addAlbum,
+  delAlbum,
+  getAlbum,
+  listAlbum,
+  updateAlbum,
+} from "@/api/music/album";
+import { selectSimpleSingerByName } from "@/api/music/singer";
 
 export default {
   name: "Album",
@@ -462,7 +468,7 @@ export default {
     /** 远程方法 */
     remoteMethod(params) {
       this.remoteLoading = true;
-      this.simpleSinger = this.form.simpleSinger;
+      this.simpleSinger = this.form.singers.concat();
       selectSimpleSingerByName(params).then((response) => {
         for (let index = 0; index < response.data.length; index++) {
           if (this.simpleSinger.indexOf(response.data[index]) === -1) {

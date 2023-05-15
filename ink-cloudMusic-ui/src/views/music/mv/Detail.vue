@@ -104,7 +104,7 @@
   const getMvDetail = async () => {
     const { data: res } = await proxy.$http.mvDetail({ id: mId.value });
     if (res.code !== 200) {
-      return console.log("数据请求失败");
+      return proxy.$msg.error(res.message);
     }
 
     mvDetail.value = res.data;
@@ -116,7 +116,7 @@
     const { data: res } = await proxy.$http.mvUrl({ id: mId.value });
 
     if (res.code !== 200) {
-      return console.log("数据请求失败");
+      return proxy.$msg.error(res.message);
     }
     videoUrl.value = res.data.url;
   };
@@ -126,7 +126,7 @@
     const { data: res } = await proxy.$http.simiMv({ id: mId.value });
 
     if (res.code !== 200) {
-      return console.log("数据请求失败");
+      return proxy.$msg.error(res.message);
     }
     simiMv.value = res.mvs;
   };

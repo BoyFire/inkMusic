@@ -190,7 +190,7 @@
   // 评论消息Handler
   const msgHandler = (res) => {
     if (res.code !== 200) {
-      return console.log("数据请求失败");
+      return proxy.$msg.error(res.message);
     }
     total.value = res.total;
     hotComments.value = res.hotComments || [];
@@ -219,7 +219,7 @@
     };
     const { data: res } = await proxy.$http.comment(params);
     if (res.code !== 200) {
-      return console.log("数据请求失败");
+      return proxy.$msg.error(res.message);
     }
 
     msg.value = "";
@@ -294,7 +294,7 @@
     });
 
     if (res.code !== 200) {
-      return console.log("数据请求失败");
+      return proxy.$msg.error(res.message);
     }
     getComment();
   };

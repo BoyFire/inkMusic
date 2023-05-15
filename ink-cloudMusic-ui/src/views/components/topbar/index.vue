@@ -101,14 +101,13 @@
     width: 170px;
   }
   .user-avatar {
-    text-align: center;
-    vertical-align: middle;
+    display: flex;
+    align-items: center;
     .logined {
       display: flex;
       align-items: center;
 
       span {
-        display: inline-block;
         font-size: 18px;
         height: 24px;
         line-height: 24px;

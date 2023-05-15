@@ -1,4 +1,4 @@
-import {createRouter, createWebHistory} from "vue-router";
+import { createRouter, createWebHistory } from "vue-router";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -18,6 +18,11 @@ const router = createRouter({
       path: "/playlist/detail",
       name: "playlistdetail",
       component: () => import("@views/music/songList/Detail.vue"),
+    },
+    {
+      path: "/playlist/myDetail",
+      name: "playlistdetailMy",
+      component: () => import("@views/music/songList/MyDetail.vue"),
     },
     {
       path: "/rank",
@@ -63,6 +68,11 @@ const router = createRouter({
       path: "/user",
       name: "user",
       component: () => import("@views/music/user/index.vue"),
+    },
+    {
+      path: "/my",
+      name: "user2",
+      component: () => import("@views/music/user/myDetail.vue"),
     },
   ],
 });

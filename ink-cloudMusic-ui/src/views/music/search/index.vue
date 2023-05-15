@@ -176,7 +176,7 @@
     });
     loading.value = false;
     if (res.code !== 200) {
-      return console.log("数据请求失败");
+      return proxy.$msg.error(res.message);
     }
     if (res.result.order) {
       suggestInfo.value = res.result.order.map((item) => {
@@ -218,7 +218,7 @@
     });
 
     if (res.code !== 200) {
-      return console.log("数据请求失败");
+      return proxy.$msg.error(res.message);
     }
     switch (type.value) {
       case "1":

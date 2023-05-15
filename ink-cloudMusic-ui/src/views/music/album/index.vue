@@ -137,13 +137,13 @@
 </template>
 
 <script lang="ts" setup>
-import CommentList from "@/components/CommentList.vue";
-import SongList from "@/components/SongList.vue";
-import {getCurrentInstance, onMounted, ref, Ref} from "vue";
-import {onBeforeRouteUpdate, useRoute} from "vue-router";
-import {useStore} from "vuex";
+  import CommentList from "@/components/CommentList.vue";
+  import SongList from "@/components/SongList.vue";
+  import { getCurrentInstance, onMounted, ref, Ref } from "vue";
+  import { onBeforeRouteUpdate, useRoute } from "vue-router";
+  import { useStore } from "vuex";
 
-const { proxy } = getCurrentInstance();
+  const { proxy } = getCurrentInstance();
   const store = useStore();
   const route = useRoute();
 
@@ -168,7 +168,7 @@ const { proxy } = getCurrentInstance();
     const { data: res } = await proxy.$http.album(params);
 
     if (res.code !== 200) {
-      return console.log("数据请求失败");
+      return proxy.$msg.error(res.message);
     }
 
     details.value = res.album;
@@ -187,7 +187,7 @@ const { proxy } = getCurrentInstance();
       limit: 5,
     });
     if (res.code !== 200) {
-      return console.log("数据请求失败");
+      return proxy.$msg.error(res.message);
     }
     hotAlbums.value = res.hotAlbums;
   };
@@ -197,7 +197,7 @@ const { proxy } = getCurrentInstance();
     const { data: res } = await proxy.$http.albumDynamic(params);
 
     if (res.code !== 200) {
-      return console.log("数据请求失败");
+      return proxy.$msg.error(res.message);
     }
     dynamic.value = res;
   };
@@ -224,7 +224,7 @@ const { proxy } = getCurrentInstance();
       t: Number(!dynamic.value.isSub),
     });
     if (res.code !== 200) {
-      return console.log("数据请求失败");
+      return proxy.$msg.error(res.message);
     }
     dynamic.value.isSub = Number(!dynamic.value.isSub);
   };
@@ -234,7 +234,7 @@ const { proxy } = getCurrentInstance();
     const { data: res } = await proxy.$http.playlistSCollect(params);
 
     if (res.code !== 200) {
-      return console.log("数据请求失败");
+      return proxy.$msg.error(res.message);
     }
     collects.value = res.subscribers;
   };

@@ -59,4 +59,6 @@ public interface IMmsCommentService
      * @return 结果
      */
     public int deleteMmsCommentById(Long id);
+
+    List<MmsComment> selectMmsCommentListByTypeAndId(Integer type, Long id);
 }

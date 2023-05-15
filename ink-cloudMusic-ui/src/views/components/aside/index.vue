@@ -4,6 +4,7 @@
       <li
         :class="{ 'is-active': menuActive.indexOf(item.path) >= 0 }"
         v-for="item in menuList"
+        v-show="item.isShow"
         :key="item.path"
         @click="selectMenu(item.path)">
         <i :class="['iconfont', `icon-${item.path}`]"></i
@@ -16,33 +17,42 @@
 <script lang="ts" setup>
   import { computed, reactive } from "vue";
   import { useRoute, useRouter } from "vue-router";
+  import { useStore } from "vuex";
   const route = useRoute();
   const router = useRouter();
+  const store = useStore();
+  const isLogin = computed(() => store.getters.isLogin);
 
   const menuList = reactive([
     {
       name: "首页",
       path: "index",
+      isShow: true,
     },
     {
       name: "排行榜",
       path: "rank",
+      isShow: true,
     },
     {
       name: "歌单",
       path: "playlist",
+      isShow: true,
     },
     {
       name: "MV",
       path: "mvlist",
+      isShow: true,
     },
     {
       name: "歌手",
       path: "artist",
+      isShow: true,
     },
     {
       name: "我的音乐",
       path: "my",
+      isShow: isLogin,
     },
   ]);
 

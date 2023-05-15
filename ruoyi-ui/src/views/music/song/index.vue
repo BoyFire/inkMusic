@@ -264,7 +264,6 @@
         <el-form-item label="专辑" required prop="albums">
           <el-select
             v-model="form.albums"
-            multiple
             clearable
             filterable
             value-key="albumId"
@@ -413,11 +412,24 @@
 </template>
 
 <script>
-import {listAlbumIdAndName} from "@/api/music/album";
-import {listSingerIdAndSingerName, selectSimpleSingerByName,} from "@/api/music/singer";
-import {addSong, delSong, getSong, listSong, updateSong,} from "@/api/music/song";
-import {addSongTags, deleteSongTagByTagId, getSimpleTagsBySongId,} from "@/api/music/songTag";
-import {getTagsByParentsId} from "@/api/music/tag";
+import { listAlbumIdAndName } from "@/api/music/album";
+import {
+  listSingerIdAndSingerName,
+  selectSimpleSingerByName,
+} from "@/api/music/singer";
+import {
+  addSong,
+  delSong,
+  getSong,
+  listSong,
+  updateSong,
+} from "@/api/music/song";
+import {
+  addSongTags,
+  deleteSongTagByTagId,
+  getSimpleTagsBySongId,
+} from "@/api/music/songTag";
+import { getTagsByParentsId } from "@/api/music/tag";
 
 export default {
   name: "Song",
@@ -725,7 +737,7 @@ export default {
     /** 远程方法 */
     remoteMethodForSinger(params) {
       this.remoteLoading = true;
-      this.simpleSinger = this.form.simpleSinger;
+      this.simpleSinger = this.form.singers.concat();
       selectSimpleSingerByName(params).then((response) => {
         for (let index = 0; index < response.data.length; index++) {
           if (this.simpleSinger.indexOf(response.data[index]) === -1) {

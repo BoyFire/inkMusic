@@ -91,4 +91,8 @@ public interface IMmsSongListService
      * @return 结果
      */
     int insertNewUserLover(MmsUser user) throws NullPointerException;
+
+    List<MmsSongList> selectMmsSongListByUserId(Long userId);
+
+    List<MmsSongList> selectMmsSongLisRelatedBySongListId(Long songListId);
 }

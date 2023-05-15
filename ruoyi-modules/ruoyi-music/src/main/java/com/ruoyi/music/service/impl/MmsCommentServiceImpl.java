@@ -126,4 +126,12 @@ public class MmsCommentServiceImpl implements IMmsCommentService
     {
         return mmsCommentMapper.deleteMmsCommentById(id);
     }
+
+    @Override
+    public List<MmsComment> selectMmsCommentListByTypeAndId(Integer type, Long id) {
+        MmsComment mmsComment = new MmsComment();
+        mmsComment.setCommentType(type);
+        mmsComment.setCommentTargetId(id);
+        return selectMmsCommentList(mmsComment);
+    }
 }

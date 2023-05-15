@@ -1,7 +1,7 @@
 import * as types from "./mutation-types";
 
 export default {
-  [types.SET_LOGIN](state, val = false) {
+  [types.SET_LOGIN](state, val) {
     state.isLogin = val;
   },
   setUserInfo(state, val) {

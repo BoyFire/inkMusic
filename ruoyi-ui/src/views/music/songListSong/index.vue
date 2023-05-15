@@ -1,6 +1,13 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
+    <el-form
+      :model="queryParams"
+      ref="queryForm"
+      size="small"
+      :inline="true"
+      v-show="showSearch"
+      label-width="68px"
+    >
       <el-form-item label="歌曲id" prop="songId">
         <el-input
           v-model="queryParams.songId"
@@ -18,8 +25,16 @@
         />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        <el-button
+          type="primary"
+          icon="el-icon-search"
+          size="mini"
+          @click="handleQuery"
+          >搜索</el-button
+        >
+        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
+          >重置</el-button
+        >
       </el-form-item>
     </el-form>
 
@@ -32,7 +47,8 @@
           size="mini"
           @click="handleAdd"
           v-hasPermi="['music:songListSong:add']"
-        >新增</el-button>
+          >新增</el-button
+        >
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -43,7 +59,8 @@
           :disabled="single"
           @click="handleUpdate"
           v-hasPermi="['music:songListSong:edit']"
-        >修改</el-button>
+          >修改</el-button
+        >
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -54,7 +71,8 @@
           :disabled="multiple"
           @click="handleDelete"
           v-hasPermi="['music:songListSong:remove']"
-        >删除</el-button>
+          >删除</el-button
+        >
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -64,42 +82,53 @@
           size="mini"
           @click="handleExport"
           v-hasPermi="['music:songListSong:export']"
-        >导出</el-button>
+          >导出</el-button
+        >
       </el-col>
-      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+      <right-toolbar
+        :showSearch.sync="showSearch"
+        @queryTable="getList"
+      ></right-toolbar>
     </el-row>
 
-    <el-table 
-      v-loading="loading" 
+    <el-table
+      v-loading="loading"
       border
-      :data="songListSongList" 
+      :data="songListSongList"
       :span-method="SpanCellMerge"
-      @selection-change="handleSelectionChange">
+      @selection-change="handleSelectionChange"
+    >
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="歌单id" align="center" prop="songListId" />
-      <el-table-column label="歌单名" align="center" prop="songListTitle" >
+      <el-table-column label="歌单名" align="center" prop="songListTitle">
         <template slot-scope="scope">
-          <span>{{scope.row.mmsSongList.songListTitle}}</span>
+          <span>{{ scope.row.mmsSongList.songListTitle }}</span>
         </template>
       </el-table-column>
       <el-table-column label="歌曲id" align="center" prop="songId" />
-      <el-table-column label="歌曲名" align="center" prop="songName" >
+      <el-table-column label="歌曲名" align="center" prop="songName">
         <template slot-scope="scope">
-          <span>{{scope.row.mmsSong.songName}}</span>
+          <span>{{ scope.row.mmsSong.songName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="歌手名" align="center" prop="singerName" >
+      <el-table-column label="歌手名" align="center" prop="singerName">
         <template slot-scope="scope">
-          <span>{{scope.row.mmsSong.singerName}}</span>
+          <span>{{ scope.row.mmsSong.singers[0].singerName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="试听" align="center" prop="songUrl" >
+      <el-table-column label="试听" align="center" prop="songUrl">
         <template slot-scope="scope">
-          <el-link v-bind:href="scope.row.mmsSong.songUrl" target="_blank">试听</el-link>
+          <el-link v-bind:href="scope.row.mmsSong.songUrl" target="_blank"
+            >试听</el-link
+          >
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column
+        label="操作"
+        align="center"
+        class-name="small-padding fixed-width"
+      >
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -107,22 +136,22 @@
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
             v-hasPermi="['music:songListSong:edit']"
-          >修改</el-button>
+            >修改</el-button
+          >
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-hasPermi="['music:songListSong:remove']"
-          >删除</el-button>
+            >删除</el-button
+          >
         </template>
       </el-table-column>
-      
-
     </el-table>
-    
+
     <pagination
-      v-show="total>0"
+      v-show="total > 0"
       :total="total"
       :page.sync="queryParams.pageNum"
       :limit.sync="queryParams.pageSize"
@@ -148,7 +177,13 @@
 </template>
 
 <script>
-import { listSongListSong, getSongListSong, delSongListSong, addSongListSong, updateSongListSong } from "@/api/music/songListSong";
+import {
+  addSongListSong,
+  delSongListSong,
+  getSongListSong,
+  listSongListSong,
+  updateSongListSong,
+} from "@/api/music/songListSong";
 
 export default {
   name: "SongListSong",
@@ -169,9 +204,9 @@ export default {
       // 歌单歌曲表格数据
       songListSongList: [],
       //存放需要合并的行
-      merge:[], 
+      merge: [],
       //需要合并行下标
-      pos:'',
+      pos: "",
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -181,59 +216,61 @@ export default {
         pageNum: 1,
         pageSize: 10,
         songId: null,
-        songListId: null
+        songListId: null,
       },
       // 表单参数
       form: {},
       // 表单校验
       rules: {
         songId: [
-          { required: true, message: "歌曲id不能为空", trigger: "blur" }
+          { required: true, message: "歌曲id不能为空", trigger: "blur" },
         ],
         songListId: [
-          { required: true, message: "歌单id不能为空", trigger: "blur" }
-        ]
-      }
+          { required: true, message: "歌单id不能为空", trigger: "blur" },
+        ],
+      },
     };
   },
   created() {
     this.getList();
   },
-  watch:{
-    '$route.query.songListId':{
-      handler(val,oldval){
+  watch: {
+    "$route.query.songListId": {
+      handler(val, oldval) {
         this.queryParams.songListId = val;
         this.getList();
       },
-    }
+    },
   },
   methods: {
     /** 查询歌单歌曲列表 */
     getList() {
       this.loading = true;
-      listSongListSong(this.queryParams).then(response => {
+      listSongListSong(this.queryParams).then((response) => {
+        console.log(response);
         this.songListSongList = response.rows;
         this.total = response.total;
         this.loading = false;
         //合并相同歌单id的项
         this.merge = [];
-        for (let i = 0; i < this.songListSongList.length; i++) {          
+        for (let i = 0; i < this.songListSongList.length; i++) {
           if (i === 0) {
             this.merge.push(1);
-            this.pos = 0;            
-          }else{
-            if(this.songListSongList[i-1].songListId === this.songListSongList[i].songListId){
-              this.merge[this.pos] +=1;
+            this.pos = 0;
+          } else {
+            if (
+              this.songListSongList[i - 1].songListId ===
+              this.songListSongList[i].songListId
+            ) {
+              this.merge[this.pos] += 1;
               this.merge.push(0);
-            }else{
+            } else {
               this.merge.push(1);
               this.pos = i;
             }
           }
         }
-        
       });
-      
     },
     // 取消按钮
     cancel() {
@@ -245,7 +282,7 @@ export default {
       this.form = {
         id: null,
         songId: null,
-        songListId: null
+        songListId: null,
       };
       this.resetForm("form");
     },
@@ -261,9 +298,9 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.id)
-      this.single = selection.length!==1
-      this.multiple = !selection.length
+      this.ids = selection.map((item) => item.id);
+      this.single = selection.length !== 1;
+      this.multiple = !selection.length;
     },
     /** 新增按钮操作 */
     handleAdd() {
@@ -274,8 +311,8 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      const id = row.id || this.ids
-      getSongListSong(id).then(response => {
+      const id = row.id || this.ids;
+      getSongListSong(id).then((response) => {
         this.form = response.data;
         this.open = true;
         this.title = "修改歌单歌曲";
@@ -283,16 +320,16 @@ export default {
     },
     /** 提交按钮 */
     submitForm() {
-      this.$refs["form"].validate(valid => {
+      this.$refs["form"].validate((valid) => {
         if (valid) {
           if (this.form.id != null) {
-            updateSongListSong(this.form).then(response => {
+            updateSongListSong(this.form).then((response) => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
               this.getList();
             });
           } else {
-            addSongListSong(this.form).then(response => {
+            addSongListSong(this.form).then((response) => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;
               this.getList();
@@ -304,30 +341,38 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids;
-      this.$modal.confirm('是否确认删除歌单歌曲编号为"' + ids + '"的数据项？').then(function() {
-        return delSongListSong(ids);
-      }).then(() => {
-        this.getList();
-        this.$modal.msgSuccess("删除成功");
-      }).catch(() => {});
+      this.$modal
+        .confirm('是否确认删除歌单歌曲编号为"' + ids + '"的数据项？')
+        .then(function () {
+          return delSongListSong(ids);
+        })
+        .then(() => {
+          this.getList();
+          this.$modal.msgSuccess("删除成功");
+        })
+        .catch(() => {});
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download('music/songListSong/export', {
-        ...this.queryParams
-      }, `songListSong_${new Date().getTime()}.xlsx`)
+      this.download(
+        "music/songListSong/export",
+        {
+          ...this.queryParams,
+        },
+        `songListSong_${new Date().getTime()}.xlsx`
+      );
     },
     /** 合并单元框 */
-    SpanCellMerge({ row, column, rowIndex, columnIndex }){
-      if (columnIndex === 1 ||columnIndex === 2 ) {
+    SpanCellMerge({ row, column, rowIndex, columnIndex }) {
+      if (columnIndex === 1 || columnIndex === 2) {
         const _row = this.merge[rowIndex];
         const _col = _row > 0 ? 1 : 0;
         return {
           rowspan: _row,
-          colspan: _col
+          colspan: _col,
         };
       }
     },
-  }
-}
+  },
+};
 </script>

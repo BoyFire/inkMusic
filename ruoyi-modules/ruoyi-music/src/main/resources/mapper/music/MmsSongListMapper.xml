@@ -19,6 +19,8 @@
         <result property="isDel" column="is_del"/>
         <result property="isFine" column="is_fine"/>
         <result property="songListCreatorName" column="user_nickname"/>
+        <association property="count" select="com.ruoyi.music.mapper.MmsSongListSongMapper.getSongListCount"
+                     column="song_list_id"/>
     </resultMap>
     <resultMap id="SimpleSongListVoResult" type="SimpleSongListVo">
         <result property="songListId" column="song_list_id"/>
@@ -84,9 +86,19 @@
         select song_list_title, song_list_id
         from mms_song_list
         where is_del = 0
-        <if test="songListName != null and songListName !=''">and song_list_title like  concat(#{songListName}, '%')</if>
+        <if test="songListName != null and songListName !=''">and song_list_title like concat(#{songListName}, '%')</if>
         <if test="songListName == null or songListName !=''">limit 100</if>
 
+    </select>
+
+    <select id="selectMmsSongListRand" resultMap="MmsSongListResult">
+        <include refid="selectMmsSongListVo"/>
+         JOIN
+        (SELECT ROUND( RAND() * ( (SELECT MAX(song_list_id) FROM mms_song_list msl
+        where msl.is_del=0)-(SELECT MIN(song_list_id) FROM mms_song_list msl
+        where msl.is_del=0))+(SELECT MIN(song_list_id) FROM mms_song_list msl
+        where msl.is_del=0 )) AS id) AS t2 WHERE msl.song_list_id >= t2.id AND msl.status=0
+        ORDER BY msl.song_list_id LIMIT 5
     </select>
 
     <insert id="insertMmsSongList" parameterType="MmsSongList" useGeneratedKeys="true" keyProperty="id">

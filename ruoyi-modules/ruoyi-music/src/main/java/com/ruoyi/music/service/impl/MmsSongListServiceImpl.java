@@ -152,6 +152,18 @@ public class MmsSongListServiceImpl implements IMmsSongListService
         return mmsSongListMapper.insertMmsSongList(mmsSongList);
     }
 
+    @Override
+    public List<MmsSongList> selectMmsSongListByUserId(Long userId) {
+        MmsSongList mmsSongList = new MmsSongList();
+        mmsSongList.setSongListCreatorId(userId);
+        return mmsSongListMapper.selectMmsSongListList(mmsSongList);
+    }
+
+    @Override
+    public List<MmsSongList> selectMmsSongLisRelatedBySongListId(Long songListId) {
+        return mmsSongListMapper.selectMmsSongListRand();
+    }
+
 
     /**
      * 修改 mmsSongList d 基础属性

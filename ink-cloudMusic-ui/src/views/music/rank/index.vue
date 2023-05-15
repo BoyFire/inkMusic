@@ -172,9 +172,8 @@
     const { data: res } = await proxy.$http.topListDetail();
 
     if (res.code !== 200) {
-      return console.log("数据请求失败");
+      return proxy.$msg.error(res.message);
     }
-
     // Top榜
     listTop.value = res.list.filter((item: any) => {
       return item.ToplistType;
@@ -192,7 +191,6 @@
         return !item.ToplistType && item.name.indexOf("云音乐") < 0;
       }
     );
-
     switch (type.value) {
       case "Top":
         list.value = listTop.value;
@@ -211,16 +209,24 @@
   //获取歌单列表详情
   const getListDetail = async () => {
     isLoading.value = true;
-    // 获取数据
-    const data = await proxy.$http.listDetail({
-      id: rId.value,
-      s: -1,
-    });
+    let res;
+    do {
+      // 获取数据
+      const { data: res2 } = await proxy.$http.listDetail({
+        id: rId.value,
+        s: -1,
+      });
+      res = res2;
+    } while (res.privileges === null);
 
-    rankInfo.value = data.data.playlist;
+    if (res.code !== 200) {
+      return proxy.$msg.error("数据请求失败");
+    }
+
+    rankInfo.value = res.playlist;
     songList.value = proxy.$utils.formatSongs(
-      data.data.playlist.tracks,
-      data.data.privileges
+      res.playlist.tracks,
+      res.privileges
     );
     total.value = songList.value.length;
     isLoading.value = false;

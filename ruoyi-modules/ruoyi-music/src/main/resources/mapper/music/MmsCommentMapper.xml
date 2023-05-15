@@ -47,7 +47,7 @@
     <select id="selectMmsCommentList" parameterType="MmsComment" resultMap="MmsCommentResult">
         <include refid="selectMmsCommentVo"/>
         <where>
-            is_del = 0
+            is_del = 0 and comment_status = 1
             <if test="userId != null  and userId != ''">and user_id = #{userId}</if>
             <if test="commentId != null ">and comment_id = #{commentId}</if>
             <if test="commentType != null  and commentType != ''">and comment_type = #{commentType}</if>
