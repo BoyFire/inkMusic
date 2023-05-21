@@ -18,9 +18,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectMmsSongListSongList" parameterType="MmsSongListSong" resultMap="MmsSongListSongResult">
         <include refid="selectMmsSongListSongVo"/>
-        <where>  
-            <if test="songId != null "> and song_id = #{songId}</if>
-            <if test="songListId != null "> and song_list_id = #{songListId}</if>
+        <where>
+            1=1
+            <if test="songId != null ">and song_id = #{songId}</if>
+            <if test="songListId != null ">and song_list_id = #{songListId}</if>
         </where>
     </select>
     
@@ -64,5 +65,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>
+    </delete>
+    <delete id="deleteMmsSongListSongByTwo">
+        delete
+        from mms_song_list_song
+        where song_id = #{songId}
+          and song_list_id = #{songListId}
     </delete>
 </mapper>

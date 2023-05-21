@@ -100,6 +100,11 @@
         where msl.is_del=0 )) AS id) AS t2 WHERE msl.song_list_id >= t2.id AND msl.status=0
         ORDER BY msl.song_list_id LIMIT 5
     </select>
+    <select id="selectUserCollectSongListByUserId" resultMap="MmsSongListResult">
+            <include refid="selectMmsSongListVo"/>
+        left join mms_song_list_collection mslc on mslc.song_list_id =msl.song_list_id
+            where mslc.user_id = #{userId}
+    </select>
 
     <insert id="insertMmsSongList" parameterType="MmsSongList" useGeneratedKeys="true" keyProperty="id">
         insert into mms_song_list
@@ -161,6 +166,12 @@
     <delete id="deleteMmsSongListByIds" parameterType="String">
         update mms_song_list set is_del = 1 where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <delete id="deleteMmsSongListBySongListIds">
+        update mms_song_list set is_del = 1 where song_list_id in
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
             #{id}
         </foreach>
     </delete>

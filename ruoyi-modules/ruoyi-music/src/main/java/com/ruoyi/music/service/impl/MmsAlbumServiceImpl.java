@@ -5,7 +5,11 @@ import com.ruoyi.common.security.utils.SecurityUtils;
 import com.ruoyi.music.entity.MmsAlbum;
 import com.ruoyi.music.mapper.MmsAlbumMapper;
 import com.ruoyi.music.mapper.MmsSingerAlbumMapper;
+import com.ruoyi.music.mapper.TempAlbumMapper;
+import com.ruoyi.music.mapper.TempSingerMapper;
 import com.ruoyi.music.service.IMmsAlbumService;
+import com.ruoyi.music.service.IMmsSingerService;
+import com.ruoyi.music.utils.HttpUtils;
 import com.ruoyi.music.vo.front.AlbumParamsVo;
 import com.ruoyi.music.vo.front.SimpleAlbum;
 import com.ruoyi.music.vo.front.SimpleSinger;
@@ -13,8 +17,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.support.atomic.RedisAtomicLong;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 专辑Service业务层处理
@@ -31,6 +39,12 @@ public class MmsAlbumServiceImpl implements IMmsAlbumService {
     private MmsSingerAlbumMapper mmsSingerAlbumMapper;
     @Autowired
     private StringRedisTemplate redisTemplate;
+    @Resource
+    private IMmsSingerService mmsSingerService;
+    @Resource
+    private TempAlbumMapper tempAlbumMapper;
+    @Resource
+    private TempSingerMapper tempSingerMapper;
 
     /**
      * 根据专辑名 返回专辑列表
@@ -42,6 +56,59 @@ public class MmsAlbumServiceImpl implements IMmsAlbumService {
     public List<SimpleAlbum> selectSimpleAlbumListByAlbumName(String albumName) {
         return mmsAlbumMapper.selectSimpleAlbumsByAlbumName(albumName);
     }
+
+    @Override
+    public List<SimpleAlbum> addAlbumFromSongAl(Map<String, Object> al) {
+        Map<Object, Object> map = HttpUtils.httpGet("/album", "id", al.get("id").toString());
+        Map<String, Object> map1 = (Map<String, Object>) map.get("album");
+        MmsAlbum album = new MmsAlbum();
+        album.setAlbumName((String) al.get("name"));
+        album.setAlbumImgUrl((String) al.get("picUrl"));
+        album.setAlbumType(String.valueOf(map1.get("type")).equals("专辑") ? "Album" : "Single");
+        //3. 发行时间
+        album.setCreateTime(DateUtils.parseDate(map1.get("publishTime")));
+        //5 介绍
+        album.setAlbumDesc(String.valueOf(map1.get("description")));
+        //6. 专辑歌曲数
+        album.setAlbumSize(Integer.valueOf(String.valueOf(map1.get("size"))));
+
+        //8 获取作者
+        ArrayList<Map<String, Object>> artists = (ArrayList<Map<String, Object>>) map1.get("artists");
+        List<Long> singerIds = new ArrayList<>();
+        if (artists.size() > 0) { // artists 长度为零
+            for (Map<String, Object> artist : artists) {
+                Long singerId = tempSingerMapper.selectSingerIdByApiId(Long.valueOf(String.valueOf(artist.get("id"))));
+                if (singerId == null || singerId == 0) {
+                    Long insertId = mmsSingerService.insertApiSinger(Long.valueOf(String.valueOf(artist.get("id")))).getSingerId();
+                    if (insertId != -1L) {
+                        singerIds.add(insertId);
+                    }
+                } else {
+                    singerIds.add(singerId);
+                }
+
+            }
+        } else {
+            Map<String, Object> artist = (Map<String, Object>) map1.get("artist");
+            singerIds.add(tempSingerMapper.selectSingerIdByApiId(Long.valueOf(String.valueOf(artist.get("id")))));
+        }
+        if (!CollectionUtils.isEmpty(singerIds) ) {
+            //8.5. 做个存档备份
+            insertMmsAlbum(album);
+            //9. 专辑的作者
+            mmsSingerAlbumMapper.insertSingerAlbum(album.getAlbumId(), singerIds);
+
+            tempAlbumMapper.insertAlbumId(Long.valueOf(String.valueOf(al.get("id"))), album.getAlbumId()
+            );
+        }
+        ArrayList<SimpleAlbum> result = new ArrayList<>();
+        SimpleAlbum simpleAlbum = new SimpleAlbum();
+        simpleAlbum.setAlbumId(album.getAlbumId());
+        simpleAlbum.setAlbumName(album.getAlbumName());
+        result.add(simpleAlbum);
+        return result;
+    }
+
 
     /**
      * 查询专辑
@@ -79,12 +146,12 @@ public class MmsAlbumServiceImpl implements IMmsAlbumService {
         if (mmsAlbum.getIsDel() == null) {
             mmsAlbum.setIsDel(0);
         }
-        if (mmsAlbum.getAlbumStatus() ==null){
+        if (mmsAlbum.getAlbumStatus() == null) {
             mmsAlbum.setAlbumStatus(1);
         }
         mmsAlbum.setIsDel(0);
         mmsAlbum.setRevision(0);
-        if (mmsAlbum.getCreateBy()== null) {
+        if (mmsAlbum.getCreateBy() == null) {
             mmsAlbum.setCreateBy(SecurityUtils.getUsername());
             mmsAlbum.setCreateTime(DateUtils.getNowDate());
         }

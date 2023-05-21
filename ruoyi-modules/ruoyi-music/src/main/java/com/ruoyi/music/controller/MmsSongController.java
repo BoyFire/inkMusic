@@ -13,19 +13,19 @@ import com.ruoyi.music.vo.front.SongParamsVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
  * 歌曲Controller
- * 
+ *
  * @author ruoyi
  * @date 2022-10-20
  */
 @RestController
 @RequestMapping("/song")
-public class MmsSongController extends BaseController
-{
+public class MmsSongController extends BaseController {
     @Autowired
     private IMmsSongService mmsSongService;
 
@@ -34,8 +34,7 @@ public class MmsSongController extends BaseController
      */
     @RequiresPermissions("music:song:list")
     @GetMapping("/list")
-    public TableDataInfo list(SongParamsVo songParams)
-    {
+    public TableDataInfo list(SongParamsVo songParams) {
         startPage();
         List<MmsSong> list = mmsSongService.selectMmsSongList(songParams);
         return getDataTable(list);
@@ -55,8 +54,7 @@ public class MmsSongController extends BaseController
     @RequiresPermissions("music:song:export")
     @Log(title = "歌曲", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, SongParamsVo songParams)
-    {
+    public void export(HttpServletResponse response, SongParamsVo songParams) {
         List<MmsSong> list = mmsSongService.selectMmsSongList(songParams);
         ExcelUtil<MmsSong> util = new ExcelUtil<MmsSong>(MmsSong.class);
         util.exportExcel(response, list, "歌曲数据");
@@ -67,8 +65,7 @@ public class MmsSongController extends BaseController
      */
     @RequiresPermissions("music:song:query")
     @GetMapping(value = "/{id}")
-    public AjaxResult getInfo(@PathVariable("id") Long id)
-    {
+    public AjaxResult getInfo(@PathVariable("id") Long id) {
         return AjaxResult.success(mmsSongService.selectMmsSongById(id));
     }
 
@@ -78,8 +75,7 @@ public class MmsSongController extends BaseController
     @RequiresPermissions("music:song:add")
     @Log(title = "歌曲", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody MmsSong mmsSong)
-    {
+    public AjaxResult add(@RequestBody MmsSong mmsSong) {
         return toAjax(mmsSongService.insertMmsSong(mmsSong));
     }
 
@@ -89,8 +85,7 @@ public class MmsSongController extends BaseController
     @RequiresPermissions("music:song:edit")
     @Log(title = "歌曲", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody MmsSong mmsSong)
-    {
+    public AjaxResult edit(@RequestBody MmsSong mmsSong) {
         return toAjax(mmsSongService.updateMmsSong(mmsSong));
     }
 
@@ -99,16 +94,23 @@ public class MmsSongController extends BaseController
      */
     @RequiresPermissions("music:song:remove")
     @Log(title = "歌曲", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{ids}")
-    public AjaxResult remove(@PathVariable Long[] ids)
-    {
+    @DeleteMapping("/{ids}")
+    public AjaxResult remove(@PathVariable Long[] ids) {
         return toAjax(mmsSongService.deleteMmsSongByIds(ids));
     }
 
 
     @GetMapping("/getSimpleSongByName")
-    public AjaxResult getSimpleSingerByName(@RequestParam("songName")String songName) {
+    public AjaxResult getSimpleSingerByName(@RequestParam("songName") String songName) {
         return AjaxResult.success(mmsSongService.selectSimpleSongsBySongName(songName));
     }
+
+    @GetMapping("/getRedirectUrl")
+    public AjaxResult getRedirectUrl(@RequestParam("url") String url, HttpServletRequest request) {
+        return AjaxResult.success().put("url",mmsSongService.getRedirectUrl(url, request));
+    }
+
+
+
 
 }

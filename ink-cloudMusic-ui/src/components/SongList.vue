@@ -83,7 +83,33 @@
                 v-if="typeSize !== 'mini'"
                 @click="addSongList(item)"></i>
               <!-- 收藏按钮 -->
-              <i class="iconfont icon-collect" @click="likeSong(item)"></i>
+              <el-popover placement="top" :visible="collectShow">
+                <p>请选择要添加到所在位置的歌单</p>
+                <div>
+                  <el-select
+                    v-model="selectSongListId"
+                    placeholder="请选择要添加到的歌单">
+                    <el-option
+                      v-for="item2 in mySongList"
+                      :label="item2.songListTitle"
+                      :value="item2.songListId"></el-option>
+                  </el-select>
+
+                  <el-button size="small" text @click="collectShow = false"
+                    >取消</el-button
+                  >
+                  <el-button
+                    size="small"
+                    type="primary"
+                    @click="subCollect(item)"
+                    >confirm</el-button
+                  >
+                </div>
+                <template #reference>
+                  <i class="iconfont icon-collect" @click="likeSong(item)"></i>
+                </template>
+              </el-popover>
+
               <!-- mini模式下 从列表删除 -->
               <i
                 class="iconfont icon-del"
@@ -109,7 +135,15 @@
 </template>
 
 <script lang="ts" setup>
-  import { computed, nextTick, onMounted, Ref, ref, watch } from "vue";
+  import {
+    computed,
+    getCurrentInstance,
+    nextTick,
+    onMounted,
+    Ref,
+    ref,
+    watch,
+  } from "vue";
   import { useStore } from "vuex";
 
   const props = defineProps({
@@ -148,6 +182,7 @@
       default: 20,
     },
   });
+  const { proxy } = getCurrentInstance();
   const songList = ref(props.songList);
   const curSongRef = ref(null);
   const store = useStore();
@@ -157,6 +192,8 @@
   const pageSize = ref(props.pageSize);
   const currentPage = ref(1);
   const playing: Ref<boolean> = ref(false);
+  const userInfo = computed(() => store.getters.userInfo);
+  const isLogin = computed(() => store.getters.isLogin);
 
   // 获取播放列表
   const playList = computed(() => store.getters.playList);
@@ -284,10 +321,39 @@
   const currentChange = (page) => {
     currentPage.value = page;
   };
+  // 未登录状态，点击登录按钮，显示登录框
+  const loginDialog = () => {
+    store.dispatch("loginSuc", true);
+  };
 
   // 收藏歌曲
-  const likeSong = (item) => {
-    console.log(item, "添加成功");
+  const collectShow = ref(false);
+  const selectSongListId = ref(0);
+  const mySongList: Ref<any[]> = ref([]);
+  const likeSong = async (item) => {
+    if (!isLogin.value) {
+      return loginDialog();
+    }
+
+    const { data: res } = await proxy.$http.getUserCreatSongList({
+      userId: userInfo.value.userId,
+    });
+    if (res.code != 200) {
+      return proxy.$http.error("数据请求失败");
+    }
+    mySongList.value = res.data;
+    collectShow.value = true;
+  };
+  const subCollect = async (item) => {
+    collectShow.value = false;
+    const { data: res } = await proxy.$http.collest({
+      songListId: selectSongListId.value,
+      apiSongId: item.id,
+    });
+    if (res.code !== 200) {
+      return proxy.$msg.error(res.msg);
+    }
+    proxy.$msg.success(res.msg);
   };
 
   watch(

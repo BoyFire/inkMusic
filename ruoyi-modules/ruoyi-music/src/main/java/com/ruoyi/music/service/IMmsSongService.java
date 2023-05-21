@@ -4,6 +4,7 @@ import com.ruoyi.music.entity.MmsSong;
 import com.ruoyi.music.vo.front.SimpleSongVo;
 import com.ruoyi.music.vo.front.SongParamsVo;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -82,4 +83,12 @@ public interface IMmsSongService
      * @return
      */
     List<SimpleSongVo> selectSimpleSongsBySongName(String songName);
+
+    List<MmsSong> selectMmsSongsBySongListId(Long songList);
+
+    String getRedirectUrl(String url, HttpServletRequest request);
+
+    Long selectTempSongId(String apiSongId);
+
+    MmsSong addSong(String apiSongId);
 }

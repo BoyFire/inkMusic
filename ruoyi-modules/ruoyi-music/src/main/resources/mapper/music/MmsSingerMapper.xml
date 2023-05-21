@@ -95,6 +95,14 @@
         from mms_singer_alias
         where singer_id = #{singerId}
     </select>
+    <select id="selectSimpleSingerBySingerIds" resultMap="simpleSingerResult">
+        select singer_name, singer_id
+        from mms_singer
+        where singer_id in
+        <foreach collection="singerIds" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
 
 
     <insert id="insertMmsSinger" parameterType="MmsSinger" useGeneratedKeys="true" keyProperty="id">

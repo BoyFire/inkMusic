@@ -75,16 +75,6 @@
                   @click="delComment(item)"
                   ><i class="iconfont icon-del"></i
                 ></em>
-                <span
-                  :class="[item.liked ? 'active' : '']"
-                  @click="likeComment(item)"
-                  ><i class="iconfont icon-praise"></i>({{
-                    item.likedCount
-                  }})</span
-                >
-                <span class="replyComment" @click="replyComment(item, index)"
-                  ><i class="iconfont icon-comment"></i
-                ></span>
               </div>
             </div>
           </div>
@@ -241,7 +231,17 @@
       store.commit("setLoginDialog", true);
       return;
     }
-    commentHandler(1, msg);
+
+    let a = {
+      content: msg.value,
+      user: {
+        userId: userInfo.value.userId,
+        nickname: userInfo.value.userNickname,
+        avatarUrl: userInfo.value.userImgUrl,
+      },
+      time: parseInt(new Date().getTime() + ""),
+    };
+    comments.value = [a, ...comments.value];
   };
 
   // 删除评论
@@ -252,7 +252,7 @@
       center: true,
     })
       .then(() => {
-        commentHandler(0, "", item.commentId);
+        comments.value.shift();
       })
       .catch(() => {});
   };
@@ -285,18 +285,6 @@
       store.commit("setLoginDialog", true);
       return;
     }
-
-    const { data: res } = await proxy.$http.commentLike({
-      id: curId.value,
-      cid: item.commentId,
-      t: Number(!item.liked),
-      type: props.type,
-    });
-
-    if (res.code !== 200) {
-      return proxy.$msg.error(res.message);
-    }
-    getComment();
   };
 
   // 分页

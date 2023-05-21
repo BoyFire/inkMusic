@@ -8,13 +8,14 @@
     @ended="endedSong"
     @error="errorSong"
     @timeupdate="updateSongTime"
-    :src="curSongInfo.url"></audio>
+    :src="url"></audio>
 </template>
 
 <script lang="ts" setup>
-  import { computed, nextTick, ref, watch } from "vue";
+  import { computed, getCurrentInstance, nextTick, ref, watch } from "vue";
   import { useStore } from "vuex";
   const emit = defineEmits(["setCurrentTime"]);
+  const url = ref("");
 
   const store = useStore();
   const initAudioReady = ref(false);
@@ -26,6 +27,7 @@
   const playList = computed(() => store.getters.playList);
   const isPlayed = computed(() => store.getters.isPlayed);
   const currentTime = ref(0);
+  const { proxy } = getCurrentInstance();
 
   // 获取当前播放歌曲信息
   const curSongInfo = computed(() => playList.value[playIndex.value]);
@@ -58,6 +60,9 @@
 
   // 点击拖拽进度条，设置当前时间
   const setAudioProgress = (t) => {
+    if (isNaN(t)) {
+      return;
+    }
     const $myAudio = myAudio.value;
     $myAudio.currentTime = t;
   };
@@ -128,10 +133,23 @@
 
   watch(
     curSongInfo,
-    (newSong, oldSong) => {
+    async (newSong, oldSong) => {
       if (!newSong || (oldSong && newSong.id === oldSong.id)) {
         return;
       }
+
+      if (curSongInfo.value.url !== undefined) {
+        const { data: res } = await proxy.$http.getRedirectUrl({
+          url: curSongInfo.value.url,
+        });
+        url.value = res.url;
+      } else {
+        const { data: res } = await proxy.$http.getRedirectUrl({
+          url: curSongInfo.value.songUrl,
+        });
+        url.value = res.url;
+      }
+
       // 当前播放歌曲变化的时候  重置状态及当前播放的时长
       initAudioReady.value = false;
       currentTime.value = 0;

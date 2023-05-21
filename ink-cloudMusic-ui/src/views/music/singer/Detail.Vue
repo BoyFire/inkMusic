@@ -38,9 +38,8 @@
               </h5>
               <p v-html="details.briefDesc" @click="showAllDesc"></p>
               <pre class="cover-desc-all" v-if="isShowDesc">
-                                {{ details.briefDesc }}
-                            </pre
-              >
+                {{ details.briefDesc }}
+              </pre>
             </div>
           </div>
         </div>
@@ -50,16 +49,6 @@
             <div class="song-header">
               <span class="play-all" @click="playAllSongs"
                 ><i class="iconfont icon-audio-play"></i> 播放全部</span
-              >
-              <span
-                :class="['collect', details.subscribed ? 'active' : '']"
-                @click="subPlayList(details)"
-                ><i
-                  :class="[
-                    'iconfont',
-                    'icon-collect' + (details.subscribed ? '-active' : ''),
-                  ]"></i>
-                {{ details.subscribed ? "已收藏" : "收藏" }}</span
               >
             </div>
             <!-- 歌曲展示 -->

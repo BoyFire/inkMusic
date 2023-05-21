@@ -1,10 +1,13 @@
 package com.ruoyi.music.service;
 
+import com.alibaba.nacos.shaded.com.google.protobuf.ServiceException;
 import com.ruoyi.music.entity.MmsSongList;
 import com.ruoyi.music.entity.MmsUser;
+import com.ruoyi.music.temp.TempSongList;
 import com.ruoyi.music.vo.front.SimpleSongListVo;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 歌单Service接口
@@ -95,4 +98,14 @@ public interface IMmsSongListService
     List<MmsSongList> selectMmsSongListByUserId(Long userId);
 
     List<MmsSongList> selectMmsSongLisRelatedBySongListId(Long songListId);
+
+    List<MmsSongList> selectUserCollectSongListByUserId(Long userId);
+
+    List<TempSongList> selectUserCollectApiSongListByUserId(Long userId);
+
+    int collectApiSongList(Map<String, Object> params) throws ServiceException;
+
+    int disCollectApiSongList(Map<String, Object> params);
+
+    int deleteMmsSongListByIds(List<Long> longs);
 }

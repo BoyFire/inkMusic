@@ -1,6 +1,6 @@
 package com.ruoyi.music.mapper;
 
-import com.ruoyi.music.Temp.ApiSong;
+import com.ruoyi.music.temp.ApiSong;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -21,5 +21,7 @@ public interface TempSongMapper {
      * @param apiId apiId
      * @return 结果
      */
-    int selectSongIdByApi(@Param("apiId") Long apiId);
+    int selectSongIdCountsByApi(@Param("apiId") Long apiId);
+
+    Long selectSongIdByApi(@Param("apiId") Long apiId);
 }

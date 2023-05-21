@@ -7,7 +7,7 @@
         values (#{apiId}, #{singerId})
     </insert>
 
-    <select id="selectApiSinger" resultType="com.ruoyi.music.Temp.ApiSinger">
+    <select id="selectApiSinger" resultType="com.ruoyi.music.temp.ApiSinger">
         select api_singer_id as apiId, singer_id as singerId
         from temp_singer
         limit #{offset}, #{limit}

@@ -93,4 +93,6 @@ public interface MmsUserMapper
      * 获取用户信息
      */
     MmsUserDTO selectUserDTOByUserId(@Param("userId") Long userId);
+
+    MmsUser selectMmsUserBySongListId(@Param("songListId") Long songListId);
 }

@@ -1,5 +1,6 @@
 package com.ruoyi.music.controller;
 
+import com.alibaba.nacos.shaded.com.google.protobuf.ServiceException;
 import com.ruoyi.common.core.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.web.controller.BaseController;
 import com.ruoyi.common.core.web.domain.AjaxResult;
@@ -14,17 +15,17 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 歌单歌曲Controller
- * 
+ *
  * @author ruoyi
  * @date 2023-01-05
  */
 @RestController
 @RequestMapping("/songListSong")
-public class MmsSongListSongController extends BaseController
-{
+public class MmsSongListSongController extends BaseController {
     @Autowired
     private IMmsSongListSongService mmsSongListSongService;
 
@@ -33,8 +34,7 @@ public class MmsSongListSongController extends BaseController
      */
     @RequiresPermissions("music:songListSong:list")
     @GetMapping("/list")
-    public TableDataInfo list(MmsSongListSong mmsSongListSong)
-    {
+    public TableDataInfo list(MmsSongListSong mmsSongListSong) {
         startPage();
         List<MmsSongListSong> list = mmsSongListSongService.selectMmsSongListSongList(mmsSongListSong);
         return getDataTable(list);
@@ -47,8 +47,7 @@ public class MmsSongListSongController extends BaseController
     @RequiresPermissions("music:songListSong:export")
     @Log(title = "歌单歌曲", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, MmsSongListSong mmsSongListSong)
-    {
+    public void export(HttpServletResponse response, MmsSongListSong mmsSongListSong) {
         List<MmsSongListSong> list = mmsSongListSongService.selectMmsSongListSongList(mmsSongListSong);
         ExcelUtil<MmsSongListSong> util = new ExcelUtil<MmsSongListSong>(MmsSongListSong.class);
         util.exportExcel(response, list, "歌单歌曲数据");
@@ -59,8 +58,7 @@ public class MmsSongListSongController extends BaseController
      */
     @RequiresPermissions("music:songListSong:query")
     @GetMapping(value = "/{id}")
-    public AjaxResult getInfo(@PathVariable("id") Long id)
-    {
+    public AjaxResult getInfo(@PathVariable("id") Long id) {
         return AjaxResult.success(mmsSongListSongService.selectMmsSongListSongById(id));
     }
 
@@ -70,8 +68,7 @@ public class MmsSongListSongController extends BaseController
     @RequiresPermissions("music:songListSong:add")
     @Log(title = "歌单歌曲", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody MmsSongListSong mmsSongListSong)
-    {
+    public AjaxResult add(@RequestBody MmsSongListSong mmsSongListSong) {
         return mmsSongListSongService.insertMmsSongListSong(mmsSongListSong);
     }
 
@@ -81,8 +78,7 @@ public class MmsSongListSongController extends BaseController
     @RequiresPermissions("music:songListSong:edit")
     @Log(title = "歌单歌曲", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody MmsSongListSong mmsSongListSong)
-    {
+    public AjaxResult edit(@RequestBody MmsSongListSong mmsSongListSong) {
 
         return toAjax(mmsSongListSongService.updateMmsSongListSong(mmsSongListSong));
     }
@@ -92,14 +88,24 @@ public class MmsSongListSongController extends BaseController
      */
     @RequiresPermissions("music:songListSong:remove")
     @Log(title = "歌单歌曲", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{ids}")
-    public AjaxResult remove(@PathVariable Long[] ids)
-    {
+    @DeleteMapping("/{ids}")
+    public AjaxResult remove(@PathVariable Long[] ids) {
         return toAjax(mmsSongListSongService.deleteMmsSongListSongByIds(ids));
     }
 
     @GetMapping("/detail")
-    public AjaxResult detail(@RequestParam("songListId")Long songListId){
+    public AjaxResult detail(@RequestParam("songListId") Long songListId) {
         return AjaxResult.success(mmsSongListSongService.selectMmsSongListSongBySongListId(songListId));
     }
+
+    @PostMapping("/collectSong")
+    public AjaxResult collectSong(@RequestBody Map<String, Object> params) throws ServiceException {
+        return toAjax(mmsSongListSongService.collectSong(params));
+    }
+
+    @PostMapping("/disCollectSong")
+    public AjaxResult disCollectSong(@RequestBody Map<String, Object> params) {
+        return toAjax(mmsSongListSongService.disCollectSong(params));
+    }
+
 }

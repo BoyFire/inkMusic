@@ -78,26 +78,6 @@
 
     <!-- 侧边栏 -->
     <div class="aside-box">
-      <!-- 查询同时订阅了专辑的人 -->
-      <!-- <div class="album-aside album-collect">
-              <h3 class="aside-title">喜欢这张专辑的人</h3>
-              <div class="aside-main aside-album-main">
-                  <router-link class="aside-album-item" :to="{ path: '/album', query: { id: item.id }}" v-for="item in hotAlbums" :key="item.id">
-                      <el-image :src="item.picUrl">
-                          <div slot="placeholder" class="image-slot">
-                              <i class="iconfont icon-placeholder"></i>
-                          </div>
-                      </el-image>
-                      <div class="aside-album-info">
-                          <div class="aside-album-name">{{item.name}}</div>
-                          <div class="aside-album-time">
-                              {{$utils.formartDate(details.publishTime, 'yyyy-MM-dd')}}
-                          </div>
-                      </div>
-                  </router-link>
-              </div>
-            </div> -->
-
       <!-- 歌手的其他的专辑 -->
       <div class="album-aside album-other">
         <h3 class="aside-title">

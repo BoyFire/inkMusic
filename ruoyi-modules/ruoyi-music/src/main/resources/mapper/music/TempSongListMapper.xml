@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.music.mapper.TempSongListMapper">
+
+    <resultMap type="TempSongList" id="TempSongListResult">
+        <result property="id" column="id"/>
+        <result property="apiSongListId" column="api_song_list_id"/>
+        <result property="coverImgUrl" column="cover_img_url"/>
+        <result property="name" column="name"/>
+        <result property="description" column="description"/>
+        <result property="subscribedCount" column="subscribed_count"/>
+        <result property="commentCount" column="comment_count"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="total" column="total"/>
+        <result property="playCount" column="play_count"/>
+    </resultMap>
+
+    <sql id="selectTempSongListVo">
+        select id,
+               api_song_list_id,
+               cover_img_url,
+               name,
+               description,
+               subscribed_count,
+               comment_count,
+               create_time,
+               update_time,
+               total,
+               play_count
+        from temp_song_list
+    </sql>
+
+    <select id="selectTempSongListList" parameterType="TempSongList" resultMap="TempSongListResult">
+        <include refid="selectTempSongListVo"/>
+        <where>
+            <if test="apiSongListId != null  and apiSongListId != ''">and api_song_list_id = #{apiSongListId}</if>
+            <if test="coverImgUrl != null  and coverImgUrl != ''">and cover_img_url = #{coverImgUrl}</if>
+            <if test="name != null  and name != ''">and name like concat('%', #{name}, '%')</if>
+            <if test="description != null  and description != ''">and description = #{description}</if>
+            <if test="subscribedCount != null ">and subscribed_count = #{subscribedCount}</if>
+            <if test="commentCount != null ">and comment_count = #{commentCount}</if>
+            <if test="total != null ">and total = #{total}</if>
+            <if test="playCount != null ">and play_count = #{playCount}</if>
+        </where>
+    </select>
+
+    <select id="selectTempSongListById" parameterType="Long" resultMap="TempSongListResult">
+        <include refid="selectTempSongListVo"/>
+        where id = #{id}
+    </select>
+    <select id="selectTempSongListByUserId" resultMap="TempSongListResult">
+        select tsl.id,
+               tsl.api_song_list_id,
+               tsl.cover_img_url,
+               tsl.name,
+               tsl.description,
+               tsl.subscribed_count,
+               tsl.comment_count,
+               tsl.create_time,
+               tsl.update_time,
+               tsl.total,
+               tsl.play_count
+        from temp_song_list tsl
+                 left join mms_song_list_collection_api mslca on tsl.api_song_list_id = mslca.api_song_list_id
+        where mslca.user_id = #{userId}
+
+    </select>
+    <select id="selectTempSongListBySongListId" resultMap="TempSongListResult">
+        select tsl.id,
+               tsl.api_song_list_id,
+               tsl.cover_img_url,
+               tsl.name,
+               tsl.description,
+               tsl.subscribed_count,
+               tsl.comment_count,
+               tsl.create_time,
+               tsl.update_time,
+               tsl.total,
+               tsl.play_count
+        from temp_song_list tsl
+                 left join mms_song_list_collection_api mslca on tsl.api_song_list_id = mslca.api_song_list_id
+        where tsl.api_song_list_id = #{apiSongListId}
+    </select>
+    <select id="selectTempSongListBySongListIdAndUserId" resultMap="TempSongListResult">
+        select tsl.id,
+               tsl.api_song_list_id,
+               tsl.cover_img_url,
+               tsl.name,
+               tsl.description,
+               tsl.subscribed_count,
+               tsl.comment_count,
+               tsl.create_time,
+               tsl.update_time,
+               tsl.total,
+               tsl.play_count
+        from temp_song_list tsl
+                 left join mms_song_list_collection_api mslca on tsl.api_song_list_id = mslca.api_song_list_id
+        where mslca.api_song_list_id = #{apiSongListId} and mslca.user_id=#{userId}
+    </select>
+
+    <insert id="insertTempSongList" parameterType="TempSongList" useGeneratedKeys="true" keyProperty="id">
+        insert into temp_song_list
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="apiSongListId != null and apiSongListId != ''">api_song_list_id,</if>
+            <if test="coverImgUrl != null">cover_img_url,</if>
+            <if test="name != null and name != ''">name,</if>
+            <if test="description != null">description,</if>
+            <if test="subscribedCount != null">subscribed_count,</if>
+            <if test="commentCount != null">comment_count,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="total != null">total,</if>
+            <if test="playCount != null">play_count,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="apiSongListId != null and apiSongListId != ''">#{apiSongListId},</if>
+            <if test="coverImgUrl != null">#{coverImgUrl},</if>
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="description != null">#{description},</if>
+            <if test="subscribedCount != null">#{subscribedCount},</if>
+            <if test="commentCount != null">#{commentCount},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="total != null">#{total},</if>
+            <if test="playCount != null">#{playCount},</if>
+        </trim>
+    </insert>
+    <insert id="insertCollect">
+        insert into mms_song_list_collection_api(user_id, api_song_list_id)
+        values (#{userId}, #{apiSongListId})
+    </insert>
+
+    <update id="updateTempSongList" parameterType="TempSongList">
+        update temp_song_list
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="apiSongListId != null and apiSongListId != ''">api_song_list_id = #{apiSongListId},</if>
+            <if test="coverImgUrl != null">cover_img_url = #{coverImgUrl},</if>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="subscribedCount != null">subscribed_count = #{subscribedCount},</if>
+            <if test="commentCount != null">comment_count = #{commentCount},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="total != null">total = #{total},</if>
+            <if test="playCount != null">play_count = #{playCount},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTempSongListById" parameterType="Long">
+        delete
+        from temp_song_list
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteTempSongListByIds" parameterType="String">
+        delete from temp_song_list where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <delete id="deleteTempSongListCollectByUserIdAndApiSongListId">
+        delete
+        from mms_song_list_collection_api
+        where api_song_list_id = #{apiSongListId}
+          and user_id = #{userId}
+    </delete>
+</mapper>

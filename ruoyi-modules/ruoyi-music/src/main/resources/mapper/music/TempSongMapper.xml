@@ -6,13 +6,18 @@
         insert into temp_song(api_song_id, song_id)
         VALUES (#{apiId}, #{songId})
     </insert>
-    <select id="selectApiSong" resultType="com.ruoyi.music.Temp.ApiSong">
+    <select id="selectApiSong" resultType="com.ruoyi.music.temp.ApiSong">
         select api_song_id as apiId, song_id as songId
         from temp_song
         limit #{offset},#{limit}
     </select>
-    <select id="selectSongIdByApi" resultType="java.lang.Integer">
+    <select id="selectSongIdCountsByApi" resultType="java.lang.Integer">
         select count(id)
+        from temp_song
+        where api_song_id = #{apiId}
+    </select>
+    <select id="selectSongIdByApi" resultType="java.lang.Long">
+        select song_id
         from temp_song
         where api_song_id = #{apiId}
     </select>

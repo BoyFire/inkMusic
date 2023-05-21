@@ -1,6 +1,6 @@
 package com.ruoyi.music.mapper;
 
-import com.ruoyi.music.Temp.ApiAlbum;
+import com.ruoyi.music.temp.ApiAlbum;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

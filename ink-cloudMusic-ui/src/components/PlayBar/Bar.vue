@@ -15,8 +15,23 @@
         <!-- 左部 歌曲信息等 -->
         <div class="bar-l">
           <!-- 歌曲图片 -->
-          <router-link :to="{ path: '/song', query: { id: curSongInfo.id } }">
-            <el-image :src="curSongInfo.album.picUrl" class="bar-cover-img">
+          <router-link
+            :to="{
+              path: '/song',
+              query: {
+                id:
+                  curSongInfo.tempId === undefined
+                    ? curSongInfo.id
+                    : curSongInfo.tempId,
+              },
+            }">
+            <el-image
+              :src="
+                curSongInfo.album === undefined
+                  ? curSongInfo.songImgUrl
+                  : curSongInfo.album.picUrl
+              "
+              class="bar-cover-img">
               <div slot="placeholder" class="image-slot">
                 <i class="iconfont icon-placeholder"></i>
               </div>
@@ -42,7 +57,11 @@
           <!-- 时长 -->
           <div class="bar-time">
             <span>{{ $utils.formatSongTime(currentTime * 1000) }}</span> /
-            {{ curSongInfo.duration }}
+            {{
+              curSongInfo.duration === undefined
+                ? $utils.formatSongTime(curSongInfo.songDuration)
+                : curSongInfo.duration
+            }}
           </div>
         </div>
         <!-- 中部 按钮操作 -->
@@ -101,7 +120,11 @@
                     <!-- <i class="iconfont icon-closed" @click="popverClose"></i> -->
                   </h3>
                   <lyrics
-                    :sId="curSongInfo.id"
+                    :sId="
+                      curSongInfo.tempId === undefined
+                        ? curSongInfo.id
+                        : curSongInfo.tempId
+                    "
                     :currentTime="currentTime"></lyrics>
                 </div>
               </el-popover>
@@ -213,13 +236,13 @@
 
   // 音频播放进度条
   const audioProgressWidth = computed(() => {
+    let all = proxy.$utils.formatSongSecond(curSongInfo.value.duration);
+    if (all === undefined) {
+      all = curSongInfo.value.songDuration / 1000;
+    }
+
     // 音频进度条长度
-    return (
-      (currentTime.value /
-        proxy.$utils.formatSongSecond(curSongInfo.value.duration)) *
-        100 +
-      "%"
-    );
+    return (currentTime.value / all) * 100 + "%";
   });
   // 设置音频音量进度条
   const volumeProgressWidth = computed(() => {
@@ -279,7 +302,14 @@
       title: curSongInfo.value.name,
       artist: curSongInfo.value.singer[0].name,
       album: curSongInfo.value.album.name,
-      artwork: [{ src: curSongInfo.value.album.picUrl }],
+      artwork: [
+        {
+          src:
+            curSongInfo.value.album === undefined
+              ? curSongInfo.value.songImgUrl
+              : curSongInfo.value.album.picUrl,
+        },
+      ],
     });
 
     if (isPip.value) {

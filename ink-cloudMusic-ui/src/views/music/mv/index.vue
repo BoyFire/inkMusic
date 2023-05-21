@@ -80,8 +80,6 @@
 
   // 获取 Mv
   const getMv = async (params) => {
-    console.log(params);
-
     const { data: res } = await proxy.$http.mv(params);
 
     if (res.code !== 200) {
@@ -109,7 +107,9 @@
     }
     list.value = [];
     params.value.offset = 0;
-    params.value.type = type[index];
+    params.value.area = area[areaIndex.value];
+    params.value.type = area[typeIndex.value];
+    params.value.order = area[orderIndex.value];
     mv_loading.value = true;
   };
 

@@ -1,6 +1,6 @@
 package com.ruoyi.music.mapper;
 
-import com.ruoyi.music.Temp.ApiSinger;
+import com.ruoyi.music.temp.ApiSinger;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

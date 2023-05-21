@@ -29,14 +29,6 @@
             <!-- 歌单创建信息 -->
             <div class="cover-author-tags">
               <div class="cover-author" v-if="rankInfo.creator">
-                <el-image
-                  :src="rankInfo.creator.avatarUrl"
-                  class="cover-avatar">
-                  <div slot="placeholder" class="image-slot">
-                    <i class="iconfont icon-placeholder"></i>
-                  </div>
-                </el-image>
-                <div class="cover-name">{{ rankInfo.creator.nickname }}</div>
                 <div class="cover-date">
                   {{ $utils.formartDate(rankInfo.createTime, "yyyy-MM-dd") }}
                 </div>
@@ -72,16 +64,6 @@
             </h4>
             <span class="play-all" @click="playAllSongs"
               ><i class="iconfont icon-audio-play"></i> 播放全部</span
-            >
-            <span
-              :class="['collect', rankInfo.subscribed ? 'active' : '']"
-              @click="subPlayList(rankInfo)"
-              ><i
-                :class="[
-                  'iconfont',
-                  'icon-collect' + (rankInfo.subscribed ? '-active' : ''),
-                ]"></i>
-              {{ rankInfo.subscribed ? "已收藏" : "收藏" }}</span
             >
           </div>
 
@@ -209,15 +191,11 @@
   //获取歌单列表详情
   const getListDetail = async () => {
     isLoading.value = true;
-    let res;
-    do {
-      // 获取数据
-      const { data: res2 } = await proxy.$http.listDetail({
-        id: rId.value,
-        s: -1,
-      });
-      res = res2;
-    } while (res.privileges === null);
+    // 获取数据
+    const { data: res } = await proxy.$http.listDetail({
+      id: rId.value,
+      s: -1,
+    });
 
     if (res.code !== 200) {
       return proxy.$msg.error("数据请求失败");

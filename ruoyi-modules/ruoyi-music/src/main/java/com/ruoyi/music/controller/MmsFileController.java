@@ -25,7 +25,7 @@ public class MmsFileController {
     private IMmsFileService mmsFileService;
 
     @PostMapping("/upload")
-    public R<SysFile> upload(MultipartFile file, @RequestParam Map<String, String> map) {
+        public R<SysFile> upload(MultipartFile file, @RequestParam Map<String, String> map) {
         if (file.isEmpty()) {
             return R.fail("文件为空");
         }

@@ -118,11 +118,13 @@
         break;
       default:
         initialIndex.value = index;
-        break;
     }
     list.value = [];
     params.value.offset = 0;
     params.value.type = singerType[typeIndex.value].val;
+    params.value.area = area[areaIndex.value].val;
+    params.value.initial = initial.value[initialIndex.value].val;
+    getArtist(params);
   };
 
   const getArtist = async (params) => {

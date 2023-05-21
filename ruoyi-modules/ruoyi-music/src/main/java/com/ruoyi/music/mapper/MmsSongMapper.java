@@ -9,15 +9,14 @@ import java.util.List;
 
 /**
  * 歌曲Mapper接口
- * 
+ *
  * @author ruoyi
  * @date 2022-10-20
  */
-public interface MmsSongMapper 
-{
+public interface MmsSongMapper {
     /**
      * 查询歌曲
-     * 
+     *
      * @param id 歌曲主键
      * @return 歌曲
      */
@@ -39,9 +38,11 @@ public interface MmsSongMapper
      */
     public List<MmsSong> selectMmsSongList(SongParamsVo songParams);
 
+    String selectTempId(@Param("songId") Long songId);
+
     /**
      * 新增歌曲
-     * 
+     *
      * @param mmsSong 歌曲
      * @return 结果
      */
@@ -49,7 +50,7 @@ public interface MmsSongMapper
 
     /**
      * 修改歌曲
-     * 
+     *
      * @param mmsSong 歌曲
      * @return 结果
      */
@@ -57,7 +58,7 @@ public interface MmsSongMapper
 
     /**
      * 删除歌曲
-     * 
+     *
      * @param id 歌曲主键
      * @return 结果
      */
@@ -65,7 +66,7 @@ public interface MmsSongMapper
 
     /**
      * 批量删除歌曲
-     * 
+     *
      * @param ids 需要删除的数据主键集合
      * @return 结果
      */
@@ -73,14 +74,16 @@ public interface MmsSongMapper
 
     /**
      * 获取简单歌曲列表
+     *
      * @return 结果
      */
     List<SimpleSongVo> listSimpleSong();
 
     /**
      * 根据 song_id 来获取歌曲信息
+     *
      * @param songId song_id
-     * @return  结果
+     * @return 结果
      */
     MmsSong selectSongBySongId(@Param("songId") Long songId);
 
@@ -91,4 +94,6 @@ public interface MmsSongMapper
      * @return 结果
      */
     List<SimpleSongVo> selectSimpleSongsBySongName(@Param("songName") String songName);
+
+    List<MmsSong> selectMmsSongsBySongListId(@Param("songListId") Long songListId);
 }

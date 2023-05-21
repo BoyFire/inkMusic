@@ -4,6 +4,7 @@ import com.ruoyi.music.entity.MmsSinger;
 import com.ruoyi.music.vo.front.SimpleSinger;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 歌手Service接口
@@ -73,4 +74,10 @@ public interface IMmsSingerService
      * @return 结果
      */
     List<SimpleSinger> selectSimpleSingerListBySingerName(String singerName);
+
+    List<SimpleSinger> addSingerFromSongAr(List<Map<String, Object>> ar);
+
+    List<SimpleSinger> selectSimpleSingersBySingerIds(List<Long> singerIds);
+
+    public SimpleSinger insertApiSinger(Long apiId) ;
 }

@@ -1,19 +1,25 @@
 package com.ruoyi.music.service.impl;
 
+import com.alibaba.nacos.shaded.com.google.protobuf.ServiceException;
 import com.ruoyi.common.core.web.domain.AjaxResult;
 import com.ruoyi.music.entity.MmsSong;
 import com.ruoyi.music.entity.MmsSongList;
 import com.ruoyi.music.entity.MmsSongListSong;
+import com.ruoyi.music.entity.MmsUser;
 import com.ruoyi.music.mapper.MmsSongListSongMapper;
 import com.ruoyi.music.service.IMmsSongListService;
 import com.ruoyi.music.service.IMmsSongListSongService;
 import com.ruoyi.music.service.IMmsSongService;
+import com.ruoyi.music.service.IMmsUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 歌单歌曲Service业务层处理
@@ -32,6 +38,8 @@ public class MmsSongListSongServiceImpl implements IMmsSongListSongService {
     private IMmsSongListService songListService;
     @Resource
     private IMmsSongService songService;
+    @Resource
+    private IMmsUserService userService;
 
     /**
      * 查询歌单歌曲
@@ -105,9 +113,48 @@ public class MmsSongListSongServiceImpl implements IMmsSongListSongService {
     }
 
     @Override
-    public List<MmsSongListSong> selectMmsSongListSongBySongListId(Long songListId) {
+    public Map<String, Object> selectMmsSongListSongBySongListId(Long songListId) {
+        MmsSongList songList = songListService.selectMmsSongListBySongListId(songListId);
+        List<MmsSong> songs = songService.selectMmsSongsBySongListId(songListId);
+        MmsUser user = userService.selectMmsUserBySongListId(songListId);
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("songList", songList);
+        result.put("songs", songs);
+        result.put("creator", user);
+        result.put("subscribed", true);
+        return result;
+    }
+
+    @Override
+    public boolean collectSong(Map<String, Object> params) throws ServiceException {
+        Long songListId = Long.valueOf(String.valueOf(params.get("songListId")));
+        String apiSongId = String.valueOf(params.get("apiSongId"));
+        Long songId = songService.selectTempSongId(apiSongId);
+        MmsSong mmsSong = new MmsSong();
+        if (songId == null) {
+            mmsSong = songService.addSong(apiSongId);
+        }
         MmsSongListSong mmsSongListSong = new MmsSongListSong();
         mmsSongListSong.setSongListId(songListId);
-        return mmsSongListSongMapper.selectMmsSongListSongList(mmsSongListSong);
+        mmsSongListSong.setSongId(songId);
+
+        List<MmsSongListSong> songs = mmsSongListSongMapper.selectMmsSongListSongList(mmsSongListSong);
+        int i;
+        if (CollectionUtils.isEmpty(songs)) {
+            MmsSongList mmsSongList = songListService.selectMmsSongListBySongListId(songListId);
+            mmsSongList.setSongListImgUrl(mmsSong.getSongImgUrl());
+            songListService.updateMmsSongList(mmsSongList);
+            i = mmsSongListSongMapper.insertMmsSongListSong(mmsSongListSong);
+        } else {
+            throw new ServiceException("歌单存在这首歌");
+        }
+        return i > 0;
+    }
+
+    @Override
+    public int disCollectSong(Map<String, Object> params) {
+        Long songListId = Long.valueOf(String.valueOf(params.get("songListId")));
+        String songId = String.valueOf(params.get("songId"));
+        return mmsSongListSongMapper.deleteMmsSongListSongByTwo(songListId, songId);
     }
 }

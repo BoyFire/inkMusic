@@ -7,6 +7,7 @@ import com.ruoyi.music.vo.front.SimpleAlbum;
 import com.ruoyi.music.vo.front.SimpleSinger;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 专辑Service接口
@@ -92,4 +93,6 @@ public interface IMmsAlbumService
      * @return 结果
      */
     List<SimpleAlbum> selectSimpleAlbumListByAlbumName(String albumName);
+
+    List<SimpleAlbum> addAlbumFromSongAl(Map<String, Object> al);
 }

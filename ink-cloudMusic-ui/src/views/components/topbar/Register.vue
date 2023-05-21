@@ -126,8 +126,13 @@
     }
     formEl.validate(async (valid) => {
       if (valid) {
-        const result = await proxy.$http.register(registerForm);
-        console.log(result);
+        const { data: res } = await proxy.$http.register(registerForm);
+        console.log(res, "submitForm");
+        if (res.code !== 200) {
+          return proxy.$msg.error(res.msg);
+        }
+        proxy.$msg.success(res.msg);
+        isVisible.value = false;
         // if (res.code !== 200) {
         //   console.log(res.msg);
         // } else {

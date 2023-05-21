@@ -2,8 +2,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ruoyi.common.core.utils.DateUtils;
 import com.ruoyi.music.RuoYiMusicApplication;
-import com.ruoyi.music.Temp.ApiAlbum;
-import com.ruoyi.music.Temp.ApiSinger;
 import com.ruoyi.music.entity.MmsAlbum;
 import com.ruoyi.music.entity.MmsMovie;
 import com.ruoyi.music.entity.MmsSinger;
@@ -11,8 +9,11 @@ import com.ruoyi.music.entity.MmsSong;
 import com.ruoyi.music.mapper.*;
 import com.ruoyi.music.service.IMmsAlbumService;
 import com.ruoyi.music.service.IMmsMovieService;
+import com.ruoyi.music.service.IMmsSongListSongService;
 import com.ruoyi.music.service.IMmsSongService;
 import com.ruoyi.music.service.impl.MmsSingerServiceImpl;
+import com.ruoyi.music.temp.ApiAlbum;
+import com.ruoyi.music.temp.ApiSinger;
 import com.ruoyi.music.vo.front.SimpleAlbum;
 import com.ruoyi.music.vo.front.SimpleSinger;
 import lombok.extern.slf4j.Slf4j;
@@ -33,11 +34,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -76,6 +79,8 @@ public class TestAddDataFromApi {
 
     @Autowired
     private MmsSongLyricMapper mmsSongLyricMapper;
+    @Resource
+    private IMmsSongListSongService songListSongService;
 
     @Test
     public void addSinger() {
@@ -365,7 +370,7 @@ public class TestAddDataFromApi {
                     for (Map<String, Object> song : songs) {
                         //api 歌曲id
                         Long apiId = Long.valueOf(String.valueOf(song.get("id")));
-                        if (tempSongMapper.selectSongIdByApi(apiId) > 0 || number < offset1) {
+                        if (tempSongMapper.selectSongIdCountsByApi(apiId) > 0 || number < offset1) {
                             log.info("歌曲已存在,apiId为: " + apiId + ",number: " + number);
                             number++;
                             continue;
@@ -540,6 +545,15 @@ public class TestAddDataFromApi {
         }
     }
 
+
+    @Test
+    public void addSong2() {
+        Map<String, Object> params = new HashMap<>();
+        params.put("songListId", 5);
+        params.put("songId", 231758);
+        int i = songListSongService.disCollectSong(params);
+        System.out.println(i);
+    }
 
 }
 

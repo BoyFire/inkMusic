@@ -128,4 +128,6 @@ public interface MmsSingerMapper
      * @return 结果
      */
     List<SimpleSinger> selectSimpleSingerBySingerName(@Param("singerName") String singerName);
+
+    List<SimpleSinger> selectSimpleSingerBySingerIds(@Param("singerIds") List<Long> singerIds);
 }

@@ -35,6 +35,10 @@ export default {
   },
   // 歌曲转毫秒格式化处理 03:30 => (3*60+30) * 1000
   formatSongSecond(duration) {
+    if (typeof duration !== 'string') {
+      return duration;
+    }
+
     let arr = duration.split(":"),
       second = 0;
 

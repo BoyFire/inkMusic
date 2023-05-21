@@ -80,6 +80,7 @@
           loginForm.pwd = "";
           loginForm.username = "";
           const userInfo = res.data.mmsUser;
+          userInfo.description = "这个人很懒,什么都没写";
           window.localStorage.setItem("token", res.data.token);
           window.localStorage.setItem("isLogin", "true");
           window.localStorage.setItem("userInfo", JSON.stringify(userInfo));

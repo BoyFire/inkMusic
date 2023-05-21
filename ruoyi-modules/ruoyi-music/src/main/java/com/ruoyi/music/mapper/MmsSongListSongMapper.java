@@ -62,4 +62,6 @@ public interface MmsSongListSongMapper
     public int deleteMmsSongListSongByIds(Long[] ids);
 
     int getSongListCount(@Param("songListId") Long songListId);
+
+    int deleteMmsSongListSongByTwo(@Param("songListId") Long songListId, @Param("songId") String songId);
 }

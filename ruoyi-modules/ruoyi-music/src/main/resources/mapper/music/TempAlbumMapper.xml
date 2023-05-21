@@ -5,7 +5,7 @@
     <insert id="insertAlbumId">
         insert into temp_album(api_album_id, album_id) VALUES (#{apiId},#{albumId})
     </insert>
-    <select id="selectApiAlbum" resultType="com.ruoyi.music.Temp.ApiAlbum">
+    <select id="selectApiAlbum" resultType="com.ruoyi.music.temp.ApiAlbum">
         select api_album_id as apiId, album_id as albumId
         from temp_album
         limit #{offset}, #{limit}

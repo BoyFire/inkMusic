@@ -1,6 +1,5 @@
 import api from "./instance";
 
-/** 我的程序 ++++++++++++++++++++++++++++++++++++++++++++ */
 
 // 注册
 const register = ({
@@ -25,6 +24,7 @@ const myLogin = ({ userAuthType = "0", username = "", pwd = "" }) => {
     password: pwd,
   });
 };
+//登出
 export function myLogout(header) {
   return api.delete(`/music/user/logout`, {
     headers: {
@@ -32,24 +32,102 @@ export function myLogout(header) {
     },
   });
 }
+//获取用户信息
 export function getMyUserInfo({ userId = 0 }) {
   return api.get(`/music/user/getUserInfo?userId=${userId}`, {})
 }
-export function getUserSongList({ userId = 0 }) {
+//获取用户创建的歌单
+export function getUserCreatSongList({ userId = 0 }) {
   return api.get(`/music/songList/getUserSongLists?userId=${userId}`, {})
 }
-
+//获取用户收藏的歌单
+export function getUserCollectSongList({ userId = 0 }) {
+  return api.get(`/music/songList/getUserCollectSongLists?userId=${userId}`, {})
+}
+//获取用户收藏的歌单
+export function getUserCollectApiSongList({ userId = 0 }) {
+  return api.get(`/music/songList/getUserCollectApiSongLists?userId=${userId}`, {})
+}
+//获取评论详情
 export function getCommentDetail({ songListId = 0, type = 4 }) {
   //1-评论,2-专辑,3-歌曲,4-歌单,5-视频
   return api.get(`/music/songListSong/detail?songListId=${songListId}&type=${type}`, {})
 }
-
+//获取相似歌单
 export function getSongListRelated({ songListId = 4 }) {
   return api.get(`/music/songList/getRelated?songListId=${songListId}`, {})
-
+}
+// 获取我的歌单详情
+export function getMySongListDetail({ songListId = 4 }) {
+  return api.get(`/music/songListSong/detail?songListId=${songListId}`, {})
+}
+//获取歌曲重定向地址
+export function getRedirectUrl({ url = "" }) {
+  return api.get(`/music/song/getRedirectUrl?url=${url}`, { withCredentials: true, })
+}
+//更新用户信息
+export function updateMyUserInfo(params) {
+  return api.post(`/music/user/updateUserInfo`, {
+    id: params.id,
+    userId: params.userId,
+    userNickname: params.userNickname,
+    userImgUrl: params.userImgUrl,
+    userGender: params.userGender
+  })
+}
+//收藏歌曲
+export function collest(params) {
+  return api.post(`/music/songListSong/collectSong`, {
+    songListId: params.songListId,
+    apiSongId: params.apiSongId
+  })
+}
+//取消收藏歌曲
+export function disCollectSong(params) {
+  return api.post(`/music/songListSong/disCollectSong`, {
+    songListId: params.songListId,
+    songId: params.songId
+  })
+}
+//是否已收藏歌单
+export function isCollectApi(params) {
+  return api.post(`/music/songList/isCollectApi`, {
+    userId: params.userId,
+    apiSongListId: params.apiSongListId
+  })
 }
 
-/** 我的程序 ++++++++++++++++++++++++++++++++++++++++++++ */
+//收藏歌单
+export function collestSongList(params) {
+  return api.post(`/music/songList/collectApiSongList`, {
+    userId: params.userId,
+    apiSongListId: params.apiSongListId,
+    items: params.items
+  })
+}
+//取消收藏歌单
+export function disCollectSongList(params) {
+  return api.post(`/music/songList/disCollectApiSongList`, {
+    userId: params.userId,
+    apiSongListId: params.apiSongListId,
+  })
+}
+//新增歌单
+export function createSongList(params) {
+  return api.post(`/music/songList`, {
+    songListCreatorId: params.songListCreatorId,
+    songListImgUrl: params.songListImgUrl,
+    songListTitle: params.songListTitle,
+    songListStatus: params.songListStatus,
+    createBy: params.createBy
+  })
+}
+
+export function deleteSongList(ids) {
+  return api.post(`/music/songList/deleteSongLists`,
+    { ids })
+
+}
 
 // 首页轮播图
 const getBanner = () => {

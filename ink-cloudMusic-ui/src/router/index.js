@@ -20,7 +20,12 @@ const router = createRouter({
       component: () => import("@views/music/songList/Detail.vue"),
     },
     {
-      path: "/playlist/myDetail",
+      path: "/playlist/detail3",
+      name: "playlistdetail3",
+      component: () => import("@views/music/songList/Detail2.vue"),
+    },
+    {
+      path: "/playlist/Detail2",
       name: "playlistdetailMy",
       component: () => import("@views/music/songList/MyDetail.vue"),
     },

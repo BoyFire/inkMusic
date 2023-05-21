@@ -75,5 +75,8 @@ public class MmsSong extends BaseEntity
     // 标签列表
     private List<String> tagNames;
 
+    // 复制id
+    private Long tempId;
+
 
 }

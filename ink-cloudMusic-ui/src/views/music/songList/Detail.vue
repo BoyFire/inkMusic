@@ -102,14 +102,14 @@
               ><i class="iconfont icon-audio-play"></i> 播放全部</span
             >
             <span
-              :class="['collect', details.subscribed ? 'active' : '']"
+              :class="['collect', isCollection ? 'active' : '']"
               @click="subPlayList(details)"
               ><i
                 :class="[
                   'iconfont',
-                  'icon-collect' + (details.subscribed ? '-active' : ''),
+                  'icon-collect' + (isCollection ? '-active' : ''),
                 ]"></i>
-              {{ details.subscribed ? "已收藏" : "收藏" }}</span
+              {{ isCollection ? "已收藏" : "收藏" }}</span
             >
           </div>
           <!-- 歌曲展示 -->
@@ -191,7 +191,14 @@
 <script lang="ts" setup>
   import Loading from "@/components/Loading.vue";
   import SongList from "@/components/SongList.vue";
-  import { computed, getCurrentInstance, onMounted, ref, Ref } from "vue";
+  import {
+    computed,
+    getCurrentInstance,
+    onMounted,
+    ref,
+    Ref,
+    watch,
+  } from "vue";
   import { onBeforeRouteUpdate, useRoute } from "vue-router";
   import { useStore } from "vuex";
 
@@ -208,8 +215,10 @@
   const comments: Ref<any[]> = ref([]);
   const total: Ref<number> = ref(0);
   const isLoading: Ref<boolean> = ref(true);
+  const isCollection = ref(false);
 
   const isLogin = computed(() => store.getters.isLogin);
+  const userInfo = computed(() => store.getters.userInfo);
 
   // 获取歌单歌曲列表
   const getDetail = async (params) => {
@@ -312,20 +321,53 @@
   };
 
   // 收藏、取消歌单
-  const subPlayList = async (item) => {
-    const { data: res } = await proxy.$http.subPlayList({
-      id: item.id,
-      t: item.subscribed ? 2 : 1,
+  const getCollected = async (id) => {
+    if (!isLogin.value) {
+      loginDialog();
+    }
+    const { data: res } = await proxy.$http.isCollectApi({
+      userId: userInfo.value.userId,
+      apiSongListId: id,
     });
+    if (res.code !== 200) {
+      return proxy.$msg.error(res.msg);
+    }
+    isCollection.value = res.data;
+  };
+
+  const subPlayList = async (item) => {
+    if (!isLogin.value) {
+      return loginDialog();
+    }
+
+    let res;
+    if (isCollection.value) {
+      const { data: res1 } = await proxy.$http.disCollectSongList({
+        userId: userInfo.value.userId,
+        apiSongListId: item.id,
+      });
+      res = res1;
+    } else {
+      const { data: res1 } = await proxy.$http.collestSongList({
+        userId: userInfo.value.userId,
+        apiSongListId: item.id,
+        items: item,
+      });
+      res = res1;
+    }
 
     if (res.code !== 200) {
-      return proxy.$msg.error(res.message);
+      return proxy.$msg.error(res.msg);
     }
-    details.value.subscribed = !details.value.subscribed;
+    proxy.$msg.success("操作成功");
+    isCollection.value = !isCollection.value;
   };
 
   // 初始化
   const _initialize = (id) => {
+    if (isLogin.value) {
+      getCollected(id);
+    }
     // 歌单详情
     getDetail({ id: id, s: 8 });
     // 歌单收藏者
@@ -346,6 +388,11 @@
     total.value = 0;
     id.value = to.query.id as string;
     _initialize(id.value);
+  });
+  watch(isLogin, (newVal, oldVal) => {
+    if (newVal) {
+      getCollected(id);
+    }
   });
 </script>
 <style lang="less" scoped>

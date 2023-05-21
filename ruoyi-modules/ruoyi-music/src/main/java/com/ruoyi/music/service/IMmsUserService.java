@@ -110,4 +110,6 @@ public interface IMmsUserService {
      *
      */
     MmsUserDTO selectMmsUserByUserId(Long userId);
+
+    MmsUser selectMmsUserBySongListId(Long songListId);
 }

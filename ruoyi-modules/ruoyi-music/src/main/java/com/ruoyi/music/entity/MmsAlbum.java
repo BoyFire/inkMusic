@@ -6,7 +6,6 @@ import com.ruoyi.common.core.web.domain.BaseEntity;
 import com.ruoyi.music.vo.front.SimpleSinger;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
 import java.util.Date;
 import java.util.List;
@@ -18,8 +17,7 @@ import java.util.List;
  * @date 2022-10-20
  */
 @Data
-@ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = false)
 public class MmsAlbum extends BaseEntity {
     private static final long serialVersionUID = 1L;
 

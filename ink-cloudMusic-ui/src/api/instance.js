@@ -1,5 +1,6 @@
 import axios from "axios";
 
+
 const instance = axios.create({
   timeout: 1000 * 60,
   // `withCredentials` 表示跨域请求时是否需要使用凭证
@@ -36,7 +37,7 @@ instance.interceptors.response.use(
   }
 );
 axios.defaults.headers["Content-Type"] = "application/json;charset=utf-8";
-const ajaxMethod = ["get", "post", "delete"];
+const ajaxMethod = ["get", "post", "delete", "put"];
 const api = {};
 ajaxMethod.forEach((method) => {
   api[method] = function (uri, data, config) {

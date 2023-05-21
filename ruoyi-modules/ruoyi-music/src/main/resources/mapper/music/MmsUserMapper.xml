@@ -101,6 +101,23 @@
 
 
     </select>
+    <select id="selectMmsUserBySongListId" resultMap="MmsUserResult">
+        select mu.id,
+               mu.user_id,
+               mu.user_nickname,
+               mu.user_img_url,
+               mu.user_gender,
+               mu.user_status,
+               mu.create_by,
+               mu.create_time,
+               mu.edit_by,
+               mu.edit_time,
+               mu.revision,
+               mu.is_del
+        from mms_user mu
+            left join mms_song_list msl on msl.song_list_creator_id = mu.user_id
+        where msl.song_list_id = #{songListId}
+    </select>
 
     <insert id="insertMmsUser" parameterType="MmsUser" useGeneratedKeys="true" keyProperty="id">
         insert into mms_user

@@ -1,9 +1,11 @@
 package com.ruoyi.music.service;
 
+import com.alibaba.nacos.shaded.com.google.protobuf.ServiceException;
 import com.ruoyi.common.core.web.domain.AjaxResult;
 import com.ruoyi.music.entity.MmsSongListSong;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 歌单歌曲Service接口
@@ -61,5 +63,16 @@ public interface IMmsSongListSongService
      */
     public int deleteMmsSongListSongById(Long id);
 
-    List<MmsSongListSong> selectMmsSongListSongBySongListId(Long songListId);
+    Map<String, Object>  selectMmsSongListSongBySongListId(Long songListId);
+
+
+    /**
+     * 收藏歌曲
+     *
+     * @param params 请求体
+     * @return 结果
+     */
+    boolean collectSong(Map<String, Object> params) throws ServiceException;
+
+    int disCollectSong(Map<String, Object> params);
 }

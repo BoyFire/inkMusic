@@ -175,4 +175,9 @@ public class MmsUserController extends BaseController {
         return AjaxResult.success(mmsUserService.selectMmsUserByUserId(userId));
     }
 
+    @PostMapping("/updateUserInfo")
+    public AjaxResult updateUserInfo(@RequestBody MmsUser mmsUser){
+        System.out.println(mmsUser);
+        return toAjax(mmsUserService.updateMmsUser(mmsUser)) ;
+    }
 }

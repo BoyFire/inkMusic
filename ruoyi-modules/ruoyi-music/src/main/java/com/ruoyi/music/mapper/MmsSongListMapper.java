@@ -93,4 +93,7 @@ public interface MmsSongListMapper
 
     List<MmsSongList> selectMmsSongListRand();
 
+    List<MmsSongList> selectUserCollectSongListByUserId(@Param("userId") Long userId);
+
+    int deleteMmsSongListBySongListIds(@Param("ids") List<Long> longs);
 }

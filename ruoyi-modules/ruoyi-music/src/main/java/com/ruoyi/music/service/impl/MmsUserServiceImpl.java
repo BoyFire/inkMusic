@@ -191,6 +191,11 @@ public class MmsUserServiceImpl implements IMmsUserService {
         return mmsUserMapper.selectUserDTOByUserId(userId);
     }
 
+    @Override
+    public MmsUser selectMmsUserBySongListId(Long songListId) {
+        return mmsUserMapper.selectMmsUserBySongListId(songListId);
+    }
+
     /**
      * 生成用户通用元素
      * 主要涉及 userId, 未指定gender, is_del, revision, userStatus

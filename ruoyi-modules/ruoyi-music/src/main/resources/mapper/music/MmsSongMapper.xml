@@ -33,6 +33,20 @@
         <result property="songName" column="song_name"/>
     </resultMap>
 
+    <resultMap type="MmsSong" id="MmsSongResult2">
+        <result property="id" column="id"/>
+        <result property="songId" column="song_id"/>
+        <result property="songName" column="song_name"/>
+        <result property="songDuration" column="song_duration"/>
+        <result property="songUrl" column="song_url"/>
+        <result property="songImgUrl" column="song_img_url"/>
+        <result property="tempId" column="api_song_id"/>
+        <collection property="singers" column="song_id"
+                    select="com.ruoyi.music.mapper.MmsSongSingerMapper.selectSimpleSingerBySongId"/>
+        <collection property="albums" column="song_id"
+                    select="com.ruoyi.music.mapper.MmsSongAlbumMapper.selectSimpleAlbumBySongId"/>
+    </resultMap>
+
     <sql id="selectMmsSongVo">
         select ms.id,
                ms.song_id,
@@ -98,6 +112,26 @@
         <if test="songName == null or songName ==''">limit 100</if>
 
 
+    </select>
+    <select id="selectMmsSongsBySongListId" resultMap="MmsSongResult2">
+        select ms.id,
+               ms.song_id,
+               ms.song_name,
+               ms.song_duration,
+               ms.song_url,
+               ms.song_img_url,
+               ts.api_song_id
+        from mms_song ms
+                 right join mms_song_list_song msls on ms.song_id = msls.song_id
+                 inner join temp_song ts on ms.song_id = ts.song_id
+        where ms.song_status = 1
+          and ms.is_del = 0
+          and msls.song_list_id = #{songListId}
+    </select>
+    <select id="selectTempId" resultType="java.lang.String">
+        select api_song_id
+        from temp_song
+        where song_id = #{songId}
     </select>
 
     <insert id="insertMmsSong" parameterType="MmsSong" useGeneratedKeys="true" keyProperty="id">
